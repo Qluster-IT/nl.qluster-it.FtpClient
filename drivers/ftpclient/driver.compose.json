@@ -11,17 +11,28 @@
     "capabilities": [],    
     "pair": [        
       {
-        "id": "list_ftpclient",
+        "id": "list_devices",
         "template": "list_devices",
         "navigation": {
-          "next": "add_ftpclient"
+          "next": "login_credentials"
         },
         "options": {
           "singular": true
         }
       },
       {
-        "id": "add_ftpclient",
+        "id": "login_credentials",
+        "template": "login_credentials",
+        "options": {
+          "logo": "logo.png",
+          "usernameLabel": { "en": "Username" },
+          "usernamePlaceholder": { "en": "anonymous" },
+          "passwordLabel": { "en": "Password" },
+          "passwordPlaceholder": { "en": "" }
+        }
+      },
+      {
+        "id": "add_devices",
         "template": "add_devices"
       }
     ],

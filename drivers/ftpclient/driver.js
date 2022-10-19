@@ -123,16 +123,36 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
 
     async onPair(session, arg1) {
-    let devices = await this.onPairListDevices();
+    let devices ;//= await this.onPairListDevices();
     var device;
 
     session.setHandler('list_devices', async (data) => {
-        return devices;
+        return (devices = await this.onPairListDevices());
     });
     
     session.setHandler('list_devices_selection', async (selectedDevices) => {
         device = selectedDevices[0];
-        device.icon = '/icon-default.svg';
+        //device.icon = '/icon-default.svg';
+    });
+
+    session.setHandler("login", async (data) => {
+        //username = data.username;
+        //password = data.password;
+
+
+        
+		let ftpClient = new FtpClient();
+        ftpClient.init({
+			ip: device.settings.ip, port: device.settings.port, username:data.username, password:data.password
+		});
+        try {                
+            let isConnected = await ftpClient.getLogin(data.username, data.password) ;//{ip: this.homey.app.ip, port: 5081 });
+            this.username = data.username;
+            this.password = data.password;
+            return true;
+        } catch (error) { }
+        return false;
+
     });
 
     session.setHandler('add_device', async (device) => {
