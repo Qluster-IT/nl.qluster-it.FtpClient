@@ -38,4 +38,39 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		});
 	}
 
+
+	
+  
+	// onDiscoveryResult(discoveryResult) {
+	// 	// Return a truthy value here if the discovery result matches your device.
+	// 	this.log('onDiscoveryResult: ', discoveryResult);
+	// 	return discoveryResult.id === this.getData().id;
+	//   }
+	
+	//   async onDiscoveryAvailable(discoveryResult) {
+	// 	this.setAddress(discoveryResult.address);
+	
+	// 	// this.api = new MyDeviceAPI(discoveryResult.address);
+	// 	// await this.api.connect(); // When this throws, the device will become unavailable.
+	//   }
+	
+	//   onDiscoveryAddressChanged(discoveryResult) {
+	// 	this.setAddress(discoveryResult.address);
+		
+	// 	// this.api.address = discoveryResult.address;
+	// 	// this.api.reconnect().catch(this.error);
+	//   }
+	
+	//   onDiscoveryLastSeenChanged(discoveryResult) {
+	// 	this.setAddress(discoveryResult.address);
+		
+	// 	// When the device is offline, try to reconnect here
+	// 	// this.api.reconnect().catch(this.error);
+	//   }
+	
+	//   setAddress(ip) {
+	// 	this.setSettings({'ip': ip});
+	// 	this.init();
+	//   }	
+
 };

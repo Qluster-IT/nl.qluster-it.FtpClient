@@ -88,13 +88,33 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
         };
 
+
+        const discoveryStrategy = this.homey.discovery.getStrategy("ftp_mDNS-SD");//this.getDiscoveryStrategy();
+        const discoveryResults = discoveryStrategy.getDiscoveryResults();
+
+        const devicesFound = Object.values(discoveryResults).map((discoveryResult) => {
+        return {
+            name: discoveryResult.txt.name,
+            data: {
+            id: discoveryResult.id,
+            },
+            store:{address:discoveryResult.address}
+        };
+        });
+
+        let devs = [device];
+
 		let ftpClient = new FtpClient();
         ftpClient.init({
-			ip: '127.0.0.1', port: 5081
+			ip: this.homey.app.ip, port: 5081
 		});
-        let list = await ftpClient.getList();
-
-        return [device];
+        try {                
+            let isConnected = await ftpClient.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
+            if(isConnected) {
+                devs.push({name:'Ftp Micro Web Server', data :{id:device.data.id}, settings :{ip:this.homey.app.ip, port:5081, username:'anonymous'}});
+            }
+        } catch (error) { }
+        return devs;
     }
 
     async onPair(session, arg1) {

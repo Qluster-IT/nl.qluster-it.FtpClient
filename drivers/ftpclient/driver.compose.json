@@ -8,7 +8,7 @@
       "small": "drivers/ftpclient/assets/images/small.png"
     },
     "class": "other",
-    "capabilities": [],
+    "capabilities": [],    
     "pair": [        
       {
         "id": "list_ftpclient",
