@@ -1,0 +1,35 @@
+{
+  "id": "nl.qluster-it.FtpClient",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Ftp Client"
+  },
+  "description": {
+    "en": "Ftp Client(s)"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Arie J. Godschalk",
+    "email": "arie@qluster-it.nl"
+  },
+  "api": {
+    "uploadFiles": {
+      "method": "POST",
+      "path": "/uploadFiles",
+      "public":true
+    }
+  }
+}

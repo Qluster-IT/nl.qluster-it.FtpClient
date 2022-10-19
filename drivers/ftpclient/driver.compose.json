@@ -1,0 +1,51 @@
+{
+    "id": "ftpclient",
+    "name": {
+      "en": "Ftp Client"
+    },
+    "images": {
+      "large": "drivers/ftpclient/assets/images/large.jpg",
+      "small": "drivers/ftpclient/assets/images/small.jpg"
+    },
+    "class": "other",
+    "capabilities": [],
+    "pair": [        
+      {
+        "id": "list_ftpclient",
+        "template": "list_devices",
+        "navigation": {
+          "next": "add_ftpclient"
+        },
+        "options": {
+          "singular": true
+        }
+      },
+      {
+        "id": "add_ftpclient",
+        "template": "add_devices"
+      }
+    ],
+    "repair": [
+      {
+        "id": "ftpclient"
+      }
+    ],
+    "settings": [
+      {
+        "id": "ip",
+        "type": "text",
+        "label": {
+          "en": "IP"
+        },
+        "value": "192.168.1.17"
+      },
+      {
+        "id": "port",
+        "type": "number",
+        "label": {
+          "en": "Port"
+        },
+        "value": 5081
+      }
+    ]
+  }

@@ -1,0 +1,310 @@
+<script type="text/javascript" src="../../../assets/js/angular.js"></script>
+<script type="text/javascript" src="../../../assets/js/lodash.js"></script>
+<script type="text/javascript" src="../../../assets/js/smart-table.min.js"></script>
+<script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
+
+<link rel="stylesheet" href="../../../assets/fontawesome/fontawesome.css" type="text/css"/>
+<link rel="stylesheet" href="../../../assets/css/default.css" type="text/css"/>
+<div  ng-app="ftpclient" ng-controller="ftpclientCtrl as ftpclient">
+	
+	<form name="mainForm">
+		<div class="field">
+			<div class="field margin-bottom">
+				<ul class="ftp-directory ftp-directory-root">
+					<ftp-directory directory="vars.content"></ftp-directory>
+				</ul>
+			</div>
+			<!-- <button class="field margin-top" ng-click="mainForm.$valid && vars.microWebServerFtpPort ? updatemicroWebServerFtpPort() : null" ng-disabled="!mainForm.$valid || !vars.microWebServerFtpPort">Update Settings</div> -->
+		</div>
+	</form>
+
+	<div id="overlay"></div>
+	<script type="text/javascript">
+
+		angular.module('ftpclient', ['smart-table'])
+			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
+				//let $;
+				const vars = $scope.vars = {content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true}};
+				$scope.stamp = Date.now();
+					
+				if (typeof Homey !== 'undefined') {
+					$scope.__ = Homey.__;
+					Homey.emit('getContent', {path:''}).then((result)=> {
+						$scope.$apply(()=> {
+							vars.content.children = result;
+						});
+					});
+				}
+			}])
+			.directive('ngEnter', function () {
+				return function (scope, element, attrs) {
+					element.bind('keydown keypress', function (event) {
+						if (event.which === 13) {
+							scope.$apply(function () {
+								scope.$eval(attrs.ngEnter || attrs.ngClick, {
+									$event: event
+								});
+							});
+							event.preventDefault();
+						}
+					});
+				};
+			})
+			.directive('tooltip', function ($compile) {
+				var contentContainer;
+				return {
+					restrict: "A",
+					scope: {
+						myTooltipScope: "="
+					},
+					link: function (scope, element, attrs) {
+						var text = attrs.tooltip;
+
+						scope.hidden = true;
+
+						var tooltipElement = angular.element("<div ng-hide='hidden' class='tooltip'>");
+						tooltipElement.append("<div>" + text.replaceAll('\r\n', '<br/>') + "</div>");
+
+						element.append(tooltipElement);
+						element
+							.on('mouseenter', function () { scope.hidden = false; scope.$digest(); })
+							.on('mouseleave', function () { scope.hidden = true; scope.$digest(); })
+							.on('click', function () { scope.hidden = true; scope.$digest(); });
+
+						var toolTipScope = scope.$new(true);
+						angular.extend(toolTipScope, scope.myTooltipScope);
+						$compile(tooltipElement.contents())(toolTipScope);
+						$compile(tooltipElement)(scope);
+					}
+				};
+			})
+			.directive('ftpDirectory', [function () {
+
+				return {
+					templateUrl: 'ftp-directory.template.html',
+					replace:true,
+					scope: {directory: '='},
+					restrict: 'E',
+					controller: function($scope) {
+						$scope.getChildren = function(directory, refresh) {
+							if(directory.children && directory.children.length && !refresh) return;
+							let path = directory.path +'/' + directory.name;
+							if(path==='/') path='';
+							Homey.emit('getContent', {path}).then((result)=> {
+								$scope.$apply(()=> {
+									directory.children = result;
+								});
+							});
+						}
+						$scope.deleteDirectory = function(directory) {
+							Homey.emit('deleteDirectory', {directory}).then((result)=> {
+								$scope.$apply(()=> {
+									delete directory.delete;
+									$scope.$parent.getChildren($scope.$parent.directory, true);
+								});
+							});
+						}
+						
+						$scope.renameDirectory = function(directory) {
+							Homey.emit('renameDirectory', {directory}).then((result)=> {
+								$scope.$apply(()=> {
+									delete directory.renameName;
+									$scope.$parent.getChildren($scope.$parent.directory, true);
+								});
+							});
+						}
+						$scope.addDirectory = function(directory) {
+							Homey.emit('addDirectory', {directory, name:directory.addName}).then((result)=> {
+								$scope.$apply(()=> {
+									delete directory.add;
+									delete directory.addName;
+									$scope.getChildren($scope.directory, true);
+								});
+							});
+						}
+					},
+					link: function(scope, element) {
+						let matches = scope.directory.path.match(/\//g);
+						scope.indent = matches ? matches.length : -1;
+						if(!scope.directory.root) scope.indent++;
+					}
+				};
+			}])
+			.directive('ftpFile', [function () {
+
+				return {
+					templateUrl: 'ftp-file.template.html',
+					replace:true,
+					scope: {file: '='},
+					restrict: 'E',
+					controller: function($scope) {
+						$scope.deleteFile = function(file) {
+							Homey.emit('deleteFile', {file}).then((result)=> {
+								$scope.$apply(()=> {
+									delete file.delete;
+									$scope.$parent.getChildren($scope.$parent.directory, true);
+								});
+							});
+						}
+						
+						$scope.renameFile = function(file) {
+							Homey.emit('renameFile', {file}).then((result)=> {
+								$scope.$apply(()=> {
+									delete file.renameName;
+									$scope.$parent.getChildren($scope.$parent.file, true);
+								});
+							});
+						}
+					},
+					link: function(scope, element) {
+						let matches = scope.file.path.match(/\//g);
+						scope.indent = matches ? matches.length : -1;
+						scope.indent ++;
+
+						scope.getFileIcon = function(file) {
+							let ext = _.last(file.name.split('.')).toLowerCase();
+							switch (ext) {
+								case 'mp3': 
+								case 'wav':
+									return 'fa-file-audio';
+								case 'jpg': 
+								case 'jpeg':
+								case 'gif': 
+								case 'png':
+								case 'svg': 
+								case 'bpm':
+									return 'fa-file-image';
+								case 'zip': 
+								case 'rar':
+									return 'fa-file-archive';
+								case 'doc': 
+								case 'docx':
+									return 'fa-file-word';
+								case 'xls': 
+								case 'xlsx':
+									return 'fa-file-excel';
+								case 'js': 
+								case 'json':
+									return 'fa-file-code';
+								case 'ppt': 
+								case 'pptx':
+									return 'fa-file-powerpoint';
+								case 'pdf': 
+									return 'fa-file-pdf';
+								default: return 'fa-file';
+							}
+						}
+
+					}
+				};
+			}])				
+			.directive('ftpFileUpload', ['$http', function ($http) {
+				return {
+					templateUrl: 'ftp-file-upload.template.html',
+					replace:true,
+					scope: {directory: '='},
+					restrict: 'E',
+					//transclude:true,
+
+					controller: function($scope) {
+
+						function _arrayBufferToBase64( buffer ) {
+							var binary = '';
+							var bytes = new Uint8Array( buffer );
+							var len = bytes.byteLength;
+							for (var i = 0; i < len; i++) {
+								binary += String.fromCharCode( bytes[ i ] );
+							}
+							return window.btoa( binary );
+						}
+
+						console.log("ftpFileUpload controller function called");						
+						$scope.uploadFiles = function(element) {
+							
+							let q=[];
+							let fc = ()=> {
+								console.log('emit');
+								
+								Homey.emit('uploadFiles', ).then((result)=>{
+									$http.post('../../../../../api/app/nl.qluster-it.FtpClient/uploadFiles',  {directory:$scope.directory, files:q, id:result.id}).then(()=>{
+										delete $scope.directory.uploading;
+										$scope.$parent.getChildren($scope.directory, true);
+										$scope.directory.show = $scope.directory.shown = true;
+										
+									});
+								 });
+
+								
+								
+								//Homey.emit('uploadFiles', {directory:$scope.directory, files:[]} ).then((result)=>{});
+							};
+							for (let i = 0; i < element.target.files.length; i++) {
+								const file = element.target.files[i];
+								r = new FileReader();
+
+								r.onloadend = function(e) {
+									var base64String = _arrayBufferToBase64(e.target.result);
+									q.push({name:file.name, base64:base64String});
+									//console.log(base64String);
+									if(q.length===element.target.files.length) fc();
+								}
+								r.readAsArrayBuffer(file);
+							}
+						}
+						$scope.deleteDirectory = function(directory) {
+
+						}
+					},
+					link: function(scope, element, attrs) {
+						console.log('ftpFileUpload link');
+					}
+				};
+			}])
+			.directive('fileOnChange', function() {
+				return {
+					restrict: 'A',
+					link: function (scope, element, attrs) {
+						var onChangeHandler = scope.$eval(attrs.fileOnChange);
+						element.on('change', onChangeHandler);//(element)=>{if(onChangeHandler) onChangeHandler(element, scope.directory)});
+						element.on('$destroy', function() {
+							element.off();
+						});
+
+					}
+				};
+			})
+			.directive('windowConfirm', ['$parse', function ($parse) {
+
+				return {
+					templateUrl: 'window-confirm.template.html',
+					//replace:true,
+					scope: {
+						onOk:'@',
+						onCancel:'@',
+						title: '@',
+						message: '@'
+
+					},
+					restrict: 'E',
+    				transclude: true,
+					controller: function($scope) {
+						
+					},
+					link: function(scope, element, attrs) {
+						scope.closed = false;
+						scope.ok = function($event) {							
+							$event.stopPropagation();
+							$parse(attrs.onOk)(scope.$parent);
+						}
+						scope.cancel = function($event) {							
+							$event.stopPropagation();
+							$parse(attrs.onCancel)(scope.$parent);
+							
+						}
+					}
+				};
+			}])		
+			
+			;
+	</script>
+</div>

@@ -1,0 +1,89 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "nl.qluster-it.FtpClient",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Ftp Client"
+  },
+  "description": {
+    "en": "Ftp Client(s)"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Arie J. Godschalk",
+    "email": "arie@qluster-it.nl"
+  },
+  "api": {
+    "uploadFiles": {
+      "method": "POST",
+      "path": "/uploadFiles",
+      "public": true
+    }
+  },
+  "drivers": [
+    {
+      "id": "ftpclient",
+      "name": {
+        "en": "Ftp Client"
+      },
+      "images": {
+        "large": "drivers/ftpclient/assets/images/large.jpg",
+        "small": "drivers/ftpclient/assets/images/small.jpg"
+      },
+      "class": "other",
+      "capabilities": [],
+      "pair": [
+        {
+          "id": "list_ftpclient",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_ftpclient"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_ftpclient",
+          "template": "add_devices"
+        }
+      ],
+      "repair": [
+        {
+          "id": "ftpclient"
+        }
+      ],
+      "settings": [
+        {
+          "id": "ip",
+          "type": "text",
+          "label": {
+            "en": "IP"
+          },
+          "value": "192.168.1.17"
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "label": {
+            "en": "Port"
+          },
+          "value": 5081
+        }
+      ]
+    }
+  ]
+}

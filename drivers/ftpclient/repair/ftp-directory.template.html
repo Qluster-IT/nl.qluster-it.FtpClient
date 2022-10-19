@@ -1,0 +1,31 @@
+
+
+<li class="ftp-directory" ng-style="{'padding-left':(indent*20)+'px'}">
+    <span class="ftp-directory-header" ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null;">
+        <span class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"></span>
+        {{directory.name}}
+        <span class="ftp-buttons">
+            <span tooltip="Delete directory" ng-if="!directory.root" class="fa fa-icon fa-trash-alt" ng-click="directory.delete = true; $event.stopPropagation();">
+                <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory)" on-cancel="directory.delete=false;" ng-show="directory.delete"></window-confirm>
+            </span>
+            <span tooltip="Rename directory" ng-if="!directory.root" class="fa fa-icon fa-i-cursor" ng-click="directory.rename = true;directory.renameName = directory.name; $event.stopPropagation();">
+                <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory)" on-cancel="directory.rename=false;" ng-show="directory.rename">                    
+                    <input type="text" ng-model="directory.renameName">
+                </window-confirm>
+            </span>
+            <span tooltip="Add directory" class="fa fa-icon fa-folder-plus" ng-click="directory.add = true; $event.stopPropagation();">
+                <window-confirm title="Add directory" message="Enter a name for the directory:" on-ok="addDirectory(directory)" on-cancel="directory.add=false;" ng-show="directory.add">
+                    <input type="text" ng-model="directory.addName">
+                </window-confirm>
+            </span>
+            <span tooltip="Add file(s)" class="fa fa-icon fa-file-upload" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
+                <ftp-file-upload directory="directory" ng-if="directory.uploading"></ftp-file-upload>
+            </span>
+        </span>
+</span>
+    <ul ng-show="directory.shown = (directory.show && directory.children.length)">
+        <ftp-directory directory="dir" ng-repeat="dir in directory.children | filter:{isDirectory:true}"></ftp-directory>
+        <ftp-file file="file" ng-repeat="file in directory.children | filter:{isFile:true}"></ftp-file>
+    </ul>
+</li>
+
