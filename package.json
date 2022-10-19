@@ -2,6 +2,7 @@
   "name": "nl.qluster-it.FtpClient",
   "version": "1.0.0",
   "main": "app.js",
+  "--author": "arie@qluster-it.nl",
   "scripts": {},
   "devDependencies": {
     "@tsconfig/node12": "^1.0.11",

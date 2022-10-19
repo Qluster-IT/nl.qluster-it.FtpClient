@@ -35,7 +35,7 @@
         "id": "ip",
         "type": "text",
         "label": {
-          "en": "IP"
+          "en": "IP or hostname"
         },
         "value": "192.168.1.17"
       },
@@ -48,12 +48,37 @@
         "value": 5081
       },
       {
+        "id": "username",
+        "type": "text",
+        "label": {
+          "en": "Username"
+        },
+        "value": "anonymous",        
+        "hint": "anonymous"
+      },
+      {
+        "id": "password",
+        "type": "password",
+        "label": {
+          "en": "Password"
+        },
+        "value": ""
+      },
+      {
+        "id": "secure",
+        "type": "checkbox",
+        "label": {
+          "en": "Secure"
+        },
+        "value": false
+      },
+      {
         "id": "downloadtime",
         "type": "number",
         "label": {
           "en": "Download Time (Seconds)"
         },
-        "value": 60
+        "value": 10
       }
     ]
   }

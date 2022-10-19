@@ -6,6 +6,9 @@ const FileServer = require('../../lib/file-server');
 const FtpClientDevice = require('./device');
 let app;
 
+// var pkg = require('../../package.json');
+// var Greenlock = require('greenlock');
+
 
 module.exports = class FtpClientDriver extends Homey.Driver {
 
@@ -15,6 +18,39 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
+        
+        // var greenlock = Greenlock.create({
+        //     packageRoot:'./userdata/',
+        //     configDir: 'greenlock.d/config.json',
+        //     packageAgent: pkg.name + '/' + pkg.version,
+        //     maintainerEmail: "arie@qluster-it.nl",// pkg.author,
+        //     staging: true,
+        //     notify: function(event, details) {
+        //         if ('error' === event) {
+        //             // `details` is an error object in this case
+        //             console.error(details);
+        //         }
+        //     }
+        // });
+         
+        // let fullConfig = await greenlock.manager
+        //     .defaults({
+        //         agreeToTerms: true,
+        //         subscriberEmail: 'webhosting@example.com'
+        //     });
+        // var altnames = ['192-168-1-17.homey.homeylocal.com:47335'];
+
+        // greenlock
+        //     .add({
+        //         subject: altnames[0],
+        //         altnames: altnames
+        //     })
+        //     .then(function() {
+        //         // saved config to db (or file system)
+        //     });   
+        //     // .then(function(fullConfig) {
+        //     //     // ...
+        //     // });
         
         // this.homey.app.on('microWebServerFtpPort', (microWebServerFtpPort)=> {
         //     this.ftpClient.init({ip:this.homey.app.ip, port:microWebServerFtpPort});
