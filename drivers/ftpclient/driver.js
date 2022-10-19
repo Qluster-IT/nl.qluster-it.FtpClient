@@ -156,7 +156,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
                     
                 let base64 = buf.toString('base64');
-                let id =file.name;// randomBytes(12).toString('hex');
+                let id =file.path + '/' + file.name;// randomBytes(12).toString('hex');
                 id = encodeURI(id);
 
                 if(!this.fileDownloads) this.fileDownloads = {};
@@ -171,7 +171,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     delete this.fileDownloads[id];
                 }, device.settings.downloadtime*1000);
                 
-                return {id, base64, url:'http://'+this.homey.app.ip};
+                return {id, base64, url:'http://'+this.homey.app.ip + ":47335/file" + id};
 
             } catch (error) {
                 this.error(error);
