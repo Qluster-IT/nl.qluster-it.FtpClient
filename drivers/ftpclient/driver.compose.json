@@ -4,8 +4,8 @@
       "en": "Ftp Client"
     },
     "images": {
-      "large": "drivers/ftpclient/assets/images/large.jpg",
-      "small": "drivers/ftpclient/assets/images/small.jpg"
+      "large": "drivers/ftpclient/assets/images/large.png",
+      "small": "drivers/ftpclient/assets/images/small.png"
     },
     "class": "other",
     "capabilities": [],
@@ -46,6 +46,14 @@
           "en": "Port"
         },
         "value": 5081
+      },
+      {
+        "id": "downloadtime",
+        "type": "number",
+        "label": {
+          "en": "Download Time (Seconds)"
+        },
+        "value": 60
       }
     ]
   }

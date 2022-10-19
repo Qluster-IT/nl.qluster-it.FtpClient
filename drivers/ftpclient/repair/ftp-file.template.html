@@ -1,4 +1,4 @@
-<li ng-style="{'padding-left':(indent*20)+'px'}">
+<li ng-style="{'padding-left':((indent?1:0)*15)+'px'}">
     <span class="ftp-file-header" >
         <span class="far fa-icon {{getFileIcon(file)}}"></span>
         {{file.name}}

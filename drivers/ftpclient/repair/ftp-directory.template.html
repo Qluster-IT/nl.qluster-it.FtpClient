@@ -1,8 +1,8 @@
 
 
-<li class="ftp-directory" ng-style="{'padding-left':(indent*20)+'px'}">
+<li class="ftp-directory" ng-style="{'padding-left':((indent?1:0)*15)+'px'}">
     <span class="ftp-directory-header" ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null;">
-        <span class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"></span>
+        <span ng-show="!directory.root" class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"></span>
         {{directory.name}}
         <span class="ftp-buttons">
             <span tooltip="Delete directory" ng-if="!directory.root" class="fa fa-icon fa-trash-alt" ng-click="directory.delete = true; $event.stopPropagation();">
@@ -18,7 +18,7 @@
                     <input type="text" ng-model="directory.addName">
                 </window-confirm>
             </span>
-            <span tooltip="Add file(s)" class="fa fa-icon fa-file-upload" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
+            <span tooltip="Add file(s)" class="fa fa-icon fa-file-import" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
                 <ftp-file-upload directory="directory" ng-if="directory.uploading"></ftp-file-upload>
             </span>
         </span>

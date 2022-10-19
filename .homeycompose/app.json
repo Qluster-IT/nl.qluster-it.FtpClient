@@ -25,6 +25,13 @@
     "name": "Arie J. Godschalk",
     "email": "arie@qluster-it.nl"
   },
+  "contributors": {
+    "translators": [
+      {
+        "name": ""
+      }
+    ]
+  },
   "api": {
     "uploadFiles": {
       "method": "POST",

@@ -160,7 +160,16 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 id = encodeURI(id);
 
                 if(!this.fileDownloads) this.fileDownloads = {};
+                
+                if(this.fileDownloads[id] && this.fileDownloads[id].timeout) {
+                    clearTimeout(this.fileDownloads[id].timeout);
+                    delete this.fileDownloads[id].timeout;
+                }
+
                 this.fileDownloads[id] = {base64, name:file.name, file:file};
+                this.fileDownloads[id].timeout = setTimeout(()=> {
+                    delete this.fileDownloads[id];
+                }, device.settings.downloadtime*1000);
                 
                 return {id, base64, url:'http://'+this.homey.app.ip};
 
