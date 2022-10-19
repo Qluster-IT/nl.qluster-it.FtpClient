@@ -1,7 +1,7 @@
 ﻿"use strict";
 const { randomBytes } = require('crypto');
 const Homey = require('homey');
-const { Stream, Readable } = require('stream');
+const { Stream, Readable, Writable } = require('stream');
 const FtpClientDevice = require('./device');
 let app;
 
@@ -131,6 +131,33 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 this.error(error);
             }
         });
+
+        session.setHandler('downloadFile', async ({file}) => {
+            try {          
+                let stream = new Writable();
+                let s = '';
+                //let buffer = Buffer.from);
+                let buf;
+                stream._write = function (chunk, encoding, done) {
+                    s+=chunk.toString();
+                    let _buf = Buffer.from(chunk, encoding);
+                    if(buf) buf = Buffer.concat(buf, _buf);
+                    else buf = _buf;
+                    //buffer.write(chunk, encoding);
+                
+                    done();
+                  };
+                
+                let r = await device.ftpClient.client.downloadTo(stream, (file.path.length ? file.path + '/' : '') + file.name);
+                //let buf = Buffer.from(stream);
+                let base64 = buf.toString('base64');
+                //await device.ftpClient.client.cd('/');
+                return {base64};
+            } catch (error) {
+                this.error(error);
+            }
+        });
+
 
         session.setHandler('uploadFiles', async () => {
             try {

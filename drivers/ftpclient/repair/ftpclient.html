@@ -155,6 +155,35 @@
 								});
 							});
 						}
+						
+						$scope.downloadFile = function(file) {							
+							Homey.emit('downloadFile', {file}).then((result)=> {
+								const blob = base64ToBlob(result.base64);
+								const blobURL = URL.createObjectURL(blob);
+								const link = document.createElement('a');
+								link.setAttribute('download', file.name)
+								link.href = blobURL;
+								document.body.appendChild(link);
+								link.click();
+								document.body.removeChild(link);
+								
+								// $scope.$apply(()=> {
+								// 	delete file.downloadFile;
+								// 	$scope.$parent.getChildren($scope.$parent.file, true);
+								// });
+							});
+						}
+
+						function base64ToBlob(base64) {
+							const binaryString = window.atob(base64);
+							const len = binaryString.length;
+							const bytes = new Uint8Array(len);
+							for (let i = 0; i < len; ++i) {
+								bytes[i] = binaryString.charCodeAt(i);
+							}
+					
+							return new Blob([bytes]);//, { type: 'application/pdf' });
+						};
 					},
 					link: function(scope, element) {
 						let matches = scope.file.path.match(/\//g);
