@@ -1,7 +1,7 @@
 {
   "type": "mdns-sd",
   "mdns-sd": {
-    "name": "homey",
+    "name": "_ftp",
     "protocol": "tcp"
   },
   "id": "{{txt.id}}"

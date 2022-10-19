@@ -82,27 +82,29 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         let id = '_'+(index+1).toString();
         
         let device = {
-            name: 'Ftp Client '+(index+1),
+            name: 'Custom Ftp Client '+(index+1),
             data: {
                 id: 'FtpClient'+id
             }
         };
 
 
-        const discoveryStrategy = this.homey.discovery.getStrategy("ftp_mDNS-SD");//this.getDiscoveryStrategy();
+        let devs = [];
+
+        
+        const discoveryStrategy = this.homey.discovery.getStrategy("ftp_mDNS-SD");
         const discoveryResults = discoveryStrategy.getDiscoveryResults();
 
-        const devicesFound = Object.values(discoveryResults).map((discoveryResult) => {
-        return {
-            name: discoveryResult.txt.name,
-            data: {
-            id: discoveryResult.id,
-            },
-            store:{address:discoveryResult.address}
-        };
+        const devicesFound = Object.values(discoveryResults).forEach((discoveryResult) => {
+            devs.push({
+                name: discoveryResult.txt.name || discoveryResult.name,
+                data: {
+                id: discoveryResult.id && discoveryResult.id!='undefined' ? discoveryResult.id : discoveryResult.fullname,
+                },
+                settings:{ip:discoveryResult.address, port:discoveryResult.port}
+            });
         });
 
-        let devs = [device];
 
 		let ftpClient = new FtpClient();
         ftpClient.init({
@@ -114,7 +116,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 devs.push({name:'Ftp Micro Web Server', data :{id:device.data.id}, settings :{ip:this.homey.app.ip, port:5081, username:'anonymous'}});
             }
         } catch (error) { }
+
+        devs.push(device);
         return devs;
+        
     }
 
     async onPair(session, arg1) {
