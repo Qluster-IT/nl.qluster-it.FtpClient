@@ -2,6 +2,7 @@
 const { randomBytes } = require('crypto');
 const Homey = require('homey');
 const { Stream, Readable, Writable } = require('stream');
+const FileServer = require('../../lib/file-server');
 const FtpClientDevice = require('./device');
 let app;
 
@@ -11,6 +12,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     async onInit() {
         app = this.homey.app;
         this.log('FtpClientDriver onInit');
+        
+        this.fileServer = new FileServer();
+        this.fileServer.init(this.homey);
+        
         // this.homey.app.on('microWebServerFtpPort', (microWebServerFtpPort)=> {
         //     this.ftpClient.init({ip:this.homey.app.ip, port:microWebServerFtpPort});
         // });
@@ -137,25 +142,27 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 let stream = new Writable();
                 let s = '';
                 //let buffer = Buffer.from);
-                let buf;
+                let buf = [];
                 stream._write = function (chunk, encoding, done) {
                     s+=chunk.toString();
                     let _buf = Buffer.from(chunk, encoding);
-                    if(buf) buf = Buffer.concat(buf, _buf);
-                    else buf = _buf;
-                    //buffer.write(chunk, encoding);
-                
+                    buf.push(_buf);
                     done();
                   };
                 await device.ftpClient.client.cd('/');
 
                 await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + file.name);
-                let base64 = buf.toString('base64');
-                const id = randomBytes(12).toString('hex');
-                if(!this.fileDownloads) this.fileDownloads = {};
-                this.fileDownloads[id] = {base64, name:file.name};
+                buf = Buffer.concat(buf);
                 
-                return {id, base64};
+                    
+                let base64 = buf.toString('base64');
+                let id =file.name;// randomBytes(12).toString('hex');
+                id = encodeURI(id);
+
+                if(!this.fileDownloads) this.fileDownloads = {};
+                this.fileDownloads[id] = {base64, name:file.name, file:file};
+                
+                return {id, base64, url:'http://'+this.homey.app.ip};
 
             } catch (error) {
                 this.error(error);

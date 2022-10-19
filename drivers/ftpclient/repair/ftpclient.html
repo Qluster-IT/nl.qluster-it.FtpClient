@@ -10,6 +10,7 @@
 	<form name="mainForm">
 		<div class="field">
 			<div class="field margin-bottom">
+				
 				<ul class="ftp-directory ftp-directory-root">
 					<ftp-directory directory="vars.content"></ftp-directory>
 				</ul>
@@ -159,18 +160,23 @@
 						$scope.downloadFile = function(file) {							
 							Homey.emit('downloadFile', {file}).then((result)=> {
 								$scope.$apply(()=> {
-									const blob = base64ToBlob(result.base64);
-									const blobURL = URL.createObjectURL(blob, file.name);
-									// const link = document.createElement('a');
-									// link.setAttribute('download', file.name)
-									// link.href = blobURL;
-									// document.body.appendChild(link);
-									// link.click();
-									// document.body.removeChild(link);
-									console.log(blobURL);
-									//Homey.popup(window.location.href.replace('', '') '../../../../../api/app/nl.qluster-it.FtpClient/downloadFiles');
-									Homey.popup(blobURL);
-									//Homey.popup("data:application/octet-stream;headers=Content-Disposition: attachment; filename=\"with spaces.txt\";base64,SWYgSSBoYWQgYSBuaWNrbGUgZm9yIGV2ZXJ5IHRpbWUgSSBoYWQgYSBuaWNrbGUsIEknZCBoYXZlIGVhdGVuIHR3aWNlIGFzIG1hbnkgcGlja2xlcy4=");
+									// const blob = base64ToBlob(result.base64);
+									// const blobURL = URL.createObjectURL(blob, file.name);
+									// const blobURL2 = URL.createObjectURL(blob, file.name);
+									// // const link = document.createElement('a');
+									// // link.setAttribute('download', file.name)
+									// // link.href = blobURL;
+									// // document.body.appendChild(link);
+									// // link.click();
+									// // document.body.removeChild(link);
+									// console.log(blobURL);
+									// console.log(blobURL2);
+									// //Homey.popup(window.location.href.replace('', '') '../../../../../api/app/nl.qluster-it.FtpClient/downloadFiles');
+									// Homey.popup(blobURL);
+									//Homey.popup("data:application/octet-stream;headers=Content-Disposition: attachment; filename=\"with spaces.txt\";base64," + result.base64);
+									//Homey.popup("data:text/plain;headers=Content-Disposition:attachment;filename=%22with%20spaces.txt%22;base64,SGVsbG8sIFdvcmxkIQ==");
+									//Homey.popup("http://192-168-1-17.homey.homeylocal.com:47335/");
+									Homey.popup(result.url + ":47335/file/" + result.id);
 								});
 								// $scope.$apply(()=> {
 								// 	delete file.downloadFile;
