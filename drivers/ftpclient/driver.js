@@ -147,12 +147,16 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
                     done();
                   };
-                
-                let r = await device.ftpClient.client.downloadTo(stream, (file.path.length ? file.path + '/' : '') + file.name);
-                //let buf = Buffer.from(stream);
+                await device.ftpClient.client.cd('/');
+
+                await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + file.name);
                 let base64 = buf.toString('base64');
-                //await device.ftpClient.client.cd('/');
-                return {base64};
+                const id = randomBytes(12).toString('hex');
+                if(!this.fileDownloads) this.fileDownloads = {};
+                this.fileDownloads[id] = {base64, name:file.name};
+                
+                return {id, base64};
+
             } catch (error) {
                 this.error(error);
             }

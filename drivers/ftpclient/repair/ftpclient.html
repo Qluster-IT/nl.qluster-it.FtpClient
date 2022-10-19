@@ -158,15 +158,20 @@
 						
 						$scope.downloadFile = function(file) {							
 							Homey.emit('downloadFile', {file}).then((result)=> {
-								const blob = base64ToBlob(result.base64);
-								const blobURL = URL.createObjectURL(blob);
-								const link = document.createElement('a');
-								link.setAttribute('download', file.name)
-								link.href = blobURL;
-								document.body.appendChild(link);
-								link.click();
-								document.body.removeChild(link);
-								
+								$scope.$apply(()=> {
+									const blob = base64ToBlob(result.base64);
+									const blobURL = URL.createObjectURL(blob, file.name);
+									// const link = document.createElement('a');
+									// link.setAttribute('download', file.name)
+									// link.href = blobURL;
+									// document.body.appendChild(link);
+									// link.click();
+									// document.body.removeChild(link);
+									console.log(blobURL);
+									//Homey.popup(window.location.href.replace('', '') '../../../../../api/app/nl.qluster-it.FtpClient/downloadFiles');
+									Homey.popup(blobURL);
+									//Homey.popup("data:application/octet-stream;headers=Content-Disposition: attachment; filename=\"with spaces.txt\";base64,SWYgSSBoYWQgYSBuaWNrbGUgZm9yIGV2ZXJ5IHRpbWUgSSBoYWQgYSBuaWNrbGUsIEknZCBoYXZlIGVhdGVuIHR3aWNlIGFzIG1hbnkgcGlja2xlcy4=");
+								});
 								// $scope.$apply(()=> {
 								// 	delete file.downloadFile;
 								// 	$scope.$parent.getChildren($scope.$parent.file, true);
@@ -174,7 +179,7 @@
 							});
 						}
 
-						function base64ToBlob(base64) {
+						function base64ToBlob(base64, name) {
 							const binaryString = window.atob(base64);
 							const len = binaryString.length;
 							const bytes = new Uint8Array(len);
@@ -182,7 +187,8 @@
 								bytes[i] = binaryString.charCodeAt(i);
 							}
 					
-							return new Blob([bytes]);//, { type: 'application/pdf' });
+							//return new File([bytes], name, {"type": "application/octet-stream"});
+							return new Blob([bytes], {"type": "application/octet-stream"});
 						};
 					},
 					link: function(scope, element) {
