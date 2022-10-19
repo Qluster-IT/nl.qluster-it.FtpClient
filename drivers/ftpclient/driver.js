@@ -113,7 +113,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         try {                
             let isConnected = await ftpClient.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
             if(isConnected) {
-                devs.push({name:'Ftp Micro Web Server', data :{id:device.data.id}, settings :{ip:this.homey.app.ip, port:5081, username:'anonymous'}});
+                devs.push({name:'Ftp Micro Web Server', data :{id:'FtpClientMWS'}, settings :{ip:this.homey.app.ip, port:5081, username:'anonymous'}});
             }
         } catch (error) { }
 
