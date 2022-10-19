@@ -3,6 +3,7 @@ const { randomBytes } = require('crypto');
 const Homey = require('homey');
 const { Stream, Readable, Writable } = require('stream');
 const FileServer = require('../../lib/file-server');
+const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
 let app;
 
@@ -86,6 +87,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 id: 'FtpClient'+id
             }
         };
+
+		let ftpClient = new FtpClient();
+        ftpClient.init({
+			ip: '127.0.0.1', port: 5081
+		});
+        let list = await ftpClient.getList();
+
         return [device];
     }
 
@@ -193,7 +201,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     
                 let base64 = buf.toString('base64');
                 let id =file.path + '/' + file.name;// randomBytes(12).toString('hex');
-                id = encodeURI(id);
+                id = encodeURIComponent(id);
 
                 if(!this.fileDownloads) this.fileDownloads = {};
                 
@@ -207,7 +215,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     delete this.fileDownloads[id];
                 }, device.settings.downloadtime*1000);
                 
-                return {id, base64, url:'http://'+this.homey.app.ip + ":47335/file" + id};
+                return {id, base64, url:'http://'+this.homey.app.ip + ":47335/file/" + id};
 
             } catch (error) {
                 this.error(error);

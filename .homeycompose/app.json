@@ -12,6 +12,7 @@
   "description": {
     "en": "Ftp Client(s)"
   },
+  "brandColor": "#2B738C",
   "category": [
     "tools"
   ],

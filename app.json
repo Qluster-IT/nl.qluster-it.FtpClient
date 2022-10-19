@@ -13,6 +13,7 @@
   "description": {
     "en": "Ftp Client(s)"
   },
+  "brandColor": "#2B738C",
   "category": [
     "tools"
   ],
@@ -121,7 +122,7 @@
           "label": {
             "en": "Download Time (Seconds)"
           },
-          "value": 10
+          "value": 60
         }
       ]
     }

@@ -78,7 +78,7 @@
         "label": {
           "en": "Download Time (Seconds)"
         },
-        "value": 10
+        "value": 60
       }
     ]
   }
