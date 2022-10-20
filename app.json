@@ -86,8 +86,8 @@
         "en": "FTP Connection"
       },
       "images": {
-        "large": "drivers/ftpclient/assets/images/large.png",
-        "small": "drivers/ftpclient/assets/images/small.png"
+        "large": "drivers/ftpconnection/assets/images/large.png",
+        "small": "drivers/ftpconnection/assets/images/small.png"
       },
       "class": "other",
       "capabilities": [],
@@ -200,7 +200,13 @@
               }
             },
             {
-              "id": "cloud",
+              "id": "localssl",
+              "label": {
+                "en": "Local (SSL)"
+              }
+            },
+            {
+              "id": "cloudssl",
               "label": {
                 "en": "Cloud (SSL)"
               }
@@ -213,7 +219,7 @@
           "label": {
             "en": "Url's used for downloading files"
           },
-          "value": "local",
+          "value": "localssl",
           "values": [
             {
               "id": "local",
@@ -228,7 +234,7 @@
               }
             },
             {
-              "id": "cloud",
+              "id": "cloudssl",
               "label": {
                 "en": "Cloud (SSL)"
               }
@@ -256,7 +262,7 @@
               }
             },
             {
-              "id": "cloud",
+              "id": "cloudssl",
               "label": {
                 "en": "Cloud (SSL)"
               }

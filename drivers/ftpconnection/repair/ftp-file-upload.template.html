@@ -1,6 +1,10 @@
 <div class="window">
-    <div class="field">Upload files</div>
+    <div class="field title">Upload files</div>
+    <div class="field message">into {{directory.path + '/' + directory.name}}</div>
     <div class="field margin-top">
         <input type="file" id="files" name="files[]" multiple file-on-change="uploadFiles"/>
+    </div>
+    <div class="field margin-top buttons">
+        <button ng-click="cancel($event)">Cancel</button>
     </div>
 </div>

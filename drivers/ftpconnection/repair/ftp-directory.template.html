@@ -1,7 +1,6 @@
 
-
-<li class="ftp-directory" ng-style="{'padding-left':((indent?1:0)*15)+'px'}">
-    <span class="ftp-directory-header" ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null;">
+<div class="ftp-directory" ng-style="{'padding-left':((directory.indent?1:0)*15)+'px'}">
+    <span class="ftp-directory-header" ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; vars.currentDirectory = directory; ">
         <span ng-show="!directory.root" class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"></span>
         {{directory.name}}
         <span class="ftp-buttons">
@@ -19,13 +18,12 @@
                 </window-confirm>
             </span>
             <span tooltip="Add file(s)" class="fa fa-icon fa-file-import" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
-                <ftp-file-upload directory="directory" ng-if="directory.uploading"></ftp-file-upload>
+                <ftp-file-upload directory="directory" ng-if="directory.uploading" on-cancel="directory.uploading=false;"></ftp-file-upload>
             </span>
         </span>
-</span>
-    <ul ng-show="directory.shown = (directory.show && directory.children.length)">
+    </span>    
+    <div class="ftp-directory-children" ng-show="(directory.shown = (view.display=='list' && directory.show && directory.children.length)) || (view.display!='list' && (directory==vars.currentDirectory || directory.indent<=vars.currentDirectory.indent))">
         <ftp-directory directory="dir" ng-repeat="dir in directory.children | filter:{isDirectory:true}"></ftp-directory>
         <ftp-file file="file" ng-repeat="file in directory.children | filter:{isFile:true}"></ftp-file>
-    </ul>
-</li>
-
+    </div>
+</div>

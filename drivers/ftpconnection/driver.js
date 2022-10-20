@@ -110,8 +110,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
 
-        const action_ftpclient_get_url = this.homey.flow.getActionCard('action_ftpclient_get_url');
-        action_ftpclient_get_url.registerRunListener(async (args, state) => {
+        const action_ftpconnection_get_url = this.homey.flow.getActionCard('action_ftpconnection_get_url');
+        action_ftpconnection_get_url.registerRunListener(async (args, state) => {
             //var defer = new Defer();
             try {
                 if (!args.file) return false;
@@ -127,7 +127,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
 
         });
-        action_ftpclient_get_url.getArgument('file').registerAutocompleteListener(async (query, args) => {
+        action_ftpconnection_get_url.getArgument('file').registerAutocompleteListener(async (query, args) => {
             try {
                 let path = (args.file ? (args.file.isDirectory === 'true' ? args.file.id : args.file.path) : query) || '';
                 let pathsAbove = path.split('/');
@@ -136,9 +136,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 let startUrl = 
                 args.device.settings.urlforicons===
                 'local' ? 
-                    `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/` :
-                'cloud' ? 
-                    `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/`
+                    `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
+                'localssl' ? 
+                    `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
+                'cloudssl' ? 
+                    `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/`
                 :   '';
 
                 let r = await args.device.ftpClient.getList({ path });
@@ -150,12 +152,12 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (pathAbove && pathAbove.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
                 _.each(r, (x) => {
                     //x.icon = ''; svg
-                    //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
+                    //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
                     x.image = startUrl + Icons.getIconsFromFile(x);
                 });
                 
                 return r;
-            } catch (error) { this.error('action_ftpclient_get_url.file.registerAutocompleteListener.error :', error); throw error; }
+            } catch (error) { this.error('action_ftpconnection_get_url.file.registerAutocompleteListener.error :', error); throw error; }
         });
     }
 
@@ -415,7 +417,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             if(type=='url') useUrl = device.settings.urlforurls;
             else if(type=='download') useUrl = device.settings.urlforfiles;
             
-            if(useUrl==='cloud' || useUrl==='localssl') {
+            if(useUrl==='cloudssl' || useUrl==='localssl') {
                 //id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');// '%20'); //dont encode this id.
                 if(type==='url') 
                 {
@@ -455,7 +457,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 delete this.fileDownloads[id];                
             }).bind(this, id), device.settings.downloadtime * 1000);
             
-            if(useUrl==='cloud' || useUrl==='localssl') {
+            if(useUrl==='cloudssl' || useUrl==='localssl') {
                 this.fileDownloads[id].randomId = randomId;
                 if (!(await existsAsync(`./userdata/downloads/${randomId}/`))) await mkdirAsync(`./userdata/downloads/${randomId}/`, {recursive:true});
                 await writeFileAsync(`./userdata/${id}`, buf);
@@ -469,7 +471,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
             }
             if (useUrl==='localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
-            else if  (useUrl==='cloud') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
+            else if  (useUrl==='cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
 
             return { id, url }; //base64
 

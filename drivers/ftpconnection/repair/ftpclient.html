@@ -8,12 +8,15 @@
 <div  ng-app="ftpclient" ng-controller="ftpclientCtrl as ftpclient">
 	
 	<form name="mainForm">
+		<div class="field text-center">
+			<span ng-if="!directory.root" class="fa fa-icon fa-stream" ng-click="view.display='list'; $event.stopPropagation();"></span>
+			<span ng-if="!directory.root" class="fa fa-icon fa-th" ng-click="view.display='th-small'; $event.stopPropagation();"></span>
+		</div>
 		<div class="field">
-			<div class="field margin-bottom">
-				
-				<ul class="ftp-directory ftp-directory-root">
+			<div class="field margin-bottom">				
+				<div class="ftp-directory ftp-directory-root {{view.display}}">
 					<ftp-directory directory="vars.content"></ftp-directory>
-				</ul>
+				</div>
 			</div>
 			<!-- <button class="field margin-top" ng-click="mainForm.$valid && vars.microWebServerFtpPort ? updatemicroWebServerFtpPort() : null" ng-disabled="!mainForm.$valid || !vars.microWebServerFtpPort">Update Settings</div> -->
 		</div>
@@ -25,7 +28,9 @@
 		angular.module('ftpclient', ['smart-table'])
 			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
 				//let $;
-				const vars = $scope.vars = {content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true}};
+				const vars = $scope.vars = {content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true}, currentDirectory:null };
+				vars.currentDirectory = vars.content;
+				$scope.view = {display:'list'}
 				$scope.stamp = Date.now();
 					
 				if (typeof Homey !== 'undefined') {
@@ -87,6 +92,9 @@
 					scope: {directory: '='},
 					restrict: 'E',
 					controller: function($scope) {
+						$scope.vars = $scope.$parent.vars;
+						$scope.view = $scope.$parent.view;
+						
 						$scope.getChildren = function(directory, refresh) {
 							if(directory.children && directory.children.length && !refresh) return;
 							let path = directory.path +'/' + directory.name;
@@ -126,8 +134,8 @@
 					},
 					link: function(scope, element) {
 						let matches = scope.directory.path.match(/\//g);
-						scope.indent = matches ? matches.length : -1;
-						if(!scope.directory.root) scope.indent++;
+						scope.directory.indent = matches ? matches.length : -1;
+						if(!scope.directory.root) scope.directory.indent++;
 					}
 				};
 			}])
@@ -199,8 +207,8 @@
 					},
 					link: function(scope, element) {
 						let matches = scope.file.path.match(/\//g);
-						scope.indent = matches ? matches.length : -1;
-						scope.indent ++;
+						scope.file.indent = matches ? matches.length : -1;
+						scope.file.indent ++;
 
 						scope.getFileIcon = function(file) {
 							let ext = _.last(file.name.split('.')).toLowerCase();
@@ -239,11 +247,14 @@
 					}
 				};
 			}])				
-			.directive('ftpFileUpload', ['$http', function ($http) {
+			.directive('ftpFileUpload', ['$http', '$parse', function ($http, $parse) {
 				return {
 					templateUrl: 'ftp-file-upload.template.html',
 					replace:true,
-					scope: {directory: '='},
+					scope: {
+						directory: '=',						
+						onCancel:'@'
+					},
 					restrict: 'E',
 					//transclude:true,
 
@@ -298,6 +309,12 @@
 					},
 					link: function(scope, element, attrs) {
 						console.log('ftpFileUpload link');
+						
+						scope.cancel = function($event) {							
+							$event.stopPropagation();
+							$parse(attrs.onCancel)(scope.$parent);
+							
+						}
 					}
 				};
 			}])
