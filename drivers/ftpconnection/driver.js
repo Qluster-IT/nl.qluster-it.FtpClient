@@ -40,7 +40,8 @@ const emptyDirectory = async function(path) {
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
             const filename = files[i];
-            if (await statAsync(path + "/" + filename).isDirectory()) {
+            if ((await statAsync(path + "/" + filename)).isDirectory()) {
+                await rmAsync(path + "/" + filename, {force:true, recursive:true});
                 await emptyDirectory(path + "/" + filename);
               } else {
                 await unlinkAsync(path + "/" + filename);
@@ -63,11 +64,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
         if (!(await existsAsync(`./userdata/downloads/`))) await mkdirAsync(`./userdata/downloads/`);
-        emptyDirectory(`./userdata/downloads/`);
+        await emptyDirectory(`./userdata/downloads/`);
         
-        let filesandfolders = await readdirAsync('./userdata/');
+        // let filesandfolders = await readdirAsync('./userdata/');
         
-        let filesandfoldersdonwloads = await readdirAsync('./userdata/downloads/');
+        //let filesandfoldersdonwloads = await readdirAsync('./userdata/downloads/');
+
+
         // var greenlock = Greenlock.create({
         //     packageRoot:'./userdata/',
         //     configDir: 'greenlock.d/config.json',
@@ -162,10 +165,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         let id = randomBytes(12).toString('hex');
 
         let device = {
-            name: 'Custom Ftp Client ',
+            name: 'Custom FTP Client ',
             data: {
                 id: 'FtpClient' + id
-            }
+            },
+            custom:true
         };
 
 
@@ -193,13 +197,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         try {
             let isConnected = await ftpClient.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
             if (isConnected) {
-                devs.push({ name: 'Ftp Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous' } });
+                devs.push({ name: 'Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous' } });
             }
         } catch (error) { }
 
         devs.push(device);
         _.each(devs, d=> {            
-            devs.store = {id:randomBytes(12).toString('hex')};
+            d.store = {id:randomBytes(12).toString('hex')};
         });
         return devs;
 
@@ -221,16 +225,24 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         session.setHandler("showView", async (data) => {
             console.log("showiew: ");
             console.log(data);
-            if (data === 'login_credentials' && device.settings.ip === this.homey.app.ip) {
-                try {
+            if(data=== 'loading_credentials') {
+                if(device.settings && device.settings) { //}.ip === this.homey.app.ip) {
+                    try {
 
-                    let ftpClient = new FtpClient();
-                    ftpClient.init({ ip: device.settings.ip, port: device.settings.port });
-                    let isConnected = await ftpClient.getLogin();//{ip: this.homey.app.ip, port: 5081 });
-                    this.isConnected = true;
-                    session.showView('add_devices');
-                    return true;
-                } catch (error) { }
+                        let ftpClient = new FtpClient();
+                        ftpClient.init({ ip: device.settings.ip, port: device.settings.port });
+                        //let isConnected = await ftpClient.getLogin();//{ip: this.homey.app.ip, port: 5081 });
+                        let isConnected = await ftpClient.getList({oneTry:true});//{ip: this.homey.app.ip, port: 5081 });
+                        this.isConnected = true;
+                        session.showView('add_devices');
+                        return true;
+                    } catch (error) {                    
+                        session.showView('login_credentials');
+                        return true;
+                    }
+                }
+                else if(device.custom) session.showView('add_devices');
+                else session.showView('login_credentials');
             }
         });
 
@@ -245,7 +257,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
             });
             try {
-                let isConnected = await ftpClient.getLogin(data.username, data.password);//{ip: this.homey.app.ip, port: 5081 });
+                let isConnected = await ftpClient.getList({oneTry:true});
                 this.isConnected = true;
                 this.username = data.username;
                 this.password = data.password;
@@ -374,7 +386,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             //     }
             // }
 
-            let filesandfolders1 = await readdirAsync(`./userdata/downloads/`);
+            //let filesandfolders1 = await readdirAsync(`./userdata/downloads/`);
 
             let stream = new Writable();
             let s = '';
@@ -395,25 +407,25 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             let base64 = buf.toString('base64');
             let randomId = randomBytes(24).toString('hex');
-            let id = device.id + '/' + file.path + '/' + name;// randomBytes(12).toString('hex');
+            let id = device.id + (file.path.startsWith('/')?'':'/') + file.path + '/' + name;// randomBytes(12).toString('hex');
+            id = encodeURIComponent(id);
             let url = 'http://' + this.homey.app.ip + ":47335/file/" + id;
             let useUrl;
 
             if(type=='url') useUrl = device.settings.urlforurls;
             else if(type=='download') useUrl = device.settings.urlforfiles;
             
-            id = encodeURIComponent(id);
-            if(useUrl==='cloud') {
+            if(useUrl==='cloud' || useUrl==='localssl') {
                 //id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');// '%20'); //dont encode this id.
                 if(type==='url') 
                 {
                     id = 'downloads/'+ randomId + '/' + randomBytes(8).toString('hex') + '.' + _.last(name.split('.')) ; //encodeURIComponent(encodeURIComponent(name));
-                    url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + id;
+                    url = `app/nl.qluster-it.FtpClient/userdata/` + id;
                 }
                 
                 if(type==='download') {
                     id = 'downloads/'+ randomId + '/' + encodeURIComponent(name);
-                    url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
+                    url = `app/nl.qluster-it.FtpClient/userdata/` + 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
                 }
                 
                     //id = 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
@@ -428,7 +440,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
                 clearTimeout(this.fileDownloads[id].timeout);                
                 if(this.fileDownloads[id].randomId)  {                    
-                    if (!(await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`);                
+                    if ((await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`, {force:true, recursive:true});                
                 }
                 delete this.fileDownloads[id].timeout;
                 
@@ -436,13 +448,14 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             this.fileDownloads[id] = { base64, name: name, file: file, id };
             this.fileDownloads[id].timeout = setTimeout((async (id) => {
-                if(this.fileDownloads[id].randomId)  {                    
-                    if (!(await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`);                
+                this.log('deleting ');
+                if(this.fileDownloads[id].randomId) { 
+                    if ((await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`, {force:true, recursive:true});                
                 }
                 delete this.fileDownloads[id];                
             }).bind(this, id), device.settings.downloadtime * 1000);
             
-            if(useUrl==='cloud') {
+            if(useUrl==='cloud' || useUrl==='localssl') {
                 this.fileDownloads[id].randomId = randomId;
                 if (!(await existsAsync(`./userdata/downloads/${randomId}/`))) await mkdirAsync(`./userdata/downloads/${randomId}/`, {recursive:true});
                 await writeFileAsync(`./userdata/${id}`, buf);
@@ -455,6 +468,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 // id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');
                 
             }
+            if (useUrl==='localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
+            else if  (useUrl==='cloud') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
 
             return { id, url }; //base64
 

@@ -8,10 +8,10 @@
     "local"
   ],
   "name": {
-    "en": "Ftp Client"
+    "en": "FTP Client"
   },
   "description": {
-    "en": "Ftp Client(s)"
+    "en": "FTP Client"
   },
   "brandColor": "#2B738C",
   "category": [
@@ -44,7 +44,7 @@
   "flow": {
     "actions": [
       {
-        "id": "action_ftpclient_get_url",
+        "id": "action_ftpconnection_get_url",
         "title": {
           "en": "Get file URL",
           "nl": "Ontvang bestand url"
@@ -58,7 +58,7 @@
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=ftpclient"
+            "filter": "driver_id=ftpconnection"
           },
           {
             "name": "file",
@@ -81,9 +81,9 @@
   },
   "drivers": [
     {
-      "id": "ftpclient",
+      "id": "ftpconnection",
       "name": {
-        "en": "Ftp Client"
+        "en": "FTP Connection"
       },
       "images": {
         "large": "drivers/ftpclient/assets/images/large.png",
@@ -96,11 +96,15 @@
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
-            "next": "login_credentials"
+            "next": "loading_credentials"
           },
           "options": {
             "singular": true
           }
+        },
+        {
+          "id": "loading_credentials",
+          "template": "loading"
         },
         {
           "id": "login_credentials",
@@ -218,6 +222,12 @@
               }
             },
             {
+              "id": "localssl",
+              "label": {
+                "en": "Local (SSL)"
+              }
+            },
+            {
               "id": "cloud",
               "label": {
                 "en": "Cloud (SSL)"
@@ -237,6 +247,12 @@
               "id": "local",
               "label": {
                 "en": "Local"
+              }
+            },
+            {
+              "id": "localssl",
+              "label": {
+                "en": "Local (SSL)"
               }
             },
             {

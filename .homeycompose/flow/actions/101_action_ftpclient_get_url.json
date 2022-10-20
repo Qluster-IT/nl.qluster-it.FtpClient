@@ -1,5 +1,5 @@
 {
-    "id": "action_ftpclient_get_url",
+    "id": "action_ftpconnection_get_url",
     "title": {
       "en": "Get file URL",
       "nl": "Ontvang bestand url"
@@ -13,7 +13,7 @@
     {
         "name": "device",
         "type": "device",
-        "filter": "driver_id=ftpclient"
+        "filter": "driver_id=ftpconnection"
     },
       {
         "name": "file",

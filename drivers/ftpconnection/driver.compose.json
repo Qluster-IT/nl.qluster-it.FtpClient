@@ -1,7 +1,7 @@
 {
-    "id": "ftpclient",
+    "id": "ftpconnection",
     "name": {
-      "en": "Ftp Client"
+      "en": "FTP Connection"
     },
     "images": {
       "large": "drivers/ftpclient/assets/images/large.png",
@@ -14,11 +14,15 @@
         "id": "list_devices",
         "template": "list_devices",
         "navigation": {
-          "next": "login_credentials"
+          "next": "loading_credentials"
         },
         "options": {
           "singular": true
         }
+      },
+      {
+        "id": "loading_credentials",
+        "template": "loading"
       },
       {
         "id": "login_credentials",
@@ -112,6 +116,7 @@
         "value": "local",
         "values": [
           { "id": "local", "label": { "en": "Local" } },
+          { "id": "localssl", "label": { "en": "Local (SSL)" } },
           { "id": "cloud", "label": { "en": "Cloud (SSL)" } }
         ]
       },      
@@ -124,6 +129,7 @@
         "value": "local",
         "values": [
           { "id": "local", "label": { "en": "Local" } },
+          { "id": "localssl", "label": { "en": "Local (SSL)" } },
           { "id": "cloud", "label": { "en": "Cloud (SSL)" } }
         ]
       }
