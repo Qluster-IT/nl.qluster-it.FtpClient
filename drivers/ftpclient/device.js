@@ -16,6 +16,8 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		this.log('Name:', this.getName());
 		this.log('Class:', this.getClass());
 
+		this.id = await this.getStoreValue('id');
+
 		this.ftpClient = new FtpClient();
 		if(this.driver.username) {
 			await this.setSettings({username:this.driver.username});

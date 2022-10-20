@@ -158,7 +158,7 @@
 						}
 						
 						$scope.downloadFile = function(file) {							
-							Homey.emit('downloadFile', {file}).then((result)=> {
+							Homey.emit('getFileUrl', {file}).then((result)=> {
 								$scope.$apply(()=> {
 									// const blob = base64ToBlob(result.base64);
 									// const blobURL = URL.createObjectURL(blob, file.name);

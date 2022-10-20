@@ -41,6 +41,44 @@
       "public": true
     }
   },
+  "flow": {
+    "actions": [
+      {
+        "id": "action_ftpclient_get_url",
+        "title": {
+          "en": "Get file URL",
+          "nl": "Ontvang bestand url"
+        },
+        "titleFormatted": {
+          "en": "Get URL for [[file]]",
+          "nl": "Ontvang Url voor [[file]]"
+        },
+        "hint": "URL",
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpclient"
+          },
+          {
+            "name": "file",
+            "type": "autocomplete",
+            "placeholder": "File"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "url",
+            "type": "string",
+            "title": {
+              "en": "URL",
+              "nl": "Url"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "ftpclient",
