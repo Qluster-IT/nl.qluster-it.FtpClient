@@ -61,28 +61,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     // This method is called when a user is adding a device
     // and the 'list_devices' view is called
     async onPairListDevices(deviceName) {//}, withIcon) {
-        let index = 0;
-        let devices = this.homey.drivers.getDriver('ftpclient').getDevices();
-        for (const key in devices) {
-            if (Object.hasOwnProperty.call(devices, key)) {
-                const element = devices[key];
-                try {                    
-                    let _id = element.getData().id;
-                    let nr =Number.parseInt(_id.split('_')[1]);
-                    index = Math.max(index,nr);
-                } catch (error) {
-                }
+        let id =randomBytes(12).toString('hex');
 
-            }
-        }
-        if(deviceName) {        
-            let nr =Number.parseInt(deviceName.split('_')[1]);
-            index = Math.max(index,nr);
-        }
-        let id = '_'+(index+1).toString();
-        
         let device = {
-            name: 'Custom Ftp Client '+(index+1),
+            name: 'Custom Ftp Client ',
             data: {
                 id: 'FtpClient'+id
             }
@@ -92,18 +74,18 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         let devs = [];
 
         
-        const discoveryStrategy = this.homey.discovery.getStrategy("ftp_mDNS-SD");
-        const discoveryResults = discoveryStrategy.getDiscoveryResults();
-
-        const devicesFound = Object.values(discoveryResults).forEach((discoveryResult) => {
+        const discoveryStrategyFtp = this.homey.discovery.getStrategy("ftp_mDNS-SD");
+        const discoveryResultsFtp = discoveryStrategyFtp.getDiscoveryResults();
+        Object.values(discoveryResultsFtp).forEach((discoveryResult) => {
             devs.push({
-                name: discoveryResult.txt.name || discoveryResult.name,
+                name: (discoveryResult.txt.name || discoveryResult.name),
                 data: {
                 id: discoveryResult.id && discoveryResult.id!='undefined' ? discoveryResult.id : discoveryResult.fullname,
                 },
                 settings:{ip:discoveryResult.address, port:discoveryResult.port}
             });
         });
+
 
 
 		let ftpClient = new FtpClient();
