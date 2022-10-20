@@ -8,6 +8,23 @@ const FtpClientDevice = require('./device');
 const _ = require('lodash-core');
 const Icons = require('../../lib/icons');
 
+
+const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, stat, rmdir } = require('fs');
+const { promisify } = require('util');
+const fs = require('fs');
+
+const readFileAsync = promisify(readFile);
+const writeFileAsync = promisify(writeFile);
+const copyFileAsync = promisify(copyFile);
+const unlinkAsync = promisify(unlink);
+const renameAsync = promisify(rename);
+const existsAsync = promisify(exists);
+const mkdirAsync = promisify(mkdir);
+const readdirAsync = promisify(readdir);
+const statAsync = promisify(stat);
+const rmdirAsync = promisify(rmdir);
+
+
 let app;
 
 
@@ -70,7 +87,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (!args.file) return false;
                 if (args && args.file && args.file.isFile !== 'true' && args.file.isFile !== true) throw new Error('A file must be selected.');
 
-                let url = await this.getFileUrl({file:args.file, device:args.device});
+                let url = await this.getFileUrl({file:args.file, device:args.device, type:'url'});
                 
                 return {url:url.url};
 
@@ -103,6 +120,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (pathAbove && pathAbove.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
                 _.each(r, (x) => {
                     //x.icon = ''; svg
+                    //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
                     x.image = startUrl + Icons.getIconsFromFile(x);
                 });
                 
@@ -282,7 +300,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
 
         session.setHandler('getFileUrl', async ({ file }) => {
-            return await this.getFileUrl({file, device});
+            return await this.getFileUrl({file, device, type:'download'});
         });
 
 
@@ -314,7 +332,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
 
 
-    async getFileUrl({ file, device }) {
+    async getFileUrl({ file, device, type }) {
         try {
             let stream = new Writable();
             let s = '';
@@ -334,22 +352,48 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
             let base64 = buf.toString('base64');
+            let randomId = randomBytes(24).toString('hex');
             let id = device.id + '/' + file.path + '/' + name;// randomBytes(12).toString('hex');
+            let url = 'http://' + this.homey.app.ip + ":47335/file/" + id;
+            let useUrl;
+
+            if(type=='url') useUrl = device.settings.urlforurls;
+            else if(type=='download') useUrl = device.settings.urlforfiles;
+            
             id = encodeURIComponent(id);
+            if(useUrl==='cloud') {
+                id = randomId + '/' + name; //dont encode this id.
+                url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + id;
+            }
+
+            //args.device.settings.urlforicons
 
             if (!this.fileDownloads) this.fileDownloads = {};
 
             if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
-                clearTimeout(this.fileDownloads[id].timeout);
+                clearTimeout(this.fileDownloads[id].timeout);                
+                if(this.fileDownloads[id].randomId)  {                    
+                    if (!(await existsAsync(`./userdata/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/${this.fileDownloads[id].randomId}`);                
+                }
                 delete this.fileDownloads[id].timeout;
+                
             }
 
-            this.fileDownloads[id] = { base64, name: name, file: file };
-            this.fileDownloads[id].timeout = setTimeout(() => {
-                delete this.fileDownloads[id];
+            this.fileDownloads[id] = { base64, name: name, file: file, id };
+            this.fileDownloads[id].timeout = setTimeout(async () => {
+                if(this.fileDownloads[id].randomId)  {                    
+                    if (!(await existsAsync(`./userdata/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/${this.fileDownloads[id].randomId}`);                
+                }
+                delete this.fileDownloads[id];                
             }, device.settings.downloadtime * 1000);
+            
+            if(useUrl==='cloud') {
+                this.fileDownloads[id].randomId = randomId;
+                if (!(await existsAsync(`./userdata/${randomId}/`))) await mkdirAsync(`./userdata/${randomId}/`);
+                await writeFileAsync(`./userdata/${id}`, buf);
+            }
 
-            return { id, url: 'http://' + this.homey.app.ip + ":47335/file/" + id }; //base64
+            return { id, url }; //base64
 
         } catch (error) {
             this.error(error);

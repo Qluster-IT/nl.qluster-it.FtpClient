@@ -207,7 +207,7 @@
           "id": "urlforfiles",
           "type": "dropdown",
           "label": {
-            "en": "Url's used for files"
+            "en": "Url's used for downloading files"
           },
           "value": "local",
           "values": [
@@ -220,7 +220,29 @@
             {
               "id": "cloud",
               "label": {
-                "en": "Cloud"
+                "en": "Cloud (SSL)"
+              }
+            }
+          ]
+        },
+        {
+          "id": "urlforurls",
+          "type": "dropdown",
+          "label": {
+            "en": "Url's used for the Url's for the files"
+          },
+          "value": "local",
+          "values": [
+            {
+              "id": "local",
+              "label": {
+                "en": "Local"
+              }
+            },
+            {
+              "id": "cloud",
+              "label": {
+                "en": "Cloud (SSL)"
               }
             }
           ]
