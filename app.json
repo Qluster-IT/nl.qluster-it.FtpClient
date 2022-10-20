@@ -180,6 +180,50 @@
             "en": "Download Time (Seconds)"
           },
           "value": 60
+        },
+        {
+          "id": "urlforicons",
+          "type": "dropdown",
+          "label": {
+            "en": "Url's used for icons and images used by the Homey App and WebApp."
+          },
+          "value": "local",
+          "values": [
+            {
+              "id": "local",
+              "label": {
+                "en": "Local"
+              }
+            },
+            {
+              "id": "cloud",
+              "label": {
+                "en": "Cloud (SSL)"
+              }
+            }
+          ]
+        },
+        {
+          "id": "urlforfiles",
+          "type": "dropdown",
+          "label": {
+            "en": "Url's used for files"
+          },
+          "value": "local",
+          "values": [
+            {
+              "id": "local",
+              "label": {
+                "en": "Local"
+              }
+            },
+            {
+              "id": "cloud",
+              "label": {
+                "en": "Cloud"
+              }
+            }
+          ]
         }
       ]
     }

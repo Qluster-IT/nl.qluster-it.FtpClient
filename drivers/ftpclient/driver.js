@@ -86,6 +86,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 let pathsAbove = path.split('/');
                 pathsAbove.pop();
                 let pathAbove = pathsAbove.join('/');
+                let startUrl = 
+                args.device.settings.urlforicons===
+                'local' ? 
+                    `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/` :
+                'cloud' ? 
+                    `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/`
+                :   '';
 
                 let r = await args.device.ftpClient.getList({ path });
 
@@ -96,7 +103,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (pathAbove && pathAbove.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
                 _.each(r, (x) => {
                     //x.icon = ''; svg
-                    x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpclient/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
+                    x.image = startUrl + Icons.getIconsFromFile(x);
                 });
                 
                 return r;
