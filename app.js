@@ -10,7 +10,9 @@ class MyApp extends Homey.App {
   async onInit() {
     this.log('MyApp has been initialized');
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
+    //let add = await this.homey.cloud.getLocalAddress();
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
+    //this.cloudId = (await this.homey.cloud.getHomeyId());
     
   }
 
