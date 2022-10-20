@@ -25,6 +25,8 @@ module.exports = class FtpClientDevice extends Homey.Device {
 			await this.setSettings({password:this.driver.password});
 			delete this.driver.password;
 		}
+		
+		if(this.driver.isConnected) delete this.driver.isConnected;
 
 		await this.init();
 

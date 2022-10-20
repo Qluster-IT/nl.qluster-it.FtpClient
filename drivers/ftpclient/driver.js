@@ -116,6 +116,22 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         device = selectedDevices[0];
         //device.icon = '/icon-default.svg';
     });
+    
+    session.setHandler("showView", async (data) => {
+        console.log("showiew: ");
+        console.log(data);
+        if(data==='login_credentials' && device.settings.ip === this.homey.app.ip)  {
+            try {           
+                        
+                let ftpClient = new FtpClient();
+                ftpClient.init({ ip: device.settings.ip, port: device.settings.port });     
+                let isConnected = await ftpClient.getLogin() ;//{ip: this.homey.app.ip, port: 5081 });
+                this.isConnected = true;
+                session.showView('add_devices');
+                return true;
+            } catch (error) { }
+        }
+    });
 
     session.setHandler("login", async (data) => {
         //username = data.username;
@@ -129,6 +145,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 		});
         try {                
             let isConnected = await ftpClient.getLogin(data.username, data.password) ;//{ip: this.homey.app.ip, port: 5081 });
+            this.isConnected = true;
             this.username = data.username;
             this.password = data.password;
             return true;
@@ -242,7 +259,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     delete this.fileDownloads[id];
                 }, device.settings.downloadtime*1000);
                 
-                return {id, base64, url:'http://'+this.homey.app.ip + ":47335/file/" + id};
+                return {id, url:'http://'+this.homey.app.ip + ":47335/file/" + id}; //base64
 
             } catch (error) {
                 this.error(error);
