@@ -9,9 +9,10 @@ const _ = require('lodash-core');
 const Icons = require('../../lib/icons');
 
 
-const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, stat, rmdir } = require('fs');
+const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, stat, rmdir, fstat , rm} = require('fs');
 const { promisify } = require('util');
 const fs = require('fs');
+const path = require('path');
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -23,6 +24,7 @@ const mkdirAsync = promisify(mkdir);
 const readdirAsync = promisify(readdir);
 const statAsync = promisify(stat);
 const rmdirAsync = promisify(rmdir);
+const rmAsync = promisify(rm);
 
 
 let app;
@@ -31,6 +33,26 @@ let app;
 // var pkg = require('../../package.json');
 // var Greenlock = require('greenlock');
 
+const emptyDirectory = async function(path) {
+  if (await existsAsync(path)) {
+    const files = await readdirAsync(path);
+
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const filename = files[i];
+            if (await statAsync(path + "/" + filename).isDirectory()) {
+                await emptyDirectory(path + "/" + filename);
+              } else {
+                await unlinkAsync(path + "/" + filename);
+              }
+        }
+    } else {
+      console.log("No files found in the directory.");
+    }
+  } else {
+    console.log("Directory path not found.");
+  }
+};
 
 module.exports = class FtpClientDriver extends Homey.Driver {
 
@@ -40,7 +62,12 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
-
+        if (!(await existsAsync(`./userdata/downloads/`))) await mkdirAsync(`./userdata/downloads/`);
+        emptyDirectory(`./userdata/downloads/`);
+        
+        let filesandfolders = await readdirAsync('./userdata/');
+        
+        let filesandfoldersdonwloads = await readdirAsync('./userdata/downloads/');
         // var greenlock = Greenlock.create({
         //     packageRoot:'./userdata/',
         //     configDir: 'greenlock.d/config.json',
@@ -334,6 +361,21 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     async getFileUrl({ file, device, type }) {
         try {
+            // let filesandfolders = await readdirAsync('./userdata/');
+            // for (let i = 0; i < filesandfolders.length; i++) {
+            //     const faf = filesandfolders[i];
+            //     let stats = await statAsync(path.join('./userdata/',faf));
+            //     try {
+            //         if(stats.isDirectory()) await rmAsync(path.join('./userdata/',faf), {force:true, recursive:true});
+            //         else await unlinkAsync(path.join('./userdata/',faf));
+                        
+            //     } catch (error) {
+            //         this.error(error);                    
+            //     }
+            // }
+
+            let filesandfolders1 = await readdirAsync(`./userdata/downloads/`);
+
             let stream = new Writable();
             let s = '';
             //let buffer = Buffer.from);
@@ -362,8 +404,21 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             
             id = encodeURIComponent(id);
             if(useUrl==='cloud') {
-                id = randomId + '/' + encodeURIComponent(name); //dont encode this id.
-                url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + id;
+                //id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');// '%20'); //dont encode this id.
+                if(type==='url') 
+                {
+                    id = 'downloads/'+ randomId + '/' + randomBytes(8).toString('hex') + '.' + _.last(name.split('.')) ; //encodeURIComponent(encodeURIComponent(name));
+                    url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + id;
+                }
+                
+                if(type==='download') {
+                    id = 'downloads/'+ randomId + '/' + encodeURIComponent(name);
+                    url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
+                }
+                
+                    //id = 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
+
+                this.log('new id', id);
             }
 
             //args.device.settings.urlforicons
@@ -373,24 +428,32 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
                 clearTimeout(this.fileDownloads[id].timeout);                
                 if(this.fileDownloads[id].randomId)  {                    
-                    if (!(await existsAsync(`./userdata/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/${this.fileDownloads[id].randomId}`);                
+                    if (!(await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`);                
                 }
                 delete this.fileDownloads[id].timeout;
                 
             }
 
             this.fileDownloads[id] = { base64, name: name, file: file, id };
-            this.fileDownloads[id].timeout = setTimeout(async () => {
+            this.fileDownloads[id].timeout = setTimeout((async (id) => {
                 if(this.fileDownloads[id].randomId)  {                    
-                    if (!(await existsAsync(`./userdata/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/${this.fileDownloads[id].randomId}`);                
+                    if (!(await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmdirAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`);                
                 }
                 delete this.fileDownloads[id];                
-            }, device.settings.downloadtime * 1000);
+            }).bind(this, id), device.settings.downloadtime * 1000);
             
             if(useUrl==='cloud') {
                 this.fileDownloads[id].randomId = randomId;
-                if (!(await existsAsync(`./userdata/${randomId}/`))) await mkdirAsync(`./userdata/${randomId}/`);
+                if (!(await existsAsync(`./userdata/downloads/${randomId}/`))) await mkdirAsync(`./userdata/downloads/${randomId}/`, {recursive:true});
                 await writeFileAsync(`./userdata/${id}`, buf);
+                
+                this.log('writefile', `./userdata/${id}`);
+
+                let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
+                
+                // else if(type==='url') 
+                // id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');
+                
             }
 
             return { id, url }; //base64
