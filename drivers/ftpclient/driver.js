@@ -362,7 +362,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             
             id = encodeURIComponent(id);
             if(useUrl==='cloud') {
-                id = randomId + '/' + name; //dont encode this id.
+                id = randomId + '/' + encodeURIComponent(name); //dont encode this id.
                 url = `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/userdata/` + id;
             }
 
