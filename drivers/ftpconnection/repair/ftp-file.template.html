@@ -1,6 +1,6 @@
 <div class="ftp-file" ng-style="{'padding-left':((file.indent?1:0)*15)+'px'}" >
-    <span class="ftp-file-header" 
-    ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); ">
+    <span class="ftp-file-header" ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); "
+        ng-dblclick="downloadFile(file);$event.stopPropagation();">
         <span class="far fa-icon {{getFileIcon(file)}}"></span>
         <span class="name"><div>{{file.name}}</div></span>
         <span class="ftp-buttons">

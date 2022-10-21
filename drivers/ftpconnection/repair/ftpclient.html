@@ -63,7 +63,7 @@
 			}])
 			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
 				//let $;
-				const vars = $scope.vars = {content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true}, currentDirectory:null };
+				const vars = $scope.vars = {parentDirectories:{}, content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true, childOpen:true}, currentDirectory:null };
 				vars.currentDirectory = vars.content;
 				$rootScope.vars = vars;
 
@@ -79,6 +79,9 @@
 					Homey.emit('getContent', {path:''}).then((result)=> {
 						$scope.$apply(()=> {
 							vars.content.children = result;
+							for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = vars.currentDirectory;
+								
+							
 						});
 					});
 				}
@@ -131,7 +134,15 @@
 				$scope.view = $scope.$parent.view;
 				$rootScope.ftpDirectoryCtrl = $scope;
 				
+				function setParentOpened(directory, val) {
+					while (directory) {
+						directory.childOpen = val;
+						directory = $scope.vars.parentDirectories[directory.path+'/'+directory.name];
+					}
+				}
+
 				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
+				
 				
 				$scope.getChildren = function(directory, refresh) {
 					if(directory.children && directory.children.length && !refresh) return;
@@ -140,12 +151,15 @@
 					Homey.emit('getContent', {path}).then((result)=> {
 						$scope.$apply(()=> {
 							directory.children = result;
+							for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = directory;
 						});
 					});
 				}
 				
 				$scope.setCurrentDirectory = function(directory) {
+					setParentOpened($scope.vars.currentDirectory, false);
 					$scope.vars.currentDirectory = directory;
+					setParentOpened($scope.vars.currentDirectory, true);
 				}
 				$scope.deleteDirectory = function(directory) {
 					Homey.emit('deleteDirectory', {directory}).then((result)=> {
