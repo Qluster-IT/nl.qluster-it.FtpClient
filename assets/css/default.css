@@ -485,6 +485,12 @@ select {
     white-space: nowrap;
 }
 
+.list .ftp-directory-header>.name, .list .ftp-file-header>.name {
+    display: inline-block;
+    width:100%;
+    font-size:14pt;
+}
+
 .list .ftp-buttons {
     position:absolute;
     right:0;
