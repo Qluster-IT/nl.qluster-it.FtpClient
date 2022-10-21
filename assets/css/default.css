@@ -1,6 +1,11 @@
 html {
     padding-right:10px;
 }
+#hy-views > .hy-view.visible {
+    position: fixed;
+    height: calc(100%);
+    overflow: hidden;
+}
 
 
 
@@ -583,6 +588,7 @@ select {
     background-color:white;
     padding:5px;
     border:1px solid black;
+    position: fixed;
 
 }
 /* .ftp-directory-context-menu .items {
