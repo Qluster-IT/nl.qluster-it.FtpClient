@@ -1,7 +1,11 @@
+<script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
+<script type="text/javascript" src="../../../assets/js/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="../../../assets/css/jquery-ui.css" type="text/css"/>
+
 <script type="text/javascript" src="../../../assets/js/angular.js"></script>
+<script type="text/javascript" src="../../../assets/js/angular-dragdrop.js"></script>
 <script type="text/javascript" src="../../../assets/js/lodash.js"></script>
 <script type="text/javascript" src="../../../assets/js/smart-table.min.js"></script>
-<script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
 
 <link rel="stylesheet" href="../../../assets/fontawesome/fontawesome.css" type="text/css"/>
 <link rel="stylesheet" href="../../../assets/css/default.css" type="text/css"/>
@@ -27,7 +31,7 @@
 	<div id="overlay"></div>
 	<script type="text/javascript">
 
-		angular.module('ftpclient', ['smart-table'])
+		angular.module('ftpclient', ['smart-table', 'ngDragDrop'])
 			.run(['$rootScope', function($rootScope) {
 				$rootScope.menu = {};				
 				$rootScope.menu.ftpDirectoryContextMenu = {show:false, element:null};
@@ -63,7 +67,7 @@
 			}])
 			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
 				//let $;
-				const vars = $scope.vars = {parentDirectories:{}, content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true, childOpen:true}, currentDirectory:null };
+				const vars = $scope.vars = {path:'', content:{name:'', path:'', isDirectory:true, children:[], show:true, root:true, childOpen:true}, currentDirectory:null };
 				vars.currentDirectory = vars.content;
 				$rootScope.vars = vars;
 
@@ -79,7 +83,7 @@
 					Homey.emit('getContent', {path:''}).then((result)=> {
 						$scope.$apply(()=> {
 							vars.content.children = result;
-							for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = vars.currentDirectory;
+							//for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = vars.currentDirectory;
 								
 							
 						});
@@ -134,14 +138,36 @@
 				$scope.view = $scope.$parent.view;
 				$rootScope.ftpDirectoryCtrl = $scope;
 				
-				function setParentOpened(directory, val) {
-					while (directory) {
-						directory.childOpen = val;
-						directory = $scope.vars.parentDirectories[directory.path+'/'+directory.name];
+				// function setParentOpened(directory, val) {
+				// 	while (directory) {
+				// 		directory.childOpen = val;
+				// 		directory = $scope.vars.parentDirectories[directory.path+'/'+directory.name];
+				// 	}
+				// }
+				function dropItem(scopeSource, scopeTarget) {
+					if(scopeSource.file) {
+						$scope.moveItem(scopeSource.file, scopeSource.directory, scopeTarget.directory);
+					} else if(scopeSource.directory) {
+						$scope.moveItem(scopeSource.directory, scopeSource.parentDirectory, scopeTarget.directory);
 					}
 				}
 
+				function getFullPath(directory) { return directory.path  + '/' + directory.name; }
+				//function getFullPath(directory) { return ( directory.path &&  directory.path.length>0 ? directory.path + '/':'') + directory.name; }
+
 				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
+				
+				$scope.dropItem = function(a,b, c, d) {
+					var scopeTarget = angular.element($(a.target)).scope();
+					var scopeSource = angular.element(b.draggable.get(0)).scope();
+					dropItem(scopeSource, scopeTarget);
+				}
+				
+				$scope.dropItemUp = function(a,b, c, d) {
+					var scopeTarget = angular.element($(a.target)).scope();
+					var scopeSource = angular.element(b.draggable.get(0)).scope();
+					dropItem(scopeSource, scopeTarget.$parent.$parent);
+				}
 				
 				
 				$scope.getChildren = function(directory, refresh) {
@@ -151,16 +177,30 @@
 					Homey.emit('getContent', {path}).then((result)=> {
 						$scope.$apply(()=> {
 							directory.children = result;
-							for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = directory;
+							// for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = directory;
 						});
 					});
 				}
 				
 				$scope.setCurrentDirectory = function(directory) {
-					setParentOpened($scope.vars.currentDirectory, false);
 					$scope.vars.currentDirectory = directory;
-					setParentOpened($scope.vars.currentDirectory, true);
+					$scope.vars.path = getFullPath(directory);
 				}
+
+				$scope.isInPath = function(directory) {
+					let path = getFullPath(directory);
+					return path==='' || $scope.vars.path.startsWith(path);
+				}
+				
+				$scope.moveItem = function(item, itemDirectory, targetDirectory) {
+					Homey.emit('moveItem', {item, targetDirectory}).then((result)=> {
+						$scope.$apply(()=> {
+							$scope.getChildren(targetDirectory, true);
+							$scope.getChildren(itemDirectory, true);
+						});
+					});
+				}
+
 				$scope.deleteDirectory = function(directory) {
 					Homey.emit('deleteDirectory', {directory}).then((result)=> {
 						$scope.$apply(()=> {
