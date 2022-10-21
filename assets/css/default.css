@@ -452,7 +452,7 @@ select {
 
 
 
-.ftp-directory-children.non-active>.ftp-directory, .ftp-directory-children.non-active>.ftp-file  {
+.ftp-directory-children.non-active>.ftp-directory>.ftp-directory-header, .ftp-directory-children.non-active>.ftp-file  {
     position:initial!important;
 
 }
