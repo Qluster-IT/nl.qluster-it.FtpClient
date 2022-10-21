@@ -33,8 +33,13 @@
 				$rootScope.menu.ftpDirectoryContextMenu = {show:false, element:null};
 				$rootScope.menu.ftpFileContextMenu = {show:false, element:null};
 
+				$rootScope.ftpDirectoryCtrl = null;
+				$rootScope.ftpFileCtrl = null;
+
 				$rootScope.openMenu = function(menu, directory, file, event) {
 					$rootScope.$apply(function() {
+						// console.log('set $rootScope.vars.menuDirectory');
+						// console.log(directory);
 						$rootScope.vars.menuDirectory = directory;
 						$rootScope.vars.menuFile = file;
 						menu.show = true;
@@ -124,6 +129,7 @@
 			.controller('ftpDirectoryCtrl', function($scope, $rootScope) {
 				$scope.vars = $scope.$parent.vars;
 				$scope.view = $scope.$parent.view;
+				$rootScope.ftpDirectoryCtrl = $scope;
 				
 				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
 				
@@ -195,8 +201,9 @@
 					link: function(scope, element, attrs) {
 						element.on("contextmenu", function (e) {
 							e.preventDefault(); 
-							e.stopPropagation();							
+							e.stopPropagation();
 							$parse(attrs.ftpDirectoryContextMenuClick)(scope); //.$parent
+							console.log(scope);
 							$rootScope.openMenu($rootScope.menu.ftpDirectoryContextMenu, scope.directory, null, e);
 							console.log("Element right clicked.");
 						});
@@ -227,23 +234,24 @@
 			.controller('ftpFileCtrl', function($scope, $rootScope) {
 				$scope.vars = $scope.$parent.vars;
 				$scope.view = $scope.$parent.view;
-				
+				$rootScope.ftpFileCtrl = $scope;
 				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
 				
-				$scope.deleteFile = function(file) {
+				$scope.deleteFile = function(file, directory) {
+					
 					Homey.emit('deleteFile', {file}).then((result)=> {
 						$scope.$apply(()=> {
 							delete file.delete;
-							(directory || $scope.$parent).getChildren(directory || $scope.$parent.directory, true);
+							$rootScope.ftpDirectoryCtrl.getChildren(directory, true);
 						});
 					});
 				}
 				
-				$scope.renameFile = function(file) {
+				$scope.renameFile = function(file, directory) {
 					Homey.emit('renameFile', {file}).then((result)=> {
 						$scope.$apply(()=> {
 							delete file.renameName;
-							$scope.$parent.getChildren($scope.$parent.file, true);
+							$rootScope.ftpDirectoryCtrl.getChildren(directory, true);
 						});
 					});
 				}
@@ -294,7 +302,7 @@
 				return {
 					templateUrl: 'ftp-file.template.html',
 					replace:true,
-					scope: {file: '='},
+					scope: {file: '=', directory:'='},
 					restrict: 'E',
 					controller: 'ftpFileCtrl',
 					link: function(scope, element) {
@@ -363,8 +371,11 @@
 							return window.btoa( binary );
 						}
 
-						console.log("ftpFileUpload controller function called");						
+						console.log("ftpFileUpload controller function called");
+						$scope.attrs = null;
 						$scope.uploadFiles = function(element) {
+							console.log($scope);
+							let attrs = $scope.attrs;
 							
 							let q=[];
 							let fc = ()=> {
@@ -375,7 +386,7 @@
 										delete $scope.directory.uploading;
 										$scope.$parent.getChildren($scope.directory, true);
 										$scope.directory.show = $scope.directory.shown = true;		
-										if(attrs.onOk) $parse(attrs.onOk)(scope.$parent);								
+										if(attrs.onOk) $parse(attrs.onOk)($scope.$parent);								
 									});
 								 });
 							};
@@ -397,7 +408,7 @@
 					},
 					link: function(scope, element, attrs) {
 						console.log('ftpFileUpload link');
-						
+						scope.attrs = attrs;
 						scope.cancel = function($event) {							
 							$event.stopPropagation();
 							$parse(attrs.onCancel)(scope.$parent);
@@ -413,6 +424,7 @@
 					},
 					link: function(scope, element, attrs) {
 						element.on("contextmenu", function (e) {
+							console.log(scope);
 							e.preventDefault(); 
 							e.stopPropagation();							
 							$parse(attrs.ftpFileContextMenuClick)(scope); //.$parent
@@ -434,7 +446,7 @@
 					controller:'ftpFileCtrl',
 					link: function(scope, element) {
 						scope.menu = $rootScope.menu;
-						$rootScope.menu.ftpFileContextMenu.element = element;						
+						$rootScope.menu.ftpFileContextMenu.element = element;
 					}
 				};
 			}])

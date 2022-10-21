@@ -5,10 +5,10 @@
         <span class="name"><div>{{file.name}}</div></span>
         <span class="ftp-buttons">
             <span tooltip="Delete file" ng-if="!file.root" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();">
-                <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file)" on-cancel="file.delete=false;" ng-show="file.delete"></window-confirm>
+                <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file, directory)" on-cancel="file.delete=false;" ng-show="file.delete"></window-confirm>
             </span>
             <span tooltip="Rename file" ng-if="!file.root" class="fa fa-icon fa-i-cursor" ng-click="file.rename = true;file.renameName = file.name; $event.stopPropagation();">
-                <window-confirm title="Rename file" message="Enter the file name:" on-ok="renameFile(file)" on-cancel="file.rename=false;" ng-show="file.rename">                    
+                <window-confirm title="Rename file" message="Enter the file name:" on-ok="renameFile(file, directory)" on-cancel="file.rename=false;" ng-show="file.rename">                    
                     <input type="text" ng-model="file.renameName">
                 </window-confirm>
             </span>

@@ -1,10 +1,10 @@
 
-<div class="ftp-directory" ng-style="{'padding-left':((directory.indent?1:0)*15)+'px'}" ng-click="$event.stopPropagation();" ng-dblclick=" $event.stopPropagation();">
-    <div class="floating-buttons-left" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory">
+<div class="ftp-directory" ng-style="{'padding-left':((directory.indent?1:0)*15)+'px'}" ng-dblclick=" $event.stopPropagation();">
+    <div class="floating-buttons-left" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
         <span class="fa fa-icon fa-level-up-alt" ng-click="setCurrentDirectory(parentDirectory);"></span>
     </div>
-    <div class="floating-buttons-right" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory">
-        <span class="fa fa-icon fa-refresh" ng-click="getChildren(directory, true);"></span>
+    <div class="floating-buttons-right" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
+        <span class="fa fa-icon fa-sync-alt" ng-click="getChildren(directory, true);"></span>
     </div>
     <span class="ftp-directory-header" ng-dblclick="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
         ftp-directory-context-menu-click="hideMenus();vars.selected=directory; $event.stopPropagation(); ">
@@ -32,6 +32,6 @@
     <div class="ftp-directory-children" ng-class="{'selected':vars.selected==directory}" ng-if="(directory.shown = (view.display=='list' && directory.show && directory.children.length)) || (view.display!='list' && (directory==vars.currentDirectory || directory.indent<vars.currentDirectory.indent))"
         ftp-directory-context-menu-click="hideMenus(); vars.selected=directory; $event.stopPropagation(); ">
         <ftp-directory ng-class="{'selected':vars.selected==dir}" directory="dir" parent-directory="directory" ng-repeat="dir in directory.children | filter:{isDirectory:true}"  ng-click="vars.selected=dir; hideMenus(); $event.stopPropagation(); "></ftp-directory>
-        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" parent-directory="directory" ng-repeat="file in directory.children | filter:{isFile:true}"  ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
+        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" directory="directory" ng-repeat="file in directory.children | filter:{isFile:true}"  ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
     </div>
 </div>

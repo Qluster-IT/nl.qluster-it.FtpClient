@@ -2,16 +2,16 @@
     <div class="item" ng-click="file.delete = true; ">
         <span class="fa fa-icon fa-trash-alt"></span>
         <span>Delete</span>
-        <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file);menu.ftpFileContextMenu.show=false;menu.ftpFileContextMenu.show=false;" on-cancel="file.delete=false;menu.ftpFileContextMenu.show=false;" ng-show="file.delete"></window-confirm>
+        <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file, directory);menu.ftpFileContextMenu.show=false;menu.ftpFileContextMenu.show=false;" on-cancel="file.delete=false;menu.ftpFileContextMenu.show=false;" ng-show="file.delete"></window-confirm>
     </div>
     <div class="item" ng-click="file.rename = true;file.renameName = file.name; ">
         <span class="fa fa-icon fa-i-cursor" ng-click="file.rename = true;file.renameName = file.name; $event.stopPropagation();"></span>
         <span>Rename</span>
-        <window-confirm title="Rename file" message="Enter the file name:" on-ok="renameFile(file);menu.ftpFileContextMenu.show=false;" on-cancel="file.rename=false;menu.ftpFileContextMenu.show=false;" ng-show="file.rename">                    
+        <window-confirm title="Rename file" message="Enter the file name:" on-ok="renameFile(file, directory);menu.ftpFileContextMenu.show=false;" on-cancel="file.rename=false;menu.ftpFileContextMenu.show=false;" ng-show="file.rename">                    
             <input type="text" ng-model="file.renameName">
         </window-confirm>
     </div>
-    <div class="item" ng-click="downloadFile(file, directory);menu.ftpFileContextMenu.show=false;$event.stopPropagation();">
+    <div class="item" ng-click="downloadFile(file, directory); menu.ftpFileContextMenu.show=false;$event.stopPropagation();">
         <span class="fa fa-icon fa-file-download"></span>
         <span>Download</span>
     </div>
