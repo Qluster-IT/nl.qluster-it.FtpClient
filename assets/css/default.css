@@ -514,6 +514,25 @@ select {
     overflow:hidden;
     padding: 0px 5px !important;
 }
+.th-small .ftp-directory, .th-small .ftp-directory .ftp-file, .th-small .ftp-directory-children {
+    border:1px solid white;
+
+}
+.th-small .ftp-directory.selected, .th-small .ftp-file.selected, .th-small .ftp-directory-children.selected {
+    border-color:black;
+}
+.th-small .ftp-directory.selected>.ftp-directory-header>.name, .th-small .ftp-file.selected>.ftp-file-header>.name {
+    /* animation: scrollText 10s infinite linear; */
+    width:100%;
+    overflow:hidden;
+}
+/* .th-small .ftp-directory.selected>.ftp-directory-header>.name>div, .th-small .ftp-file.selected>.ftp-file-header>.name>div {
+    font-size: 50px;
+    display: inline-block;
+    min-width: 100vw;
+    margin: 0;
+    padding: 0;
+} */
 
 .th-small.ftp-directory-root>span {
     display: none;
@@ -535,7 +554,6 @@ select {
 }
 
 
-
 .th-small .ftp-buttons {
     display: none;
     position:absolute;
@@ -553,7 +571,7 @@ select {
 }
 
 
-.ftp-directory-context-menu {
+.ftp-context-menu {
     z-index:20;
     background-color:white;
     padding:5px;
@@ -564,20 +582,23 @@ select {
     padding:5px;
     border:1px solid black;
 } */
-.ftp-directory-context-menu .item {
+.ftp-context-menu .item {
     display: block;
     padding:5px;
     cursor:pointer;
     font-size: 16pt;
 }
-.ftp-directory-context-menu .item .fa-icon {
+.ftp-context-menu .item .fa-icon {
     width:36px;
     text-align: center;
     padding:0;
 }
-.ftp-directory-context-menu .item:hover {
+.ftp-context-menu .item:hover {
     background-color: #cecece;
 }
+
+
+
 
 
 
@@ -613,7 +634,15 @@ select {
 }
 
 
-.floating-buttons {
+.floating-buttons-left {
+    position: fixed;
+    top:10px;
+    left:10px;
+    background-color: white;
+    z-index:10;
+}
+
+.floating-buttons-right {
     position: fixed;
     top:10px;
     left:10px;
@@ -664,3 +693,14 @@ select {
     }
     
 }
+
+
+
+@keyframes scrollText {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }

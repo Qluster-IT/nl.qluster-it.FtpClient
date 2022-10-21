@@ -1,7 +1,8 @@
-<div class="ftp-file" ng-style="{'padding-left':((file.indent?1:0)*15)+'px'}">
-    <span class="ftp-file-header" >
+<div class="ftp-file" ng-style="{'padding-left':((file.indent?1:0)*15)+'px'}" >
+    <span class="ftp-file-header" 
+    ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); ">
         <span class="far fa-icon {{getFileIcon(file)}}"></span>
-        {{file.name}}
+        <span class="name"><div>{{file.name}}</div></span>
         <span class="ftp-buttons">
             <span tooltip="Delete file" ng-if="!file.root" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();">
                 <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file)" on-cancel="file.delete=false;" ng-show="file.delete"></window-confirm>

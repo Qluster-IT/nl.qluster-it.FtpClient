@@ -9,9 +9,10 @@
 	
 	<form name="mainForm">
 		<ftp-directory-context-menu directory="vars.menuDirectory"></ftp-directory-context-menu>
+		<ftp-file-context-menu directory="vars.menuDirectory" file="vars.menuFile"></ftp-file-context-menu>
 		<div class="field text-center full-width">
-			<span ng-if="!directory.root" class="fa fa-icon fa-stream" ng-click="view.display='list'; $event.stopPropagation();"></span>
-			<span ng-if="!directory.root" class="fa fa-icon fa-th" ng-click="view.display='th-small'; $event.stopPropagation();"></span>
+			<span class="fa fa-icon fa-stream" ng-click="view.display='list'; $event.stopPropagation();"></span>
+			<span class="fa fa-icon fa-th" ng-click="view.display='th-small'; $event.stopPropagation();"></span>
 		</div>
 		<div class="field">
 			<div class="field margin-bottom">				
@@ -30,21 +31,29 @@
 			.run(['$rootScope', function($rootScope) {
 				$rootScope.menu = {};				
 				$rootScope.menu.ftpDirectoryContextMenu = {show:false, element:null};
+				$rootScope.menu.ftpFileContextMenu = {show:false, element:null};
 
-				$rootScope.openMenu = function(menu, directory, event) {
+				$rootScope.openMenu = function(menu, directory, file, event) {
 					$rootScope.$apply(function() {
 						$rootScope.vars.menuDirectory = directory;
+						$rootScope.vars.menuFile = file;
 						menu.show = true;
 					});
-					menu.element.css({'top':event.pageY-50,'left':event.pageX, 'position':'absolute'});
+					let width = $(document).width();
+					if(event.pageX<=(width/2)) 
+						menu.element.css({'top':event.pageY-50,'left':event.pageX, 'position':'absolute'});
+					else
+						menu.element.css({'top':event.pageY-50,'left':(event.pageX - menu.element.outerWidth()), 'position':'absolute'}); 
 				}
 				$rootScope.closeMenu = function(menu) {
-					$rootScope.$apply(function() {
+					let fc = function() {
 						if(!menu) for (const menu of Object.values($rootScope.menu)) {
 							menu.show = false;
 						}
 						else menu.show = false;
-					});					
+					};
+					if($rootScope.$$phase) fc();					
+					else $rootScope.$apply(fc);
 				}
 			}])
 			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
@@ -111,10 +120,12 @@
 					}
 				};
 			})
+			
 			.controller('ftpDirectoryCtrl', function($scope, $rootScope) {
 				$scope.vars = $scope.$parent.vars;
 				$scope.view = $scope.$parent.view;
 				
+				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
 				
 				$scope.getChildren = function(directory, refresh) {
 					if(directory.children && directory.children.length && !refresh) return;
@@ -176,23 +187,19 @@
 					}
 				};
 			}])
-			.directive('ftpDirectoryContextMenuClick', ['$rootScope', function ($rootScope) {
+			.directive('ftpDirectoryContextMenuClick', ['$rootScope', '$parse', function ($rootScope, $parse) {
 				return {
 					restrict: 'A',
 					controller: function($scope) {						
 					},
-					link: function(scope, element) {
+					link: function(scope, element, attrs) {
 						element.on("contextmenu", function (e) {
 							e.preventDefault(); 
-							e.stopPropagation();
-							$rootScope.openMenu($rootScope.menu.ftpDirectoryContextMenu, scope.directory, e);
+							e.stopPropagation();							
+							$parse(attrs.ftpDirectoryContextMenuClick)(scope); //.$parent
+							$rootScope.openMenu($rootScope.menu.ftpDirectoryContextMenu, scope.directory, null, e);
 							console.log("Element right clicked.");
 						});
-						// element.on("mouseleave", function(e){
-						// 	e.stopPropagation();
-						// 	$rootScope.menu.ftpDirectoryContextMenu.show = false;
-						// 	console.log("Leaved the div");
-						// });
 					}
 				};
 			}])
@@ -217,6 +224,71 @@
 					}
 				};
 			}])
+			.controller('ftpFileCtrl', function($scope, $rootScope) {
+				$scope.vars = $scope.$parent.vars;
+				$scope.view = $scope.$parent.view;
+				
+				$scope.hideMenus = function() { return $rootScope.closeMenu(); };
+				
+				$scope.deleteFile = function(file) {
+					Homey.emit('deleteFile', {file}).then((result)=> {
+						$scope.$apply(()=> {
+							delete file.delete;
+							$scope.$parent.getChildren($scope.$parent.directory, true);
+						});
+					});
+				}
+				
+				$scope.renameFile = function(file) {
+					Homey.emit('renameFile', {file}).then((result)=> {
+						$scope.$apply(()=> {
+							delete file.renameName;
+							$scope.$parent.getChildren($scope.$parent.file, true);
+						});
+					});
+				}
+				
+				$scope.downloadFile = function(file) {							
+					Homey.emit('getFileUrl', {file}).then((result)=> {
+						$scope.$apply(()=> {
+							// const blob = base64ToBlob(result.base64);
+							// const blobURL = URL.createObjectURL(blob, file.name);
+							// const blobURL2 = URL.createObjectURL(blob, file.name);
+							// // const link = document.createElement('a');
+							// // link.setAttribute('download', file.name)
+							// // link.href = blobURL;
+							// // document.body.appendChild(link);
+							// // link.click();
+							// // document.body.removeChild(link);
+							// console.log(blobURL);
+							// console.log(blobURL2);
+							// //Homey.popup(window.location.href.replace('', '') '../../../../../api/app/nl.qluster-it.FtpClient/downloadFiles');
+							// Homey.popup(blobURL);
+							//Homey.popup("data:application/octet-stream;headers=Content-Disposition: attachment; filename=\"with spaces.txt\";base64," + result.base64);
+							//Homey.popup("data:text/plain;headers=Content-Disposition:attachment;filename=%22with%20spaces.txt%22;base64,SGVsbG8sIFdvcmxkIQ==");
+							//Homey.popup("http://192-168-1-17.homey.homeylocal.com:47335/");
+							Homey.popup(result.url);
+						});
+						// $scope.$apply(()=> {
+						// 	delete file.downloadFile;
+						// 	$scope.$parent.getChildren($scope.$parent.file, true);
+						// });
+					});
+				}
+
+				function base64ToBlob(base64, name) {
+					const binaryString = window.atob(base64);
+					const len = binaryString.length;
+					const bytes = new Uint8Array(len);
+					for (let i = 0; i < len; ++i) {
+						bytes[i] = binaryString.charCodeAt(i);
+					}
+			
+					//return new File([bytes], name, {"type": "application/octet-stream"});
+					return new Blob([bytes], {"type": "application/octet-stream"});
+				};					
+			})
+			
 			.directive('ftpFile', [function () {
 
 				return {
@@ -224,65 +296,7 @@
 					replace:true,
 					scope: {file: '='},
 					restrict: 'E',
-					controller: function($scope) {
-						$scope.deleteFile = function(file) {
-							Homey.emit('deleteFile', {file}).then((result)=> {
-								$scope.$apply(()=> {
-									delete file.delete;
-									$scope.$parent.getChildren($scope.$parent.directory, true);
-								});
-							});
-						}
-						
-						$scope.renameFile = function(file) {
-							Homey.emit('renameFile', {file}).then((result)=> {
-								$scope.$apply(()=> {
-									delete file.renameName;
-									$scope.$parent.getChildren($scope.$parent.file, true);
-								});
-							});
-						}
-						
-						$scope.downloadFile = function(file) {							
-							Homey.emit('getFileUrl', {file}).then((result)=> {
-								$scope.$apply(()=> {
-									// const blob = base64ToBlob(result.base64);
-									// const blobURL = URL.createObjectURL(blob, file.name);
-									// const blobURL2 = URL.createObjectURL(blob, file.name);
-									// // const link = document.createElement('a');
-									// // link.setAttribute('download', file.name)
-									// // link.href = blobURL;
-									// // document.body.appendChild(link);
-									// // link.click();
-									// // document.body.removeChild(link);
-									// console.log(blobURL);
-									// console.log(blobURL2);
-									// //Homey.popup(window.location.href.replace('', '') '../../../../../api/app/nl.qluster-it.FtpClient/downloadFiles');
-									// Homey.popup(blobURL);
-									//Homey.popup("data:application/octet-stream;headers=Content-Disposition: attachment; filename=\"with spaces.txt\";base64," + result.base64);
-									//Homey.popup("data:text/plain;headers=Content-Disposition:attachment;filename=%22with%20spaces.txt%22;base64,SGVsbG8sIFdvcmxkIQ==");
-									//Homey.popup("http://192-168-1-17.homey.homeylocal.com:47335/");
-									Homey.popup(result.url);
-								});
-								// $scope.$apply(()=> {
-								// 	delete file.downloadFile;
-								// 	$scope.$parent.getChildren($scope.$parent.file, true);
-								// });
-							});
-						}
-
-						function base64ToBlob(base64, name) {
-							const binaryString = window.atob(base64);
-							const len = binaryString.length;
-							const bytes = new Uint8Array(len);
-							for (let i = 0; i < len; ++i) {
-								bytes[i] = binaryString.charCodeAt(i);
-							}
-					
-							//return new File([bytes], name, {"type": "application/octet-stream"});
-							return new Blob([bytes], {"type": "application/octet-stream"});
-						};
-					},
+					controller: 'ftpFileCtrl',
 					link: function(scope, element) {
 						let matches = scope.file.path.match(/\//g);
 						scope.file.indent = matches ? matches.length : -1;
@@ -391,7 +405,40 @@
 						}
 					}
 				};
+			}])			
+			.directive('ftpFileContextMenuClick', ['$rootScope', '$parse', function ($rootScope, $parse) {
+				return {
+					restrict: 'A',
+					controller: function($scope) {						
+					},
+					link: function(scope, element, attrs) {
+						element.on("contextmenu", function (e) {
+							e.preventDefault(); 
+							e.stopPropagation();							
+							$parse(attrs.ftpFileContextMenuClick)(scope); //.$parent
+							$rootScope.openMenu($rootScope.menu.ftpFileContextMenu, scope.directory, scope.file, e);
+							console.log("Element right clicked.");
+						});
+					}
+				};
 			}])
+			.directive('ftpFileContextMenu', ['$rootScope', function ($rootScope) {
+				return {
+					templateUrl: 'ftp-file-context-menu.template.html',
+					replace:true,
+					restrict: 'E',
+					scope: {
+						directory: '=',
+						file: '='
+					},
+					controller:'ftpFileCtrl',
+					link: function(scope, element) {
+						scope.menu = $rootScope.menu;
+						$rootScope.menu.ftpFileContextMenu.element = element;						
+					}
+				};
+			}])
+			
 			.directive('fileOnChange', function() {
 				return {
 					restrict: 'A',

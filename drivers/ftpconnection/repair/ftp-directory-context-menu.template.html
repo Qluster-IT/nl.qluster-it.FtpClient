@@ -1,6 +1,5 @@
-
-<div class="ftp-directory-context-menu" ng-show="menu.ftpDirectoryContextMenu.show" ng-click="$event.stopPropagation();">
-    <div class="item"ng-click="directory.delete = true; ">
+<div class="ftp-context-menu" ng-show="menu.ftpDirectoryContextMenu.show" ng-click="$event.stopPropagation();">
+    <div class="item" ng-click="directory.delete = true; ">
         <span ng-if="!directory.root" class="fa fa-icon fa-trash-alt" >
         </span>
         <span>Delete</span>
