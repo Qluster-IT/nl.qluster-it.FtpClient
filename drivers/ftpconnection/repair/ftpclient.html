@@ -160,8 +160,10 @@
 					Homey.emit('renameDirectory', {directory}).then((result)=> {
 						$scope.$apply(()=> {
 							delete directory.renameName;
-							console.log('$scope.vars.currentDirectory');
-							console.log($scope.vars.currentDirectory);
+							console.log('$scope.directory');
+							console.log($scope.directory);
+							console.log('$scope.$parent.directory');
+							console.log($scope.$parent.directory);
 							$scope.getChildren($scope.$parent.directory || $scope.vars.currentDirectory, true);
 						});
 					});

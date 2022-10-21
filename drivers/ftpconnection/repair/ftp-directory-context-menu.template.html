@@ -3,12 +3,12 @@
         <span ng-if="!directory.root" class="fa fa-icon fa-trash-alt" >
         </span>
         <span>Delete</span>
-        <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.delete=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.delete"></window-confirm>
+        <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.delete=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.delete"></window-confirm>
     </div>
     <div class="item"  ng-click="directory.rename = true;directory.renameName = directory.name; ">
         <span ng-if="!directory.root" class="fa fa-icon fa-i-cursor"></span>
         <span>Rename</span>
-        <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.rename=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.rename">                    
+        <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory, parentDirectory); menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.rename=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.rename">                    
             <input type="text" ng-model="directory.renameName">
         </window-confirm>
     </div>
@@ -16,7 +16,7 @@
         <span class="fa fa-icon fa-folder-plus">
         </span>
         <span>New</span>
-        <window-confirm title="Add directory" message="Enter a name for the directory:" on-ok="addDirectory(directory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.add=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.add">
+        <window-confirm title="Add directory" message="Enter a name for the directory:" on-ok="addDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.add=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.add">
             <input type="text" ng-model="directory.addName">
         </window-confirm>
     </div>
