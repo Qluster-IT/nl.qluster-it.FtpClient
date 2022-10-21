@@ -11,8 +11,8 @@
             <input type="text" ng-model="file.renameName">
         </window-confirm>
     </div>
-    <div class="item" ng-click="downloadFile(file);menu.ftpFileContextMenu.show=false;$event.stopPropagation();">
-        <span ng-if="!file.root" class="fa fa-icon fa-file-download"></span>
+    <div class="item" ng-click="downloadFile(file, directory);menu.ftpFileContextMenu.show=false;$event.stopPropagation();">
+        <span class="fa fa-icon fa-file-download"></span>
         <span>Download</span>
     </div>
 </div>

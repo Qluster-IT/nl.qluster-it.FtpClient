@@ -234,7 +234,7 @@
 					Homey.emit('deleteFile', {file}).then((result)=> {
 						$scope.$apply(()=> {
 							delete file.delete;
-							$scope.$parent.getChildren($scope.$parent.directory, true);
+							(directory || $scope.$parent).getChildren(directory || $scope.$parent.directory, true);
 						});
 					});
 				}
@@ -248,7 +248,7 @@
 					});
 				}
 				
-				$scope.downloadFile = function(file) {							
+				$scope.downloadFile = function(file) {
 					Homey.emit('getFileUrl', {file}).then((result)=> {
 						$scope.$apply(()=> {
 							// const blob = base64ToBlob(result.base64);
