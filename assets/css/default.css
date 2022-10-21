@@ -452,6 +452,10 @@ select {
 
 
 
+.ftp-directory-children.non-active>.ftp-directory, .ftp-directory-children.non-active>.ftp-file  {
+    position:initial!important;
+
+}
 .ftp-directory-children {
     cursor:default;
     white-space: normal;
