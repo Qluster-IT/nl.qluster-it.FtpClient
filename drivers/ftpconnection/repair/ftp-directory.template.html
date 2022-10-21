@@ -8,8 +8,8 @@
     </div>
     <span class="ftp-directory-header" ng-dblclick="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
         ftp-directory-context-menu-click="hideMenus();vars.selected=directory; $event.stopPropagation(); ">
-        <span ng-if="!directory.root && view.display!='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"></span>
-        <span ng-if="!directory.root && view.display=='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.shown, 'fa-folder-open':directory.shown}"
+        <span ng-if="!directory.root && view.display!='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.show, 'fa-folder-open':directory.show}"></span>
+        <span ng-if="!directory.root && view.display=='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.show, 'fa-folder-open':directory.show}"
             ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "        
         ></span>
         <span class="name"><div>{{directory.name}}</div></span>
