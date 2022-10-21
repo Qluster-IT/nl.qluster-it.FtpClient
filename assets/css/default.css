@@ -30,13 +30,15 @@ a {
 
 .float-right {
     float: right !important;
-    z-index: 100;
 }
 
+.float-right {
+    float: left !important;
+}
 .bold {
     font-weight: bold !important;
 }
-
+.full-width { width:100%;}
 
 .fa-icon {
     /* min-width: 30px; */
@@ -445,6 +447,14 @@ select {
 
 
 
+.ftp-directory-children {
+    cursor:default;
+    white-space: normal;
+    text-align: left;
+}
+
+
+
 .list.ftp-directory-root > .ftp-directory {
     padding-left:0px!important;
 }
@@ -482,6 +492,10 @@ select {
     padding-left:10px;
 }
 
+.list .ftp-directory-children {
+    white-space: normal;
+}
+
 
 
 .th-small.ftp-directory-root > .ftp-directory {
@@ -509,7 +523,6 @@ select {
     font-size: 11pt;
     display:inline-block;
     width:100%;
-    height: 32px;
     margin: auto;
     padding: 2px;
     white-space: nowrap;
@@ -517,7 +530,11 @@ select {
 }
 .th-small .ftp-directory-header>span:nth-child(1), .th-small .ftp-file-header>span:nth-child(1) {
     display: block;
+    font-size:50px;
+    margin-bottom:5px
 }
+
+
 
 .th-small .ftp-buttons {
     display: none;
@@ -532,8 +549,35 @@ select {
     top: 50px;
     left: 0px;
     width:100%;
+    height: 100%;
 }
 
+
+.ftp-directory-context-menu {
+    z-index:20;
+    background-color:white;
+    padding:5px;
+    border:1px solid black;
+
+}
+/* .ftp-directory-context-menu .items {
+    padding:5px;
+    border:1px solid black;
+} */
+.ftp-directory-context-menu .item {
+    display: block;
+    padding:5px;
+    cursor:pointer;
+    font-size: 16pt;
+}
+.ftp-directory-context-menu .item .fa-icon {
+    width:36px;
+    text-align: center;
+    padding:0;
+}
+.ftp-directory-context-menu .item:hover {
+    background-color: #cecece;
+}
 
 
 
@@ -569,6 +613,13 @@ select {
 }
 
 
+.floating-buttons {
+    position: fixed;
+    top:10px;
+    left:10px;
+    background-color: white;
+    z-index:10;
+}
 
 
 
