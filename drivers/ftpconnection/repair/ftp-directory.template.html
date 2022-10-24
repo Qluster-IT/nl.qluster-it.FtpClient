@@ -3,12 +3,12 @@
     <div class="floating-buttons-left" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
         <span class="fa fa-icon fa-level-up-alt" ng-click="setCurrentDirectory(parentDirectory);" data-drop="true" jqyoui-droppable="{onDrop:'dropItemUp'}" ></span>
     </div>
-    <div class="floating-buttons-right" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
+    <div class="floating-buttons-right" ng-if="view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
         <span class="fa fa-icon fa-sync-alt" ng-click="getChildren(directory, true);"></span>
     </div>
     <span class="ftp-directory-header" ng-dblclick="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
         ftp-directory-context-menu-click="hideMenus();vars.selected=directory; $event.stopPropagation(); "
-        data-drop="true" jqyoui-droppable="{onDrop:'dropItem'}" data-jqyoui-options="{tolerance: 'pointer', revert: 'invalid'}"
+        data-drop="true" jqyoui-droppable="{onDrop:'dropItem'}" data-jqyoui-options="{tolerance: 'pointer', revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}"
         jqyoui-draggable  data-drag="true"
         >
         <span ng-if="!directory.root && view.display!='list'" class="fa fa-icon fa-folder"></span>

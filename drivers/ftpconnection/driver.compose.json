@@ -127,7 +127,7 @@
         "label": {
           "en": "Url's used for the Url's for the files"
         },
-        "value": "local",
+        "value": "localssl",
         "values": [
           { "id": "local", "label": { "en": "Local" } },
           { "id": "localssl", "label": { "en": "Local (SSL)" } },

@@ -63,6 +63,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
+
         if (!(await existsAsync(`./userdata/downloads/`))) await mkdirAsync(`./userdata/downloads/`);
         await emptyDirectory(`./userdata/downloads/`);
         
@@ -285,10 +286,12 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         session.setHandler('getContent', async ({ path } = { path: '' }) => {
             try {
-                let r = (await device.ftpClient.exec('list',  path)).map(x => { return { name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
+                let list = (await device.ftpClient.exec('list',  path));
+                let r = list.map(x => { return { name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
                 return r;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
         session.setHandler('moveItem', async ({ item, targetDirectory }) => {
@@ -413,10 +416,17 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             let name = file.filename || file.name;
 
             await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + name);
+            stream = null;
+            global.gc();
+            await device.ftpClient.refresh();
             buf = Buffer.concat(buf);
+                //buf.
 
+                //base64 = buf.toString('base64');                
+            //buf = null;
+            //}
+            //global.gc();
 
-            let base64 = buf.toString('base64');
             let randomId = randomBytes(24).toString('hex');
             let id = device.id + (file.path.startsWith('/')?'':'/') + file.path + '/' + name;// randomBytes(12).toString('hex');
             id = encodeURIComponent(id);
@@ -457,7 +467,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
             }
 
-            this.fileDownloads[id] = { base64, name: name, file: file, id };
+            this.fileDownloads[id] = { name: name, id };
             this.fileDownloads[id].timeout = setTimeout((async (id) => {
                 this.log('deleting ');
                 if(this.fileDownloads[id].randomId) { 
@@ -474,13 +484,15 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 this.log('writefile', `./userdata/${id}`);
 
                 let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
-                
-                // else if(type==='url') 
-                // id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');
-                
+
+            } else {
+                //this.fileDownloads[id].base64 = buf.toString('base64');
+                this.fileDownloads[id].buffer = buf;
             }
             if (useUrl==='localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
             else if  (useUrl==='cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
+            buf = null;
+            global.gc();
 
             return { id, url }; //base64
 

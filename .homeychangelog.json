@@ -7,5 +7,8 @@
   },  
   "1.0.2": {
     "en": "Improved: Drag and Drop UI."
+  },  
+  "1.0.3": {
+    "en": "Improved: Files larger then 1MB are now supported. Further UI drag-and-drop improvements. Also added Error handling."
   }
 }

@@ -479,6 +479,9 @@ select {
     margin-bottom: 5px;
     margin:0px;
 }
+.list .ftp-directory .ui-draggable-dragging, .list .ftp-directory .ftp-file .ui-draggable-dragging {
+    z-index:10;
+}
 
 .list.ftp-directory-root>span {
     display: none;
@@ -518,7 +521,8 @@ select {
     width: 100%!important;
 }
 
-.th-small .ftp-directory, .th-small .ftp-directory .ftp-file  {
+.th-small .ftp-directory, .th-small .ftp-file ,
+.th-small .ftp-directory-header.ui-draggable-dragging {
     display:inline-block;
     width:100px;    
     
@@ -529,12 +533,31 @@ select {
     overflow:hidden;
     padding: 0px 5px !important;
 }
-.th-small .ftp-directory, .th-small .ftp-directory .ftp-file, .th-small .ftp-directory-children {
-    border:1px solid white;
+/* 
 
+.th-small .ftp-directory .ui-draggable-dragging, .th-small .ftp-file .ui-draggable-dragging, .th-small .ftp-directory-header .ui-draggable-dragging {
+    z-index:10;
+    width:100px;
+} */
+
+.th-small .ftp-directory, .th-small .ftp-file, .th-small .ftp-directory-children {
+    border:1px solid white;
 }
+
 .th-small .ftp-directory.selected, .th-small .ftp-file.selected, .th-small .ftp-directory-children.selected {
     border-color:black;
+}
+
+.th-small .ftp-directory .ui-droppable, .th-small .ftp-file .ui-droppable, .th-small .ftp-directory-children .ui-droppable {
+    border:1px dashed white;
+}
+
+.th-small .ftp-directory .ui-droppable-active, .th-small .ftp-file .ui-droppable-active, .th-small .ftp-directory-children .ui-droppable-active {
+    border-color: black;
+}
+
+.th-small .ftp-directory .ui-droppable-hover, .th-small .ftp-file .ui-droppable-hover, .th-small .ftp-directory-children .ui-droppable-hover {
+    border-style: ridge;
 }
 .th-small .ftp-directory.selected>.ftp-directory-header>.name, .th-small .ftp-file.selected>.ftp-file-header>.name {
     /* animation: scrollText 10s infinite linear; */
@@ -548,10 +571,10 @@ select {
     margin: 0;
     padding: 0;
 } */
-
+/* 
 .th-small.ftp-directory-root>span {
     display: none;
-}
+} */
 
 .th-small .ftp-directory-header, .th-small .ftp-file-header {
     font-size: 11pt;

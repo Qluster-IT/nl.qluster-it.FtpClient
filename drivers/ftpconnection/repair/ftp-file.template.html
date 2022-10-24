@@ -1,4 +1,4 @@
-<div class="ftp-file" ng-style="{'padding-left':((file.indent?1:0)*15)+'px'}" data-drag="true" jqyoui-draggable  data-jqyoui-options="{revert: 'invalid'}">
+<div class="ftp-file" ng-style="{'padding-left':((file.indent?1:0)*15)+'px'}" data-drag="true" jqyoui-draggable  data-jqyoui-options="{revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}">
     <span class="ftp-file-header" ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); "
         ng-dblclick="downloadFile(file);$event.stopPropagation();" >
         <span class="far fa-icon {{getFileIcon(file)}}"></span>

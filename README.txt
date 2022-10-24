@@ -13,12 +13,12 @@ It contains a flowcard to retrieve a (http) url to access the files: So you can 
 But this is developed for and works great with the Micro Web Server (MWS) App.
 **Combine these two apps to replace Soundboard as local storage!**
 
-### Install the FTP Server from Micro Web Server
+Install the FTP Server from Micro Web Server
 * Install the Micro Web Server App.
 * Go to the MWS App Settings and turn on the FTP Server and put it on Autostart.
 Done!
 
-### Install the FTP Client.
+Install the FTP Client.
 * Install the FTP Client App.
 * Create a new FTP Connection Device.
 * Select the FTP Micro Web Server and press next.
@@ -28,7 +28,7 @@ Now go into Device Repair and start editing your locally-on-homey-stored folders
 
 
 
-# Flowcard to retrieve an Url.
+Flowcard to retrieve an Url.
 It retrieves the file from the FTP server and keeps it accessable for 60* seconds through a url (* can be set per device in device-settings).
 
 This works perfectly on Sonos speakers or any other device accepting a Url, like sending a image or movie to a TV with a Browser.
