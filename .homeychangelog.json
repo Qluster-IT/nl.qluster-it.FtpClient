@@ -16,5 +16,8 @@
   },  
   "1.0.5": {
     "en": "Improved: Scrolling with drag-and-drop for Phones."
+  },  
+  "1.1.0": {
+    "en": "Improved: Completed basic UI."
   }
 }

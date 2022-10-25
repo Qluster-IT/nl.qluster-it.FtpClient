@@ -9,7 +9,7 @@
     <span class="ftp-directory-header" ng-dblclick="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
         ftp-directory-context-menu-click="hideMenus();vars.selected=directory; $event.stopPropagation(); "
         data-drop="true" jqyoui-droppable="{onDrop:'dropItem'}" data-jqyoui-options="{tolerance: 'pointer', revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}"
-        jqyoui-draggable  data-drag="true"
+        jqyoui-draggable  data-drag="true" ng-show="directory.path==vars.path"
         >
         <span ng-if="!directory.root && view.display!='list'" class="fa fa-icon fa-folder"></span>
         <span ng-if="!directory.root && view.display=='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.show, 'fa-folder-open':directory.show}"
