@@ -167,12 +167,16 @@
 				$scope.hideMenus = function () { return $rootScope.closeMenu(); };
 
 				$scope.dropItem = function (a, b, c, d) {
+					console.log('$scope.dropItem');
+					a.stopPropagation();
+
 					var scopeTarget = angular.element($(a.target)).scope();
 					var scopeSource = angular.element(b.draggable.get(0)).scope();
 					dropItem(scopeSource, scopeTarget);
 				}
 
 				$scope.dropItemUp = function (a, b, c, d) {
+					a.stopPropagation();
 					var scopeTarget = angular.element($(a.target)).scope();
 					var scopeSource = angular.element(b.draggable.get(0)).scope();
 					dropItem(scopeSource, scopeTarget.$parent.$parent);

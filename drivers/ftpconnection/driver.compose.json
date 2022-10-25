@@ -88,6 +88,15 @@
         "value": false
       },
       {
+        "id": "workdirectory",
+        "type": "text",
+        "label": {
+          "en": "Work (Default) Directory"
+        },
+        "value": "",
+        "hint": "This will be considered the Root Directory."
+      },
+      {
         "id": "downloadtime",
         "type": "number",
         "label": {

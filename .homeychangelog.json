@@ -13,5 +13,8 @@
   },  
   "1.0.4": {
     "en": "Improved: Further UI drag-and-drop improvements for Phones."
+  },  
+  "1.0.5": {
+    "en": "Improved: Scrolling with drag-and-drop for Phones."
   }
 }

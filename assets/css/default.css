@@ -512,6 +512,7 @@ select {
 
 .list .ftp-directory-children {
     white-space: normal;
+    overflow-y:auto;
 }
 
 .list .ftp-directory>.ftp-directory-children>* {

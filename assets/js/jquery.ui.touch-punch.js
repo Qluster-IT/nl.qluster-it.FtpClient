@@ -9,9 +9,8 @@
  *  jquery.ui.mouse.js
  */
 
-
 (function ($, Homey) {
-
+    $.selectedTouchElement = null;
     // Detect touch support
     $.support.touch = 'ontouchend' in document;
   
@@ -23,7 +22,7 @@
     var mouseProto = $.ui.mouse.prototype,
         _mouseInit = mouseProto._mouseInit,
         _mouseDestroy = mouseProto._mouseDestroy,
-        touchHandled;
+        touchHandled, touchHandledMove;
   
     /**
      * Simulate a mouse event based on a corresponding touch event
@@ -79,29 +78,49 @@
         return;
       }
       
-      this.touchedStarted = Date.now();
-      if(this.startTimer) {
-        clearTimeout(this.startTimer);
-        delete this.startTimer;
-      }
-      this.startTimer = setTimeout(function() {
-        if (!this._touchMoved && this.touchedStarted && Date.now() - this.touchedStarted >=300) {        
-                // Simulate the click event
-                simulateMouseEvent(event, 'contextmenu', true);            
-                this.touchedStarted = Date.now();        
-              }
-          } , 300);
+      
+      if(!$.selectedTouchElement || $.selectedTouchElement!=event.target) {
+        touchHandledMove = false;
+        $.selectedTouchElement=event.target;
+        //return;
+      } else touchHandledMove = true;
+      
+      
 
 
       // Set the flag to prevent other widgets from inheriting the touch event      
       touchHandled = true;
-
+      
 
       this.screenX = event.originalEvent.changedTouches[0].screenX;
       this.screenY = event.originalEvent.changedTouches[0].screenY;
   
       // Track movement to determine if interaction was a click
       self._touchMoved = false;
+      
+      
+      this.touchedStarted = Date.now();
+      if(this.startTimer) {
+        clearTimeout(this.startTimer);
+        delete this.startTimer;
+      }
+      this.startTimer = setTimeout(()=> {
+        if (!this._touchMoved && this.touchedStarted && Date.now() - this.touchedStarted >=500) {        
+            
+                // Simulate the mouseup event
+                simulateMouseEvent(event, 'mouseup', true);
+
+                // Simulate the click event
+                simulateMouseEvent(event, 'contextmenu', true);            
+                this.touchedStarted = Date.now();
+                touchHandled = false;
+                touchHandledMove = false;
+            
+                // // Simulate the mouseout event
+                // simulateMouseEvent(event, 'mouseout', true);
+              }
+          } , 500);
+
   
       // Simulate the mouseover event
       simulateMouseEvent(event, 'mouseover', true);
@@ -121,9 +140,6 @@
     mouseProto._touchMove = function (event) {
   
       // Ignore event if not handled
-      if (!touchHandled) {
-        return;
-      }
       let margin = 10;
       let diffX = -1;
       let diffY = -1;
@@ -136,16 +152,22 @@
 
         if(diffY>margin || diffY<-margin || diffX>margin || diffX<-margin) ;
         else return;
+
+      // Interaction was not a click
+      this._touchMoved = true;
+      this.touchedEnded = null;
+      this.touchedStarted = null;
+
+        if (!touchHandledMove) {
+            return;
+        }
+    
         //Homey.alert(diffX);
     //   Homey.alert(
     //     this.screenX - event.originalEvent.changedTouches[0].screenX > 5 || this.screenX -event.originalEvent.changedTouches[0].screenX < -5  ||
     //     this.screenY - event.originalEvent.changedTouches[0].screenY > 5 || this.screenY -event.originalEvent.changedTouches[0].screenY < -5 );
       
         
-      // Interaction was not a click
-      this._touchMoved = true;
-      this.touchedEnded = null;
-
       // Simulate the mousemove event
       simulateMouseEvent(event, 'mousemove', true);
       this.screenX = event.originalEvent.changedTouches[0].screenX;
@@ -165,7 +187,7 @@
       if (!touchHandled) {
         return;
       }
-  
+      this.touchedStarted = null;
       // Simulate the mouseup event
       simulateMouseEvent(event, 'mouseup', true);
   
@@ -193,6 +215,7 @@
       this.touchedEnded = Date.now();
       // Unset the flag to allow other widgets to inherit the touch event
       touchHandled = false;
+      touchHandledMove = false;
     };
   
     /**
