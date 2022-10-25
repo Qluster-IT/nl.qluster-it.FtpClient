@@ -1,5 +1,5 @@
 
-<div class="ftp-directory" ng-style="{'padding-left':((directory.indent?1:0)*15)+'px'}" ng-dblclick=" $event.stopPropagation();">
+<div class="ftp-directory" ng-dblclick=" $event.stopPropagation();">
     <div class="floating-buttons-left" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
         <span class="fa fa-icon fa-level-up-alt" ng-click="setCurrentDirectory(parentDirectory);" data-drop="true" jqyoui-droppable="{onDrop:'dropItemUp'}" ></span>
     </div>

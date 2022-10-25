@@ -287,7 +287,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         session.setHandler('getContent', async ({ path } = { path: '' }) => {
             try {
                 let list = (await device.ftpClient.exec('list',  path));
-                let r = list.map(x => { return { name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
+                let r = list.map(x => { return { name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path, fullPath:(path && path.length>0 ? path + '/' : '') + x.name }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
                 return r;
             } catch (error) {
                 this.error(error);

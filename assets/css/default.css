@@ -514,6 +514,14 @@ select {
     white-space: normal;
 }
 
+.list .ftp-directory>.ftp-directory-children>* {
+    padding-left:15px;
+}
+
+
+.list.ftp-directory-root>.ftp-directory>.ftp-directory-children>* {
+    padding-left:0px;
+}
 
 
 .th-small.ftp-directory-root > .ftp-directory {

@@ -1,5 +1,6 @@
 <script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
 <script type="text/javascript" src="../../../assets/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../../assets/js/jquery.ui.touch-punch.js"></script>
 <link rel="stylesheet" href="../../../assets/css/jquery-ui.css" type="text/css" />
 
 <script type="text/javascript" src="../../../assets/js/angular.js"></script>
@@ -73,7 +74,7 @@
 			}])
 			.controller("ftpclientCtrl", ['$scope', '$rootScope', '$timeout', '$compile', '$q', function ($scope, $rootScope, $timeout, $compile, $q) {
 				//let $;
-				const vars = $scope.vars = { path: '', content: { name: '', path: '', isDirectory: true, children: [], show: true, root: true, childOpen: true }, currentDirectory: null };
+				const vars = $scope.vars = { path: '', content: { name: '', path: '', fullPath:'', isDirectory: true, children: [], show: true, root: true }, currentDirectory: null };
 				vars.currentDirectory = vars.content;
 				$rootScope.vars = vars;
 
@@ -160,7 +161,7 @@
 					}
 				}
 
-				function getFullPath(directory) { return directory.path + '/' + directory.name; }
+				//function getFullPath(directory) { return directory.path + '/' + directory.name; }
 				//function getFullPath(directory) { return ( directory.path &&  directory.path.length>0 ? directory.path + '/':'') + directory.name; }
 
 				$scope.hideMenus = function () { return $rootScope.closeMenu(); };
@@ -174,44 +175,56 @@
 				$scope.dropItemUp = function (a, b, c, d) {
 					var scopeTarget = angular.element($(a.target)).scope();
 					var scopeSource = angular.element(b.draggable.get(0)).scope();
-					dropItem(scopeSource, scopeTarget.$parent.$parent, ()=> {
-						$scope.setCurrentDirectory(scopeTarget.$parent.$parent.directory);
-					});
+					dropItem(scopeSource, scopeTarget.$parent.$parent);
+					// , ()=> {
+					// 	$scope.setCurrentDirectory(scopeTarget.$parent.$parent.directory);
+					// });
 				}
 
 
-				$scope.getChildren = function (directory, refresh) {
+				$scope.getChildren = function (directory, refresh, func) {
 					if (directory.children && directory.children.length && !refresh) return;
-					let path = directory.path + '/' + directory.name;
-					if (path === '/') path = '';
+					let oldChildren = directory.children;
+					// let path = directory.path + '/' + directory.name;
+					// if (path === '/') path = '';
 					Homey.showLoadingOverlay();
-					Homey.emit('getContent', { path }).then((result) => {
+					Homey.emit('getContent', { path:directory.fullPath }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							directory.children = result;
-							// for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = directory;
+							if(oldChildren) for (const child of directory.children) {
+								child.show = (_.find(oldChildren, c=>c.fullPath==child.fullPath)||{}).show; //For list only
+								if($scope.vars.selected && $scope.vars.selected.fullPath===child.fullPath) $scope.vars.selected = child;  //For thumbnails only
+								if($scope.vars.currentDirectory && $scope.vars.currentDirectory.fullPath===child.fullPath) $scope.vars.currentDirectory = child;  //For thumbnails only
+							}
+							if(func) func();
 						});
 					}).catch(err => handleError(err));
 				}
 
 				$scope.setCurrentDirectory = function (directory) {
 					$scope.vars.currentDirectory = directory;
-					$scope.vars.path = getFullPath(directory);
+					$scope.vars.path = directory.fullPath;// getFullPath(directory);
 				}
 
 				$scope.isInPath = function (directory) {
-					let path = getFullPath(directory);
+					let path = directory.fullPath;//getFullPath(directory);
 					return path === '' || $scope.vars.path.startsWith(path);
 				}
 
 				$scope.moveItem = function (item, itemDirectory, targetDirectory, func) {
+					if(itemDirectory===targetDirectory) return;
 					Homey.showLoadingOverlay();
 					Homey.emit('moveItem', { item, targetDirectory }).then((result) => {
 						Homey.hideLoadingOverlay();
-						$scope.$apply(() => {
-							$scope.getChildren(targetDirectory, true);
-							$scope.getChildren(itemDirectory, true);
-							if(func) func();
+						//$scope
+						$rootScope.$apply(() => {
+							$scope.getChildren(targetDirectory, true, ()=> {
+								if($scope.vars.currentDirectory && $scope.vars.currentDirectory.fullPath===itemDirectory.fullPath)
+									$scope.getChildren($scope.vars.currentDirectory, true);
+								else $scope.getChildren(itemDirectory, true);
+								if(func) func();
+							});
 						});
 					}).catch(err => handleError(err));
 				}
@@ -265,9 +278,9 @@
 					restrict: 'E',
 					controller: 'ftpDirectoryCtrl',
 					link: function (scope, element) {
-						let matches = scope.directory.path.match(/\//g);
-						scope.directory.indent = matches ? matches.length : -1;
-						if (!scope.directory.root) scope.directory.indent++;
+						// let matches = scope.directory.path.match(/\//g);
+						// scope.directory.indent = matches ? matches.length : -1;
+						// if (!scope.directory.root) scope.directory.indent++;
 					}
 				};
 			}])
@@ -393,9 +406,9 @@
 					restrict: 'E',
 					controller: 'ftpFileCtrl',
 					link: function (scope, element) {
-						let matches = scope.file.path.match(/\//g);
-						scope.file.indent = matches ? matches.length : -1;
-						scope.file.indent++;
+						//let matches = scope.file.path.match(/\//g);
+						// scope.file.indent = matches ? matches.length : -1;
+						// scope.file.indent++;
 
 						scope.getFileIcon = function (file) {
 							let ext = _.last(file.name.split('.')).toLowerCase();

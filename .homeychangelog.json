@@ -10,5 +10,8 @@
   },  
   "1.0.3": {
     "en": "Improved: Files larger then 1MB are now supported. Further UI drag-and-drop improvements. Also added Error handling."
+  },  
+  "1.0.4": {
+    "en": "Improved: Further UI drag-and-drop improvements for Phones."
   }
 }
