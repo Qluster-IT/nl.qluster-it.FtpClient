@@ -1,0 +1,34 @@
+{
+    "id": "action_ftpclient_get_imagetoken",
+    "title": {
+      "en": "Get file URL",
+      "nl": "Ontvang bestand url"
+    },
+    "titleFormatted": {
+      "en": "Get an Image Token for [[image]]",
+      "nl": "Ontvang een Afbeelding Token voor [[image]]"
+    },
+    "hint": "URL",
+    "args": [
+    {
+        "name": "device",
+        "type": "device",
+        "filter": "driver_id=ftpconnection"
+    },
+      {
+        "name": "image",
+        "type": "autocomplete",
+        "placeholder": "Image"
+      }
+    ],
+    "tokens":[
+      {
+        "name":"image",
+        "type":"image",
+        "title":{
+          "en":"Image",
+          "nl":"Afbeelding"
+        }
+      }
+    ]
+  }

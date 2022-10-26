@@ -1,6 +1,6 @@
 {
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -10,7 +10,7 @@
     "en": "FTP Client"
   },
   "description": {
-    "en": "Control a FTP Server through a directory-based UI in the Homey App or Web App."
+    "en": "Control FTP Servers through a directory-based UI in the Homey App or Web App."
   },
   "brandColor": "#2B738C",
   "category": [

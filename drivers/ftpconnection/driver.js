@@ -112,8 +112,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
         const action_ftpconnection_get_url = this.homey.flow.getActionCard('action_ftpconnection_get_url');
-        action_ftpconnection_get_url.registerRunListener(async (args, state) => {
-            //var defer = new Defer();
+        action_ftpconnection_get_url.registerRunListener(async (args) => {
             try {
                 if (!args.file) return false;
                 if (args && args.file && args.file.isFile !== 'true' && args.file.isFile !== true) throw new Error('A file must be selected.');
@@ -130,36 +129,63 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         action_ftpconnection_get_url.getArgument('file').registerAutocompleteListener(async (query, args) => {
             try {
-                let path = (args.file ? (args.file.isDirectory === 'true' ? args.file.id : args.file.path) : query) || '';
-                let pathsAbove = path.split('/');
-                pathsAbove.pop();
-                let pathAbove = pathsAbove.join('/');
-                let startUrl = 
-                args.device.settings.urlforicons===
-                'local' ? 
-                    `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
-                'localssl' ? 
-                    `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
-                'cloudssl' ? 
-                    `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/`
-                :   '';
-
-                let r = await args.device.ftpClient.getList({ path });
-
-                r = r.map(x => { return { id: `${path}${path ? '/' : ''}${x.name}`, filename:x.name, name: `${path}${path ? '/' : ''}${x.name}`, path, description: path, isDirectory: x.isDirectory, isFile: x.isFile }; });
-                //r = r.sort(x=>(x.isDirectory ? '0.' : '1.') + x.name);
-                r = _.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
-                
-                if (pathAbove && pathAbove.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
-                _.each(r, (x) => {
-                    //x.icon = ''; svg
-                    //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
-                    x.image = startUrl + Icons.getIconsFromFile(x);
-                });
-                
-                return r;
+                return await this.getFile({file:args.file, query, device:args.device });
             } catch (error) { this.error('action_ftpconnection_get_url.file.registerAutocompleteListener.error :', error); throw error; }
         });
+
+        
+        const action_ftpclient_get_imagetoken = this.homey.flow.getActionCard('action_ftpclient_get_imagetoken');
+        action_ftpclient_get_imagetoken.registerRunListener(async (args) => {
+            try {
+                if (!args.image) return false;
+                if (args && args.image && args.image.isFile !== 'true' && args.image.isFile !== true) throw new Error('An image must be selected.');
+
+                let fileInfo = await this.getFileUrl({file:args.image, device:args.device, type:'url', createToken:true});
+                
+                return {image:fileInfo.image};
+
+            } catch (error) {
+                console.log('Error: ' + error);
+                throw typeof(error)==='string'?new Error(error) : error;
+            }
+
+        });
+        action_ftpclient_get_imagetoken.getArgument('image').registerAutocompleteListener(async (query, args) => {
+            try {
+                return await this.getFile({file:args.image, query, device:args.device, type:'image' });
+            } catch (error) { this.error('action_ftpclient_get_imagetoken.image.registerAutocompleteListener.error :', error); throw error; }
+        });
+    }
+
+    async getFile({type, file, query, device} = {}) {
+        let path = (file ? (file.isDirectory === 'true' ? file.id : file.path) : query) || '';
+        let pathsAbove = path.split('/');
+        pathsAbove.pop();
+        let pathAbove = pathsAbove.join('/');
+        let startUrl = 
+        device.settings.urlforicons===
+        'local' ? 
+            `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
+        'localssl' ? 
+            `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
+        'cloudssl' ? 
+            `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/`
+        :   '';
+
+        let r = await device.ftpClient.getList({ path });
+
+        r = r.map(x => { return { id: `${path}${path ? '/' : ''}${x.name}`, filename:x.name, name: `${path}${path ? '/' : ''}${x.name}`, path, description: path, isDirectory: x.isDirectory, isFile: x.isFile }; });
+        r = _.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
+        if(type) r = _.filter(r, x => x.isDirectory || Icons.getFileType(x).contains(type));
+        
+        if (pathAbove && pathAbove.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
+        _.each(r, (x) => {
+            //x.icon = ''; svg
+            //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
+            x.image = startUrl + Icons.getIconsFromFile(x);
+        });
+        
+        return r;
     }
 
     // This method is called when a user is adding a device
@@ -385,7 +411,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
 
 
-    async getFileUrl({ file, device, type }) {
+    async getFileUrl({ file, device, type , createToken}) {
         try {
             // let filesandfolders = await readdirAsync('./userdata/');
             // for (let i = 0; i < filesandfolders.length; i++) {
@@ -432,6 +458,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             id = encodeURIComponent(id);
             let url = 'http://' + this.homey.app.ip + ":47335/file/" + id;
             let useUrl;
+            let path;
 
             if(type=='url') useUrl = device.settings.urlforurls;
             else if(type=='download') useUrl = device.settings.urlforfiles;
@@ -458,46 +485,72 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             if (!this.fileDownloads) this.fileDownloads = {};
 
-            if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
-                clearTimeout(this.fileDownloads[id].timeout);                
-                if(this.fileDownloads[id].randomId)  {                    
-                    if ((await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`, {force:true, recursive:true});                
+            let deleteFile = async (fileObject) => {
+                clearTimeout(fileObject.timeout);
+                delete fileObject.timeout;
+                if(fileObject.randomId)  {
+                    this.log('deleting file');
+                    if ((await existsAsync(`./userdata/downloads/${fileObject.randomId}`))) await rmAsync(`./userdata/downloads/${fileObject.randomId}`, {force:true, recursive:true});                
                 }
-                delete this.fileDownloads[id].timeout;
+                if(fileObject.token)  {
+                    this.log('deleting token');
+                    await this.homey.flow.unregisterToken(fileObject.token);
+                }
+                if(fileObject.image)  {
+                    this.log('deleting image');
+                    await this.homey.images.unregisterImage(fileObject.image);
+                }
+                
+                
+            };
+
+            if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
+                await deleteFile(this.fileDownloads[id]);
                 
             }
 
             this.fileDownloads[id] = { name: name, id };
             this.fileDownloads[id].timeout = setTimeout((async (id) => {
-                this.log('deleting ');
-                if(this.fileDownloads[id].randomId) { 
-                    if ((await existsAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`))) await rmAsync(`./userdata/downloads/${this.fileDownloads[id].randomId}`, {force:true, recursive:true});                
-                }
-                delete this.fileDownloads[id];                
+                await deleteFile(this.fileDownloads[id]);
             }).bind(this, id), device.settings.downloadtime * 1000);
             
-            if(useUrl==='cloudssl' || useUrl==='localssl') {
+            let token, image;
+            if(useUrl==='cloudssl' || useUrl==='localssl' || createToken) {
                 this.fileDownloads[id].randomId = randomId;
                 if (!(await existsAsync(`./userdata/downloads/${randomId}/`))) await mkdirAsync(`./userdata/downloads/${randomId}/`, {recursive:true});
-                await writeFileAsync(`./userdata/${id}`, buf);
+                path = `./userdata/${id}`;
+                await writeFileAsync(path, buf);
                 
-                this.log('writefile', `./userdata/${id}`);
+                this.log('writefile', path);
+                if(createToken) {
+                    this.fileDownloads[id].image = await this.homey.images.createImage();
+                    this.fileDownloads[id].image.setPath(path);
+                    this.fileDownloads[id].token = await this.homey.flow.createToken(randomBytes(12).toString('hex'), {
+                        type: "image",
+                        title: file.name,
+                      });                  
+                      await this.fileDownloads[id].token.setValue(this.fileDownloads[id].image);
+                }
 
-                let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
+               // let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
 
-            } else {
+            } 
+            
+            if(useUrl==='local') {
                 //this.fileDownloads[id].base64 = buf.toString('base64');
                 this.fileDownloads[id].buffer = buf;
+                //if(createToken) throw new Error('To get image tokens');
             }
             if (useUrl==='localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
             else if  (useUrl==='cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
             buf = null;
             global.gc();
 
-            return { id, url }; //base64
+            return { id, url, path, token:this.fileDownloads[id].token, image:this.fileDownloads[id].image }; //base64
 
         } catch (error) {
             this.error(error);
+            throw error;
         }
     }
 };
