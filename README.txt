@@ -1,9 +1,10 @@
-FTP Client(s)
+This App let's you control any FTP Server directly from your Homey, in a directory based UI.
+You can Add, Rename, Move and Delete folders and files directly from the Homey App or Web App, anywhere you want!
 
-This App let's you control any FTP Server directly from your Homey.
-You can Add, Rename and Delete folders and files directly from the Homey App, anywhere you want!
+You can also Download files anywhere on the Homey Web App or with the Homey Mobile App, secure, without opening ports or firewalls!
 
-You can also Download files anywhere on the Homey Web App or with the Homey Mobile App, secure, without opening ports or firwalls!
+To drag and drop on Mobiles or Tablets, first select a folder or file, than start dragging.
+Click right-click or press/tab-long on items for a contextmenu.
 
 
 This works great with f.i. a FTP Server running on a Synology.
