@@ -510,9 +510,6 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
 
             this.fileDownloads[id] = { name: name, id };
-            this.fileDownloads[id].timeout = setTimeout((async (id) => {
-                await deleteFile(this.fileDownloads[id]);
-            }).bind(this, id), device.settings.downloadtime * 1000);
             
             let token, image;
             if(useUrl==='cloudssl' || useUrl==='localssl' || createToken) {
@@ -545,7 +542,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             else if  (useUrl==='cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
             buf = null;
             global.gc();
-
+            
+            this.fileDownloads[id].timeout = setTimeout((async (id) => {
+                await deleteFile(this.fileDownloads[id]);
+            }).bind(this, id), device.settings.downloadtime * 1000);
+            
             return { id, url, path, token:this.fileDownloads[id].token, image:this.fileDownloads[id].image }; //base64
 
         } catch (error) {
