@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -83,14 +83,48 @@
         ]
       },
       {
+        "id": "action_ftpclient_get_files",
+        "title": {
+          "en": "Get files (JSON)",
+          "nl": "Ontvang bestanden (JSON)"
+        },
+        "titleFormatted": {
+          "en": "Get files from [[directory]] (JSON)",
+          "nl": "Ontvang bestanden uit [[directory]] (JSON)"
+        },
+        "hint": "URL",
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          },
+          {
+            "name": "directory",
+            "type": "autocomplete",
+            "placeholder": "Directory"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "files",
+            "type": "string",
+            "title": {
+              "en": "Files (JSON)",
+              "nl": "Bestanden (JSON)"
+            }
+          }
+        ]
+      },
+      {
         "id": "action_ftpclient_get_imagetoken",
         "title": {
           "en": "Get file URL",
           "nl": "Ontvang bestand url"
         },
         "titleFormatted": {
-          "en": "Get an Image Token for [[image]]",
-          "nl": "Ontvang een Afbeelding Token voor [[image]]"
+          "en": "Get an Image Token for [[image]] / [[path]]",
+          "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
         },
         "hint": "URL",
         "args": [
@@ -102,7 +136,18 @@
           {
             "name": "image",
             "type": "autocomplete",
-            "placeholder": "Image"
+            "required": false,
+            "placeholder": "Image",
+            "title": {
+              "en": "Select an image or Directory",
+              "nl": "Selecteer een afbeelding of map"
+            }
+          },
+          {
+            "name": "path",
+            "type": "text",
+            "required": false,
+            "placeholder": "path"
           }
         ],
         "tokens": [

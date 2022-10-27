@@ -5,8 +5,8 @@
       "nl": "Ontvang bestand url"
     },
     "titleFormatted": {
-      "en": "Get an Image Token for [[image]]",
-      "nl": "Ontvang een Afbeelding Token voor [[image]]"
+      "en": "Get an Image Token for [[image]] / [[path]]",
+      "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
     },
     "hint": "URL",
     "args": [
@@ -15,11 +15,22 @@
         "type": "device",
         "filter": "driver_id=ftpconnection"
     },
-      {
-        "name": "image",
-        "type": "autocomplete",
-        "placeholder": "Image"
+    {
+      "name": "image",
+      "type": "autocomplete",
+      "required":false,
+      "placeholder": "Image",
+      "title":{
+        "en":"Select an image or Directory",
+        "nl":"Selecteer een afbeelding of map"
       }
+    },    
+    {
+      "name": "path",
+      "type": "text",
+      "required":false,
+      "placeholder": "path"
+    }
     ],
     "tokens":[
       {

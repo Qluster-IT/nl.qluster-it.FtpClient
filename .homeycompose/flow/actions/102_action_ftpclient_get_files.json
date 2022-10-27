@@ -1,0 +1,34 @@
+{
+    "id": "action_ftpclient_get_files",
+    "title": {
+      "en": "Get files (JSON)",
+      "nl": "Ontvang bestanden (JSON)"
+    },
+    "titleFormatted": {
+      "en": "Get files from [[directory]] (JSON)",
+      "nl": "Ontvang bestanden uit [[directory]] (JSON)"
+    },
+    "hint": "URL",
+    "args": [
+    {
+        "name": "device",
+        "type": "device",
+        "filter": "driver_id=ftpconnection"
+    },
+      {
+        "name": "directory",
+        "type": "autocomplete",
+        "placeholder": "Directory"
+      }
+    ],
+    "tokens":[
+      {
+        "name":"files",
+        "type":"string",
+        "title":{
+          "en":"Files (JSON)",
+          "nl":"Bestanden (JSON)"
+        }
+      }
+    ]
+  }

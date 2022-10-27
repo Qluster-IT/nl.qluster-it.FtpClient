@@ -28,5 +28,8 @@
   },  
   "1.2.0": {
     "en": "Improved: Added a flowcard to retrieving an image as Image Token."
+  },  
+  "1.2.1": {
+    "en": "Added: A flowcard to retrieving an files from a directory as JSON collection (use JSON Handler to go through it)."
   }
 }
