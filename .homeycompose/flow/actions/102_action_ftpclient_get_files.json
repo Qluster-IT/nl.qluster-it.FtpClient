@@ -8,7 +8,6 @@
       "en": "Get files from [[directory]] (JSON)",
       "nl": "Ontvang bestanden uit [[directory]] (JSON)"
     },
-    "hint": "URL",
     "args": [
     {
         "name": "device",

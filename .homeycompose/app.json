@@ -1,6 +1,6 @@
 {
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.2.1",
+  "version": "1.2.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -16,6 +16,11 @@
   "category": [
     "tools"
   ],
+  "homeyCommunityTopicId": 70876,
+	"source": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/",
+  	"bugs": {
+		"url": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/issues"
+	  },
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
@@ -26,6 +31,19 @@
     "name": "Arie J. Godschalk",
     "email": "arie@qluster-it.nl"
   },
+	"contributing": {
+		"donate": {
+			"paypal": {
+				"username": "QlusterIT"
+			},
+      "patreon": {
+				"username": "QlusterIT"
+			},
+      "githubSponsors": {
+        "username": "XeroxQ"
+      }
+		}
+	},
   "contributors": {
     "translators": [
       {

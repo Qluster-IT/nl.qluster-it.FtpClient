@@ -8,7 +8,6 @@
       "en": "Get URL for [[file]]",
       "nl": "Ontvang Url voor [[file]]"
     },
-    "hint": "URL",
     "args": [
     {
         "name": "device",

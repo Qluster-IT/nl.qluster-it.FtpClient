@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.2.1",
+  "version": "1.2.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -17,6 +17,11 @@
   "category": [
     "tools"
   ],
+  "homeyCommunityTopicId": 70876,
+  "source": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/",
+  "bugs": {
+    "url": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/issues"
+  },
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
@@ -26,6 +31,19 @@
   "author": {
     "name": "Arie J. Godschalk",
     "email": "arie@qluster-it.nl"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "QlusterIT"
+      },
+      "patreon": {
+        "username": "QlusterIT"
+      },
+      "githubSponsors": {
+        "username": "XeroxQ"
+      }
+    }
   },
   "contributors": {
     "translators": [
@@ -58,7 +76,6 @@
           "en": "Get URL for [[file]]",
           "nl": "Ontvang Url voor [[file]]"
         },
-        "hint": "URL",
         "args": [
           {
             "name": "device",
@@ -92,7 +109,6 @@
           "en": "Get files from [[directory]] (JSON)",
           "nl": "Ontvang bestanden uit [[directory]] (JSON)"
         },
-        "hint": "URL",
         "args": [
           {
             "name": "device",
@@ -119,14 +135,13 @@
       {
         "id": "action_ftpclient_get_imagetoken",
         "title": {
-          "en": "Get file URL",
-          "nl": "Ontvang bestand url"
+          "en": "Get an Image Token",
+          "nl": "Ontvang een afbeeldingstoken"
         },
         "titleFormatted": {
           "en": "Get an Image Token for [[image]] / [[path]]",
           "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
         },
-        "hint": "URL",
         "args": [
           {
             "name": "device",
@@ -158,6 +173,39 @@
               "en": "Image",
               "nl": "Afbeelding"
             }
+          }
+        ]
+      },
+      {
+        "id": "action_ftpclient_save_imagetoken",
+        "droptoken": [
+          "image"
+        ],
+        "title": {
+          "en": "Save Image Token",
+          "nl": "Sla een afbeeldingstoken op"
+        },
+        "titleFormatted": {
+          "en": "Save [[droptoken]] to [[directory]] / [[path]]",
+          "nl": "Sla [[droptoken]] op als [[directory]] / [[path]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          },
+          {
+            "name": "directory",
+            "type": "autocomplete",
+            "required": false,
+            "placeholder": "directory"
+          },
+          {
+            "name": "path",
+            "type": "text",
+            "required": false,
+            "placeholder": "path"
           }
         ]
       }

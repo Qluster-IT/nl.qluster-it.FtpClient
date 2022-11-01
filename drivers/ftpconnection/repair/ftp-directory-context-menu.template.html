@@ -1,12 +1,12 @@
 <div class="ftp-context-menu" ng-show="menu.ftpDirectoryContextMenu.show" ng-click="$event.stopPropagation();">
-    <div class="item" ng-click="directory.delete = true; ">
-        <span ng-if="!directory.root" class="fa fa-icon fa-trash-alt" >
+    <div class="item" ng-if="!directory.root" ng-click="directory.delete = true; ">
+        <span class="fa fa-icon fa-trash-alt" >
         </span>
         <span>Delete</span>
         <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.delete=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.delete"></window-confirm>
     </div>
-    <div class="item"  ng-click="directory.rename = true;directory.renameName = directory.name; ">
-        <span ng-if="!directory.root" class="fa fa-icon fa-i-cursor"></span>
+    <div class="item" ng-if="!directory.root"  ng-click="directory.rename = true;directory.renameName = directory.name; ">
+        <span class="fa fa-icon fa-i-cursor"></span>
         <span>Rename</span>
         <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory, parentDirectory); menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.rename=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.rename">                    
             <input type="text" ng-model="directory.renameName">

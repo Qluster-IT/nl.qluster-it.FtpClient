@@ -1,14 +1,13 @@
 {
     "id": "action_ftpclient_get_imagetoken",
     "title": {
-      "en": "Get file URL",
-      "nl": "Ontvang bestand url"
+      "en": "Get an Image Token",
+      "nl": "Ontvang een afbeeldingstoken"
     },
     "titleFormatted": {
       "en": "Get an Image Token for [[image]] / [[path]]",
       "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
     },
-    "hint": "URL",
     "args": [
     {
         "name": "device",

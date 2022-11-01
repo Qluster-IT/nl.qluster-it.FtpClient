@@ -1,0 +1,31 @@
+{
+    "id": "action_ftpclient_save_imagetoken",
+    "droptoken":["image"],
+    "title": {
+      "en": "Save Image Token",
+      "nl": "Sla een afbeeldingstoken op"
+    },
+    "titleFormatted": {
+      "en": "Save [[droptoken]] to [[directory]] / [[path]]",
+      "nl": "Sla [[droptoken]] op als [[directory]] / [[path]]"
+    },
+    "args": [
+    {
+        "name": "device",
+        "type": "device",
+        "filter": "driver_id=ftpconnection"
+    },
+    {
+      "name": "directory",
+      "type": "autocomplete",
+      "required":false,
+      "placeholder": "directory"
+    },    
+    {
+      "name": "path",
+      "type": "text",
+      "required":false,
+      "placeholder": "path"
+    }
+    ]
+  }

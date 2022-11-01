@@ -165,6 +165,38 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
 
         
+        const action_ftpclient_save_imagetoken = this.homey.flow.getActionCard('action_ftpclient_save_imagetoken');
+        action_ftpclient_save_imagetoken.registerRunListener(async (args) => {
+            try {
+                if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length))) 
+                throw new Error('An directory and/or path must be set.');
+                
+                let path = args.path;
+                if(args.directory) {
+                    if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? '/' + path : '');
+                    else path = args.directory.id;
+                }
+                await this.saveFile({device:args.device, path, stream:await args.droptoken.getStream()});
+                return true;
+                // let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
+                // files = _.map(files, x=>x.id);
+                
+                // return {files:JSON.stringify(files)};
+
+            } catch (error) {
+                console.log('Error: ' + error);
+                throw typeof(error)==='string'?new Error(error) : error;
+            }
+
+        });
+        action_ftpclient_save_imagetoken.getArgument('directory').registerAutocompleteListener(async (query, args) => {
+            try {
+                return await this.getFiles({file:args.image, query, device:args.device, type:'folder' });
+            } catch (error) { this.error('action_ftpclient_save_imagetoken.directory.registerAutocompleteListener.error :', error); throw error; }
+        });
+
+
+        
         const action_ftpclient_get_files = this.homey.flow.getActionCard('action_ftpclient_get_files');
         action_ftpclient_get_files.registerRunListener(async (args) => {
             try {
@@ -361,7 +393,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         session.setHandler('getContent', async ({ path } = { path: '' }) => {
             try {
                 let list = (await device.ftpClient.exec({action:'list'},  path));
-                let r = list.map(x => { return { name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path, fullPath:(path && path.length>0 ? path + '/' : '') + x.name }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
+                let r = list.map(x => { return { id:(path && path.length>0 ? path + '/' : '') + x.name,  name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path, fullPath:(path && path.length>0 ? path + '/' : '') + x.name }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
                 return r;
             } catch (error) {
                 this.error(error);
@@ -370,8 +402,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('moveItem', async ({ item, targetDirectory }) => {
             try {
-                let sourcePath = (item.path.length ? item.path + '/' : '') + item.name;
-                let targetPath =  (targetDirectory.path.length ? targetDirectory.path + '/' : '') + targetDirectory.name + '/' + item.name;
+                let sourcePath =item.id;// (item.path.length ? item.path + '/' : '') + item.name;
+                let targetPath =  targetDirectory.id + '/' + item.name;
                 let r = await device.ftpClient.exec({action:'rename'}, sourcePath, targetPath);
                 return r;
             } catch (error) {
@@ -379,16 +411,25 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
         });
         session.setHandler('deleteDirectory', async ({ directory }) => {
+            let error1;
             try {
-                let r = await device.ftpClient.client.removeDir((directory.path.length ? directory.path + '/' : '') + directory.name);
+                let r;
+                try {
+                    r = await device.ftpClient.exec({action:'removeDir'}, directory.id);    
+                } catch (error) {
+                    error1 = error;
+                }
+                
+                if(error1) r = await device.ftpClient.exec({action:'remove'}, directory.id);
                 return r;
             } catch (error) {
+                this.error(error1);
                 this.error(error);
             }
         });
         session.setHandler('renameDirectory', async ({ directory }) => {
             try {
-                let r = await device.ftpClient.client.rename((directory.path.length ? directory.path + '/' : '') + directory.name, (directory.path.length ? directory.path + '/' : '') + directory.renameName);
+                let r = await device.ftpClient.exec({action:'rename'}, directory.id, (directory.path.length ? directory.path + '/' : '') + directory.renameName);
                 //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
@@ -397,8 +438,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('addDirectory', async ({ directory, name }) => {
             try {
-                let r = await device.ftpClient.client.ensureDir((directory.path.length ? directory.path + '/' : '') + directory.name + '/' + name);
-                await device.ftpClient.client.cd('/');
+                let r = await device.ftpClient.exec({action:'ensureDir'}, (directory.id.length?directory.id + '/':'') + name);
+                //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
                 this.error(error);
@@ -409,7 +450,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         session.setHandler('deleteFile', async ({ file }) => {
             try {
-                let r = await device.ftpClient.client.remove((file.path.length ? file.path + '/' : '') + file.name, true);
+                let r = await device.ftpClient.exec({action:'remove'}, file.id, true);
                 //await device.ftpClient.client.cd('/');
                 return true;
             } catch (error) {
@@ -418,7 +459,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('renameFile', async ({ file }) => {
             try {
-                let r = await device.ftpClient.client.rename((file.path.length ? file.path + '/' : '') + file.name, (file.path.length ? file.path + '/' : '') + file.renameName);
+                let r = await device.ftpClient.exec({action:'rename'}, file.id, (file.path.length ? file.path + '/' : '') + file.renameName);
                 //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
@@ -441,11 +482,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     this.log(files);
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
-                        let path = (directory.path && directory.path !== '' ? directory.path + '/' : '') + directory.name;
+                        let path = directory.id;// (directory.path && directory.path !== '' ? directory.path + '/' : '') + directory.name;
                         const buf = Buffer.from(file.base64, 'base64');
                         let stream = Readable.from(buf);
 
-                        let r = device.ftpClient.client.uploadFrom(stream, (path.length ? path + '/' : '') + file.name);
+                        let r = device.ftpClient.exec({action:'uploadFrom'}, stream, (path.length ? path + '/' : '') + file.name);
                         await r;
                     }
                     return {};
@@ -458,7 +499,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     }
 
-
+    async saveFile({path, device, stream}) {
+        let parentPath = path.split('/'); parentPath.pop(); parentPath = parentPath.join('/');
+        await device.ftpClient.exec({action:'ensureDir'}, parentPath);
+        return await device.ftpClient.exec({action:'uploadFrom'}, stream, path);
+    }
     async getFileUrl({ file, device, type , createToken}) {
         try {
             // let filesandfolders = await readdirAsync('./userdata/');

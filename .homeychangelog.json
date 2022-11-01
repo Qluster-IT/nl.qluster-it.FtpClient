@@ -31,5 +31,14 @@
   },  
   "1.2.1": {
     "en": "Added: A flowcard to retrieving an files from a directory as JSON collection (use JSON Handler to go through it)."
+  },  
+  "1.2.2": {
+    "en": "Added: A flowcard to saving an Image Token to the FTP Server."
+  },  
+  "1.2.3": {
+    "en": "Added: Store link to issues and sourcecode."
+  },
+  "1.2.4": {
+    "en": "Added: Contribution options: Patreon and GithubSponsors (with PayPal already available)."
   }
 }
