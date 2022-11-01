@@ -43,5 +43,8 @@
   },
   "1.2.5": {
     "en": "Bugfixed: Retrieve Image Token."
+  },
+  "1.2.6": {
+    "en": "Added: Flowcard: Get ImageToken from URL."
   }
 }

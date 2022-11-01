@@ -591,10 +591,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     this.log('deleting file');
                     if ((await existsAsync(`./userdata/downloads/${fileObject.randomId}`))) await rmAsync(`./userdata/downloads/${fileObject.randomId}`, {force:true, recursive:true});                
                 }
-                if(fileObject.token)  {
-                    this.log('deleting token');
-                    await this.homey.flow.unregisterToken(fileObject.token);
-                }
+                // if(fileObject.token)  {
+                //     this.log('deleting token');
+                //     await this.homey.flow.unregisterToken(fileObject.token);
+                // }
                 if(fileObject.image)  {
                     this.log('deleting image');
                     await this.homey.images.unregisterImage(fileObject.image);
@@ -621,11 +621,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if(createToken) {
                     this.fileDownloads[id].image = await this.homey.images.createImage();
                     this.fileDownloads[id].image.setPath(path);
-                    this.fileDownloads[id].token = await this.homey.flow.createToken(randomBytes(12).toString('hex'), {
-                        type: "image",
-                        title: file.name,
-                      });                  
-                      await this.fileDownloads[id].token.setValue(this.fileDownloads[id].image);
+                    // this.fileDownloads[id].token = await this.homey.flow.createToken(randomBytes(12).toString('hex'), {
+                    //     type: "image",
+                    //     title: file.name,
+                    //   });                  
+                    //   await this.fileDownloads[id].token.setValue(this.fileDownloads[id].image);
                 }
 
                // let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
@@ -646,7 +646,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 await deleteFile(this.fileDownloads[id]);
             }).bind(this, id), device.settings.downloadtime * 1000);
             
-            return { id, url, path, token:this.fileDownloads[id].token, image:this.fileDownloads[id].image }; //base64
+            return { id, url, path, image:this.fileDownloads[id].image }; //base64 //, token:this.fileDownloads[id].token
 
         } catch (error) {
             this.error(error);

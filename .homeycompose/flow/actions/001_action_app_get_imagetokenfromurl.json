@@ -1,0 +1,47 @@
+{
+    "id": "action_app_get_imagetokenfromurl",
+    "title": {
+      "en": "Get an Image Token from URL",
+      "nl": "Ontvang een afbeeldingstoken van Url"
+    },
+    "titleFormatted": {
+      "en": "Get an Image Token for [[url]], available for [[availableduration]] seconds",
+      "nl": "Ontvang een Afbeelding Token voor [[url]], beschikbaar voor [[availableduration]] seconden"
+    },
+    "args": [ 
+    {
+      "name": "url",
+      "type": "text",
+      "placeholder": "Url",
+      "title":{
+        "en":"URL",
+        "nl":"Url"
+      }
+    },
+    {
+      "name": "availableduration",
+      "type": "number",
+      "required":false,
+      "placeholder": {
+        "en":"Seconds the Image will remain available",
+        "nl":"Seconden dat de afbeelding beschikbaar blijft"
+      },
+      "title":{
+        "en":"60",
+        "nl":"60"
+      },
+      "min":0,
+      "value":0
+    }
+    ],
+    "tokens":[
+      {
+        "name":"image",
+        "type":"image",
+        "title":{
+          "en":"Image",
+          "nl":"Afbeelding"
+        }
+      }
+    ]
+  }

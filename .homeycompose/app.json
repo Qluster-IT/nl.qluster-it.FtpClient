@@ -1,6 +1,6 @@
 {
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -11,6 +11,32 @@
   },
   "description": {
     "en": "Control FTP Servers through a directory-based UI in the Homey App or Web App."
+  },
+  "tags": {
+    "en": [
+      "storage",
+      "local",
+      "soundboard",
+      "grabber",
+      "image",
+      "server"
+    ],
+    "nl": [
+      "opslag",
+      "lokale",
+      "soundboard",
+      "grabber",
+      "afbeelding",
+      "server"
+    ],
+    "de": [
+      "lagerung",
+      "lokal",
+      "soundboard",
+      "grabber",
+      "bild",
+      "server"
+    ]
   },
   "brandColor": "#2B738C",
   "category": [

@@ -1,6 +1,12 @@
 'use strict';
 
+const { randomBytes } = require('crypto');
+const { ReadStream } = require('fs');
 const Homey = require('homey');
+const { Readable } = require('stream');
+const { httpsGet, httpGet } = require('./lib/proto');
+
+
 
 class MyApp extends Homey.App {
 
@@ -14,6 +20,52 @@ class MyApp extends Homey.App {
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
     this.cloudId = (await this.homey.cloud.getHomeyId());
     
+
+    
+    const action_app_get_imagetokenfromurl = this.homey.flow.getActionCard('action_app_get_imagetokenfromurl');
+    action_app_get_imagetokenfromurl.registerRunListener(async (args) => {
+        try {
+            if (!args.url) 
+                throw new Error('An URL must be given.');
+
+            
+            
+            let image = await this.homey.images.createImage();
+            image.setStream(async (stream)=> {
+              // const res = await fetch(args.url);
+              // if (!res.ok) {
+              //   throw new Error("Invalid Response");
+              // }
+
+              // return res.body.pipe(stream);
+              let func = args.url.toLowerCase().startsWith('https://') ? httpsGet : httpGet;
+              let imageBuffer = await func({url:args.url, bin:true});
+              let imageStream = Readable.from(imageBuffer);
+              
+              
+              return imageStream.pipe(stream);
+            });
+
+            setTimeout(()=>{
+              image.unregister();
+              image = null;
+            }, (args.availableduration||60) * 1000);
+            // let token = await this.homey.flow.createToken(randomBytes(12).toString('hex'), {
+            //     type: "image",
+            //     title: "Image",
+            //   });                  
+            //   await token.setValue(image);
+          return {image};
+            //return {image:fileInfo.image};
+
+        } catch (error) {
+            console.log('Error: ' + error);
+            throw typeof(error)==='string'?new Error(error) : error;
+        }
+
+    });
+
+
   }
 
 }
