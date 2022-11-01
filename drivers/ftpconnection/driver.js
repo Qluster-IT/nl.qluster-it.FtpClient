@@ -142,11 +142,16 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
                 let path = args.path;
                 if(args.image) {
-                    if(args.image.isDirectory) path = args.image.id + (path && path.length ? '/' + path : '');
+                    if(args.image.isDirectory) path = args.image.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');
                     else path = args.image.id;
                 }
                 if(!args.image || (args.path && args.path.length)) {
-                    args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                    try {
+                        args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                    } catch (error) {
+                        args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                    }
+                    //args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
                 }
                 let fileInfo = await this.getFileUrl({file:args.image, device:args.device, type:'url', createToken:true});
                 
@@ -173,7 +178,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 
                 let path = args.path;
                 if(args.directory) {
-                    if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? '/' + path : '');
+                    if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');
                     else path = args.directory.id;
                 }
                 await this.saveFile({device:args.device, path, stream:await args.droptoken.getStream()});
