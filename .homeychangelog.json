@@ -46,5 +46,8 @@
   },
   "1.2.6": {
     "en": "Added: Flowcard: Get ImageToken from URL."
+  },
+  "1.2.7": {
+    "en": "Improved: Flowcard: Get ImageToken from URL."
   }
 }

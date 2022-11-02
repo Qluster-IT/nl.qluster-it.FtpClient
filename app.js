@@ -38,7 +38,7 @@ class MyApp extends Homey.App {
               return imageStream.pipe(stream);
             });
 
-            setTimeout(()=>{
+            if(args.availableduration!==0) setTimeout(()=>{
               image.unregister();
               image = null;
             }, (args.availableduration||60) * 1000);

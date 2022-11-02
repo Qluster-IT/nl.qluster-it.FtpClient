@@ -21,17 +21,16 @@
     {
       "name": "availableduration",
       "type": "number",
-      "required":false,
       "placeholder": {
-        "en":"Seconds the Image will remain available",
-        "nl":"Seconden dat de afbeelding beschikbaar blijft"
+        "en":"0 = untill app restart",
+        "nl":"0 = tot app herstart"
       },
       "title":{
-        "en":"60",
-        "nl":"60"
+        "en":"Number of",
+        "nl":"Aantal"
       },
       "min":0,
-      "value":0
+      "value":60
     }
     ],
     "tokens":[
