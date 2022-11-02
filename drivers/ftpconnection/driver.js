@@ -145,11 +145,20 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     if(args.image.isDirectory) path = args.image.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');
                     else path = args.image.id;
                 }
-                if(!args.image || (args.path && args.path.length)) {
+                
+                this.log('action_ftpclient_get_imagetoken args.image: ', typeof(args.image), args.image);
+                this.log('action_ftpclient_get_imagetoken args.path: ', args.path);
+
+                if(!args.image || args.image==='undefined' || (args.path && args.path.length)) {
                     try {
-                        args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                        
+                        let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
+                        this.log('_files: ', _files);
+                        args.image = _.first(_files);
                     } catch (error) {
-                        args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                        let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
+                        this.log('_files error: ', _files);
+                        args.image = _.first(_files);
                     }
                     //args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
                 }
