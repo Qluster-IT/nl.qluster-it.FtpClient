@@ -30,19 +30,11 @@ class MyApp extends Homey.App {
 
             
             
+            let func = args.url.toLowerCase().startsWith('https://') ? httpsGet : httpGet;
             let image = await this.homey.images.createImage();
             image.setStream(async (stream)=> {
-              // const res = await fetch(args.url);
-              // if (!res.ok) {
-              //   throw new Error("Invalid Response");
-              // }
-
-              // return res.body.pipe(stream);
-              let func = args.url.toLowerCase().startsWith('https://') ? httpsGet : httpGet;
               let imageBuffer = await func({url:args.url, bin:true});
               let imageStream = Readable.from(imageBuffer);
-              
-              
               return imageStream.pipe(stream);
             });
 
