@@ -55,5 +55,11 @@
   },
   "1.2.9": {
     "en": "Testing."
+  },
+  "1.2.10": {
+    "en": "Finished testing."
+  },
+  "1.2.12": {
+    "en": "Bugfixed: Uploading an Image token to FTP."
   }
 }

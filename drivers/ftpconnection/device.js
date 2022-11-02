@@ -47,6 +47,7 @@ module.exports = class FtpClientDevice extends Homey.Device {
 	async init(newSettings) {
 		this.settings = newSettings || await this.getSettings();
 		this.ftpClient.init({
+			homey:this.homey,
 			ip: this.settings.ip, port: this.settings.port,
 			username: this.settings.username, password: this.settings.password, secure: this.settings.secure
 		});

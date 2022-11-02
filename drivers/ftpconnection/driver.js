@@ -13,6 +13,7 @@ const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, s
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
+const { stream2buffer } = require('../../lib/proto');
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -146,18 +147,18 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     else path = args.image.id;
                 }
                 
-                this.log('action_ftpclient_get_imagetoken args.image: ', typeof(args.image), args.image);
-                this.log('action_ftpclient_get_imagetoken args.path: ', args.path);
+                //this.log('action_ftpclient_get_imagetoken args.image: ', typeof(args.image), args.image);
+                //this.log('action_ftpclient_get_imagetoken args.path: ', args.path);
 
                 if(!args.image || args.image==='undefined' || (args.path && args.path.length)) {
                     try {
                         
                         let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
-                        this.log('_files: ', _files);
+                        //this.log('_files: ', _files);
                         args.image = _.first(_files);
                     } catch (error) {
                         let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
-                        this.log('_files error: ', _files);
+                        //this.log('_files error: ', _files);
                         args.image = _.first(_files);
                     }
                     //args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
@@ -315,7 +316,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         let ftpClient = new FtpClient();
         ftpClient.init({
-            ip: this.homey.app.ip, port: 5081
+            
+			homey:this.homey, ip: this.homey.app.ip, port: 5081
         });
         try {
             let isConnected = await ftpClient.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
@@ -353,7 +355,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     try {
 
                         let ftpClient = new FtpClient();
-                        ftpClient.init({ ip: device.settings.ip, port: device.settings.port });
+                        ftpClient.init({ 
+                            homey:this.homey, ip: device.settings.ip, port: device.settings.port });
                         //let isConnected = await ftpClient.getLogin();//{ip: this.homey.app.ip, port: 5081 });
                         let isConnected = await ftpClient.exec({action:'list',oneTry:true});//{ip: this.homey.app.ip, port: 5081 });
                         this.isConnected = true;
@@ -376,8 +379,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
             let ftpClient = new FtpClient();
-            ftpClient.init({
-                ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
+            ftpClient.init({                
+			homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
             });
             try {
                 let isConnected = await ftpClient.exec({action:'list', oneTry:true});
@@ -492,8 +495,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (!this.fileUploads) this.fileUploads = {};
                 this.fileUploads[id] = { device };
                 this.fileUploads[id].upload = async ({ directory, files } = {}) => {
-                    this.log(directory);
-                    this.log(files);
+                    //this.log(directory);
+                    //this.log(files);
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
                         let path = directory.id;// (directory.path && directory.path !== '' ? directory.path + '/' : '') + directory.name;
@@ -515,8 +518,15 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     async saveFile({path, device, stream}) {
         let parentPath = path.split('/'); parentPath.pop(); parentPath = parentPath.join('/');
-        await device.ftpClient.exec({action:'ensureDir'}, parentPath);
-        return await device.ftpClient.exec({action:'uploadFrom'}, stream, path);
+        try {
+            await device.ftpClient.exec({action:'ensureDir'}, parentPath);            
+        } catch (error) {
+            
+        }
+        const buf = await stream2buffer(stream);
+        let newStream = Readable.from(buf);
+
+        return await device.ftpClient.exec({action:'uploadFrom'}, newStream, path);
     }
     async getFileUrl({ file, device, type , createToken}) {
         try {

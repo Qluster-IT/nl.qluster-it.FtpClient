@@ -1,6 +1,6 @@
 {
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.2.9",
+  "version": "1.2.12",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
