@@ -48,7 +48,9 @@
   "bugs": {
     "url": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/issues"
   },
-  "permissions": [],
+  "permissions": [
+    "homey:app:net.i-dev.betterlogic"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",

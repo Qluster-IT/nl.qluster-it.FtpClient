@@ -4,6 +4,7 @@ const { randomBytes } = require('crypto');
 const { ReadStream } = require('fs');
 const Homey = require('homey');
 const { Readable } = require('stream');
+const { BL } = require('./lib/bll-loader');
 const { httpsGet, httpGet } = require('./lib/proto');
 
 
@@ -16,6 +17,15 @@ class MyApp extends Homey.App {
   async onInit() {
     this.log('MyApp has been initialized');
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
+
+    let bl = await new B({homey:this.homey, 
+			modules:[
+				"_",
+				"datetime",
+			]});
+
+    console.log(BL.datetime.toString('dd-MM-yyyy'));
+
     //let add = await this.homey.cloud.getLocalAddress();
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
     this.cloudId = (await this.homey.cloud.getHomeyId());
