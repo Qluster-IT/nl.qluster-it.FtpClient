@@ -5,7 +5,7 @@ const { Stream, Readable, Writable } = require('stream');
 const FileServer = require('../../lib/file-server');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
-const _ = require('lodash-core');
+const { BL } = require('./../../lib/bll-loader');
 const Icons = require('../../lib/icons');
 
 
@@ -155,13 +155,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                         
                         let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
                         //this.log('_files: ', _files);
-                        args.image = _.first(_files);
+                        args.image = BL._.first(_files);
                     } catch (error) {
                         let _files = await this.getFiles({path, device:args.device, includeDiretories:false });
                         //this.log('_files error: ', _files);
-                        args.image = _.first(_files);
+                        args.image = BL._.first(_files);
                     }
-                    //args.image = _.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
+                    //args.image = BL._.first(await this.getFiles({path, device:args.device, includeDiretories:false }));
                 }
                 let fileInfo = await this.getFileUrl({file:args.image, device:args.device, type:'url', createToken:true});
                 
@@ -194,7 +194,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 await this.saveFile({device:args.device, path, stream:await args.droptoken.getStream()});
                 return true;
                 // let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
-                // files = _.map(files, x=>x.id);
+                // files = BL._.map(files, x=>x.id);
                 
                 // return {files:JSON.stringify(files)};
 
@@ -218,7 +218,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true) throw new Error('A directory must be selected.');
 
                 let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
-                files = _.map(files, x=>x.id);
+                files = BL._.map(files, x=>x.id);
                 // let fileInfo = await this.getFileUrl({file:args.image, device:args.device, type:'url', createToken:true});
                 
                 return {files:JSON.stringify(files)};
@@ -259,7 +259,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             let p = x.name;
             let id = x.name;
             let filename;
-            if(x.isFile) filename = _.last(x.name.split('/'));
+            if(x.isFile) filename = BL._.last(x.name.split('/'));
             if(x.isFile && x.name===path) { 
                 p=p.split('/');p.pop();p=p.join('/');
             }
@@ -270,11 +270,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
             return { id: id, filename:filename, name: id, path:p, description: path, isDirectory: x.isDirectory, isFile: x.isFile }; 
         });
-        r = _.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
-        if(type) r = _.filter(r, x => (x.isDirectory && includeDiretories) || Icons.getFileType(x).contains(type));
+        r = BL._.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
+        if(type) r = BL._.filter(r, x => (x.isDirectory && includeDiretories) || Icons.getFileType(x).contains(type));
         
         if (includeDiretories && path && path.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
-        _.each(r, (x) => {
+        BL._.each(r, (x) => {
             //x.icon = ''; svg
             //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
             x.image = startUrl + Icons.getIconsFromFile(x);
@@ -327,7 +327,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         } catch (error) { }
 
         devs.push(device);
-        _.each(devs, d=> {            
+        BL._.each(devs, d=> {            
             d.store = {id:randomBytes(12).toString('hex')};
         });
         return devs;
@@ -585,7 +585,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 //id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');// '%20'); //dont encode this id.
                 if(type==='url') 
                 {
-                    id = 'downloads/'+ randomId + '/' + randomBytes(8).toString('hex') + '.' + _.last(name.split('.')) ; //encodeURIComponent(encodeURIComponent(name));
+                    id = 'downloads/'+ randomId + '/' + randomBytes(8).toString('hex') + '.' + BL._.last(name.split('.')) ; //encodeURIComponent(encodeURIComponent(name));
                     url = `app/nl.qluster-it.FtpClient/userdata/` + id;
                 }
                 
