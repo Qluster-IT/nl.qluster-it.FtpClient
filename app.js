@@ -18,7 +18,7 @@ class MyApp extends Homey.App {
     this.log('MyApp has been initialized');
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
 
-    let bl = await new B({homey:this.homey, 
+    let bl = await new BL({homey:this.homey, 
 			modules:[
 				"_",
 				"datetime",
