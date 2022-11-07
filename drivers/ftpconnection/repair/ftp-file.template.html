@@ -1,10 +1,11 @@
-<div class="ftp-file" data-drag="true" jqyoui-draggable  data-jqyoui-options="{revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}" tooltip="{{file.name}}">
-    <span class="ftp-file-header" ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); "
+<div class="ftp-file" data-drag="true" jqyoui-draggable  data-jqyoui-options="{revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}">
+    <span class="ftp-file-header" ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); "  tooltip="{{file.name}}"
         ng-dblclick="downloadFile(file);$event.stopPropagation();" >
         <span class="far fa-icon {{getFileIcon(file)}}"></span>
         <span class="name"><div>{{file.name}}</div></span>
         <span class="ftp-buttons">
-            <span tooltip="Delete file" ng-if="!file.root" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();">
+            <span ng-if="!file.root" >
+                <span tooltip="Delete file" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();"></span>
                 <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file, directory)" on-cancel="file.delete=false;" ng-show="file.delete"></window-confirm>
             </span>
             <span tooltip="Rename file" ng-if="!file.root" class="fa fa-icon fa-i-cursor" ng-click="file.rename = true;file.renameName = file.name; $event.stopPropagation();">

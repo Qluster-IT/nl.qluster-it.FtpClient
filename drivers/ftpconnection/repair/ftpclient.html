@@ -1,20 +1,16 @@
-<script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
-<script type="text/javascript" src="/manager/webserver/assets/js/angular.js"></script>
-
+<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery.ui.touch-punch.js"></script>
 <link rel="stylesheet" href="../../../../net.i-dev.betterlogic/assets/css/jquery-ui.css" type="text/css" />
 
-<!-- <script type="text/javascript" src="../../../assets/js/angular.js"></script>
-<script type="text/javascript" src="../../../assets/js/angular-dragdrop.js"></script>
-<script type="text/javascript" src="../../../assets/js/lodash.js"></script>
-<script type="text/javascript" src="../../../assets/js/smart-table.min.js"></script> -->
 
+<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/angular.min.js"></script>
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/angular-dragdrop.js"></script>
-<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/lodash.min.js"></script>
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/smart-table.min.js"></script>
 
-<link rel="stylesheet" href="../../../../net.i-dev.betterlogic/assets/fontawesome/fontawesome.css" type="text/css" />
+<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/lodash.min.js"></script>
+
+<link rel="stylesheet" href="../../../../net.i-dev.betterlogic/assets/css/fontawesome.min.css" type="text/css" />
 
 <link rel="stylesheet" href="../../../assets/css/default.css" type="text/css" />
 
@@ -140,7 +136,15 @@
 
 						element.append(tooltipElement);
 						element
-							.on('mouseenter', function () { scope.hidden = false; scope.$digest(); })
+							.on('mouseenter', function (event) { 
+								scope.hidden = false; scope.$digest(); 
+								
+								let width = $(document).width();
+								if (event.pageX <= (width / 2))
+									tooltipElement.css({ 'top': event.pageY - 50, 'left': event.pageX, 'position': 'fixed' });
+								else
+									tooltipElement.css({ 'top': event.pageY - 50, 'left': (event.pageX - tooltipElement.outerWidth()), 'position': 'fixed' });
+							})
 							.on('mouseleave', function () { scope.hidden = true; scope.$digest(); })
 							.on('click', function () { scope.hidden = true; scope.$digest(); });
 

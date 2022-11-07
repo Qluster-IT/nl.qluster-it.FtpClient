@@ -366,11 +366,12 @@ select {
     border: 1px solid grey;
     border-radius: 3px;
     padding: 10px;
-    margin-left: -28px;
-    transform: translate(-100%);
+    /* margin-left: -28px;
+    transform: translate(-100%); */
     background-color: #efefef;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     white-space: normal;
+    word-break: break-word;
 
 }
 
@@ -478,6 +479,7 @@ select {
     margin-top: 5px;
     margin-bottom: 5px;
     margin:0px;
+    overflow:hidden;
 }
 .list .ftp-directory .ui-draggable-dragging, .list .ftp-directory .ftp-file .ui-draggable-dragging {
     z-index:10;
