@@ -110,8 +110,8 @@
             "type": "text",
             "placeholder": "Url",
             "title": {
-              "en": "URL",
-              "nl": "Url"
+              "en": "URL (* BLL supported)",
+              "nl": "Url (* BLL ondersteund)"
             }
           },
           {
@@ -279,7 +279,11 @@
             "name": "path",
             "type": "text",
             "required": false,
-            "placeholder": "path"
+            "placeholder": "path",
+            "title": {
+              "en": "(Path+) Filename (* BLL supported)",
+              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+            }
           }
         ]
       }

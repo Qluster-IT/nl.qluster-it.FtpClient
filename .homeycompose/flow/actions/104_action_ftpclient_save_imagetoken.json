@@ -25,7 +25,11 @@
       "name": "path",
       "type": "text",
       "required":false,
-      "placeholder": "path"
+      "placeholder": "path",
+      "title":{
+        "en":"(Path+) Filename (* BLL supported)",
+        "nl":"(Pad+) bestandsnaam (* BLL ondersteund)"
+      }
     }
     ]
   }

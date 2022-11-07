@@ -5,7 +5,7 @@ const { Stream, Readable, Writable } = require('stream');
 const FileServer = require('../../lib/file-server');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
-const { BL } = require('./../../lib/bll-loader');
+const { BL } = require('../../lib/bll/bll-loader');
 const Icons = require('../../lib/icons');
 
 
@@ -118,6 +118,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if (!args.file) return false;
                 if (args && args.file && args.file.isFile !== 'true' && args.file.isFile !== true) throw new Error('A file must be selected.');
 
+
                 let url = await this.getFileUrl({file:args.file, device:args.device, type:'url'});
                 
                 return {url:url.url};
@@ -141,6 +142,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if ((!args.image && !args.path) || (args && args.image && args.image.isFile !== 'true' && args.image.isFile !== true && (!args.path || !args.path.length))) 
                     throw new Error('An image must be selected or a path given.');
                 
+                args.path = await BL.decode(args.path);
+
                 let path = args.path;
                 if(args.image) {
                     if(args.image.isDirectory) path = args.image.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');
@@ -186,6 +189,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length))) 
                 throw new Error('An directory and/or path must be set.');
                 
+                args.path = await BL.decode(args.path);
                 let path = args.path;
                 if(args.directory) {
                     if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');

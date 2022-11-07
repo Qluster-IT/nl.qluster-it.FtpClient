@@ -4,7 +4,10 @@ const { randomBytes } = require('crypto');
 const { ReadStream } = require('fs');
 const Homey = require('homey');
 const { Readable } = require('stream');
-const { BL } = require('./lib/bll-loader');
+
+/** @type {import("./lib/bll/bll-loader.typedef")} */
+const { BL } = require('./lib/bll/bll-loader');
+
 const { httpsGet, httpGet } = require('./lib/proto');
 
 
@@ -18,13 +21,17 @@ class MyApp extends Homey.App {
     this.log('MyApp has been initialized');
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
 
-    let bl = await new BL({homey:this.homey, 
+    let bl = await new BL({
+      homey:this.homey, 
+
 			modules:[
 				"_",
+        "math", 
 				"datetime",
 			]});
+      
 
-    console.log(BL.datetime.toString('dd-MM-yyyy'));
+    //console.log(BL.datetime.toString('dd-MM-yyyy'));
 
     //let add = await this.homey.cloud.getLocalAddress();
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
@@ -37,8 +44,7 @@ class MyApp extends Homey.App {
         try {
             if (!args.url) 
                 throw new Error('An URL must be given.');
-
-            
+            args.url = await BL.decode(args.url); 
             
             let func = args.url.toLowerCase().startsWith('https://') ? httpsGet : httpGet;
             let image = await this.homey.images.createImage();
