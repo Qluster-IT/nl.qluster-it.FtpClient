@@ -23,7 +23,6 @@ class MyApp extends Homey.App {
 
     let bl = await new BL({
       homey:this.homey, 
-
 			modules:[
 				"_",
         "math", 
