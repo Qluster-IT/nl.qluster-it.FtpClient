@@ -5,8 +5,8 @@ const { ReadStream } = require('fs');
 const Homey = require('homey');
 const { Readable } = require('stream');
 
-/** @type {import("./lib/bll/bll-loader.typedef")} */
-const { BL } = require('./lib/bll/bll-loader');
+/** @type {import("./lib/bll/bl.typedef")} */
+const { BL } = require('./lib/bll/bl');
 
 const { httpsGet, httpGet } = require('./lib/proto');
 

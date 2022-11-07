@@ -5,7 +5,7 @@ const { Stream, Readable, Writable } = require('stream');
 const FileServer = require('../../lib/file-server');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
-const { BL } = require('../../lib/bll/bll-loader');
+const { BL } = require('../../lib/bll/bl');
 const Icons = require('../../lib/icons');
 
 
