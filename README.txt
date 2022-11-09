@@ -33,3 +33,6 @@ Flowcard to retrieve an Url.
 It retrieves the file from the FTP server and keeps it accessable for 60* seconds through a url (* can be set per device in device-settings).
 
 This works perfectly on Sonos speakers or any other device accepting a Url, like sending a image or movie to a TV with a Browser.
+
+
+* Requires the Better Logic Library App to be installed.

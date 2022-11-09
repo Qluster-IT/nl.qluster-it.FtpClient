@@ -43,14 +43,14 @@
   "category": [
     "tools"
   ],
-  "permissions": [
-    "homey:app:net.i-dev.betterlogic"
-  ],
   "homeyCommunityTopicId": 70876,
   "source": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/",
   "bugs": {
     "url": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/issues"
   },
+  "permissions": [
+    "homey:app:net.i-dev.betterlogic"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
@@ -108,10 +108,13 @@
           {
             "name": "url",
             "type": "text",
-            "placeholder": "Url",
-            "title": {
+            "placeholder": {
               "en": "URL (* BLL supported)",
               "nl": "Url (* BLL ondersteund)"
+            },
+            "title": {
+              "en": "URL",
+              "nl": "Url"
             }
           },
           {
@@ -236,7 +239,14 @@
             "name": "path",
             "type": "text",
             "required": false,
-            "placeholder": "path"
+            "placeholder": {
+              "en": "(Path+) Filename (* BLL supported)",
+              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+            },
+            "title": {
+              "en": "Filename",
+              "nl": "Bestandsnaam"
+            }
           }
         ],
         "tokens": [
@@ -279,10 +289,13 @@
             "name": "path",
             "type": "text",
             "required": false,
-            "placeholder": "path",
-            "title": {
+            "placeholder": {
               "en": "(Path+) Filename (* BLL supported)",
               "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+            },
+            "title": {
+              "en": "Filename",
+              "nl": "Bestandsnaam"
             }
           }
         ]

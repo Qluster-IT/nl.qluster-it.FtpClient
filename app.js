@@ -50,6 +50,7 @@ class MyApp extends Homey.App {
         try {
             if (!args.url) 
                 throw new Error('An URL must be given.');
+                
             args.url = await BL.decode(args.url); 
             
             let func = args.url.toLowerCase().startsWith('https://') ? httpsGet : httpGet;

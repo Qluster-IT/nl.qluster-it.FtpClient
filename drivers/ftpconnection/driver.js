@@ -188,8 +188,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             try {
                 if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length))) 
                 throw new Error('An directory and/or path must be set.');
-                
-                args.path = await BL.decode(args.path);
+                                    
+                let time = Date.now();
+                args.path = await BL.decode(args.path); 
+                BL.homey.log('BL.decode time: ', Date.now() - time);
+
                 let path = args.path;
                 if(args.directory) {
                     if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');

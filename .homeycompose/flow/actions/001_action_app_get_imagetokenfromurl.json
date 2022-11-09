@@ -12,10 +12,13 @@
     {
       "name": "url",
       "type": "text",
-      "placeholder": "Url",
-      "title":{
+      "placeholder":{
         "en":"URL (* BLL supported)",
         "nl":"Url (* BLL ondersteund)"
+      },
+      "title":{
+        "en":"URL",
+        "nl":"Url"
       }
     },
     {
