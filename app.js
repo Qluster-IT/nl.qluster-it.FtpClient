@@ -34,7 +34,8 @@ class MyApp extends Homey.App {
 
 		if(!bllRequiredNotified) {
       if(!BL.isLoaded) this.homey.notifications.createNotification({excerpt : "Warning: The Better Logic Library App is required for FTP Client (to massively reduce install sizes and LBB coding in filenames).\nPlease install the Better Logic Library App from the Athom Store." });
-			//this.homey.settings.set('notification_bll_required', true);
+			this.homey.settings.set('notification_bll_required', true);
+      await this.bl;
 		} else await this.bl;
 
     //console.log(BL.datetime.toString('dd-MM-yyyy'));
