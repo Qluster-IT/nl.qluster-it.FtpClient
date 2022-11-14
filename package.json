@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "basic-ftp": "^5.0.2",
-    "betterlogiclibrary": "^0.2.4"
+    "betterlogiclibrary": "file:../nl.qluster-it.BetterLogicLibraryNPM"
   }
 }

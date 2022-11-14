@@ -21,26 +21,17 @@ class MyApp extends Homey.App {
     this.log('MyApp has been initialized');
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
 
-    let bllRequiredNotified = await this.homey.settings.get('notification_bll_required');
-    this.bl = BL.init({
-      homey:this.homey,
-      waitForBll:!bllRequiredNotified,
-			modules:[
+    await BL.init({
+      homey:this.homey,      
+      modules:[
 				"_",
         "math", 
 				"datetime",
 			]});
       
 
-		if(!bllRequiredNotified) {
-      if(!BL.isLoaded) this.homey.notifications.createNotification({excerpt : "Warning: The Better Logic Library App is required for FTP Client (to massively reduce install sizes and LBB coding in filenames).\nPlease install the Better Logic Library App from the Athom Store." });
-			this.homey.settings.set('notification_bll_required', true);
-      await this.bl;
-		} else await this.bl;
 
-    //console.log(BL.datetime.toString('dd-MM-yyyy'));
-
-    //let add = await this.homey.cloud.getLocalAddress();
+      
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
     this.cloudId = (await this.homey.cloud.getHomeyId());
     
