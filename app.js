@@ -6,7 +6,7 @@ const Homey = require('homey');
 const { Readable } = require('stream');
 
 /** @type {import("./lib/bll/bl.typedef")} */
-const { BL } = require('./lib/bll/bl');
+const { BL } = require('betterlogiclibrary');
 
 const { httpsGet, httpGet } = require('./lib/proto');
 

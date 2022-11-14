@@ -10,6 +10,7 @@
     "@types/node": "^18.11.0"
   },
   "dependencies": {
-    "basic-ftp": "^5.0.2"
+    "basic-ftp": "^5.0.2",
+    "betterlogiclibrary": "file:../nl.qluster-it.BetterLogicLibraryNPM"
   }
 }

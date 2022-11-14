@@ -5,7 +5,7 @@ const { Stream, Readable, Writable } = require('stream');
 const FileServer = require('../../lib/file-server');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
-const { BL } = require('../../lib/bll/bl');
+const { BL } = require('betterlogiclibrary');
 const Icons = require('../../lib/icons');
 
 
