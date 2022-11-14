@@ -30,7 +30,6 @@ class MyApp extends Homey.App {
 			]});
       
 
-
       
     this.ip = (await this.homey.cloud.getLocalAddress()).split(':')[0];
     this.cloudId = (await this.homey.cloud.getHomeyId());
