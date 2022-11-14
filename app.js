@@ -22,7 +22,7 @@ class MyApp extends Homey.App {
     if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
 
     let bllRequiredNotified = await this.homey.settings.get('notification_bll_required');
-    this.bl = new BL({
+    this.bl = BL.init({
       homey:this.homey,
       waitForBll:!bllRequiredNotified,
 			modules:[
