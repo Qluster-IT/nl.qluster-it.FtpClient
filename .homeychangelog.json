@@ -73,5 +73,8 @@
   },
   "1.3.3": {
     "en": "Supported: Better Logic Library (BLL) coding can be used within flowcards."
+  },
+  "1.3.4": {
+    "en": "Improved: Performance."
   }
 }

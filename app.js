@@ -24,9 +24,7 @@ class MyApp extends Homey.App {
     await BL.init({
       homey:this.homey,      
       modules:[
-				"_",
-        "math", 
-				"datetime",
+				"_"
 			]});
       
 
