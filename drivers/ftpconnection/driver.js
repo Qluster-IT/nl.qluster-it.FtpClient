@@ -321,18 +321,30 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
 
-        let ftpClient = new FtpClient();
-        ftpClient.init({
+        let ftpClientMWS = new FtpClient();
+        ftpClientMWS.init({
             
 			homey:this.homey, ip: this.homey.app.ip, port: 5081
         });
         try {
-            let isConnected = await ftpClient.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
+            let isConnected = await ftpClientMWS.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
             if (isConnected) {
                 devs.push({ name: 'Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous' } });
             }
         } catch (error) { }
 
+        let ftpClientHFS = new FtpClient();
+        ftpClientHFS.init({            
+			homey:this.homey, ip: this.homey.app.ip, port: 2100
+        });
+        try {
+            let isConnected = await ftpClientHFS.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
+            if (isConnected) {
+                devs.push({ name: 'HTTP/FTP Server', data: { id: 'FtpClientHFS' }, settings: { ip: this.homey.app.ip, port: 2100 } });
+            }
+        } catch (error) { }
+
+        
         devs.push(device);
         BL._.each(devs, d=> {            
             d.store = {id:randomBytes(12).toString('hex')};
@@ -453,7 +465,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('renameDirectory', async ({ directory }) => {
             try {
-                let r = await device.ftpClient.exec({action:'rename'}, directory.id, (directory.path.length ? directory.path + '/' : '') + directory.renameName);
+                let r = await device.ftpClient.exec({action:'rename'}, directory.id, (directory.path && directory.path.length ? directory.path + '/' : '') + directory.renameName);
                 //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
@@ -462,7 +474,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('addDirectory', async ({ directory, name }) => {
             try {
-                let r = await device.ftpClient.exec({action:'ensureDir'}, (directory.id.length?directory.id + '/':'') + name);
+                let r = await device.ftpClient.exec({action:'ensureDir'}, (directory.id && directory.id.length?directory.id + '/':'') + name);
                 //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
@@ -483,7 +495,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         session.setHandler('renameFile', async ({ file }) => {
             try {
-                let r = await device.ftpClient.exec({action:'rename'}, file.id, (file.path.length ? file.path + '/' : '') + file.renameName);
+                let r = await device.ftpClient.exec({action:'rename'}, file.id, (file.path && file.path.length ? file.path + '/' : '') + file.renameName);
                 //await device.ftpClient.client.cd('/');
                 return r;
             } catch (error) {
@@ -510,7 +522,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                         const buf = Buffer.from(file.base64, 'base64');
                         let stream = Readable.from(buf);
 
-                        let r = device.ftpClient.exec({action:'uploadFrom'}, stream, (path.length ? path + '/' : '') + file.name);
+                        let r = device.ftpClient.exec({action:'uploadFrom'}, stream, (path && path.length ? path + '/' : '') + file.name);
                         await r;
                     }
                     return {};
