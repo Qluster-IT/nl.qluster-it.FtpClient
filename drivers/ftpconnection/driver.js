@@ -65,6 +65,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
 
+        // let filesandfolders = await readdirAsync('./');
+        
+        // let filesandfoldersdonwloads = await readdirAsync('./..');
+
+
         if (!(await existsAsync(`./userdata/downloads/`))) await mkdirAsync(`./userdata/downloads/`);
         await emptyDirectory(`./userdata/downloads/`);
         
@@ -370,7 +375,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             console.log("showiew: ");
             console.log(data);
             if(data=== 'loading_credentials') {
-                if(device.settings && device.settings) { //}.ip === this.homey.app.ip) {
+                if(device.custom) session.showView('add_devices');
+                else if(device.settings && device.settings) { //}.ip === this.homey.app.ip) {
                     try {
 
                         let ftpClient = new FtpClient();
@@ -386,7 +392,6 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                         return true;
                     }
                 }
-                else if(device.custom) session.showView('add_devices');
                 else session.showView('login_credentials');
             }
         });
@@ -580,7 +585,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             //await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + name);
             await device.ftpClient.downloadTo(stream, file.id);
             stream = null;
-            global.gc();
+            //global.gc();
             await device.ftpClient.refresh();
             buf = Buffer.concat(buf);
                 //buf.
@@ -678,7 +683,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             if (useUrl==='localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
             else if  (useUrl==='cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
             buf = null;
-            global.gc();
+            //global.gc();
             
             this.fileDownloads[id].timeout = setTimeout((async (id) => {
                 await deleteFile(this.fileDownloads[id]);

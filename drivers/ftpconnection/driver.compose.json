@@ -52,7 +52,8 @@
         "label": {
           "en": "IP or hostname"
         },
-        "value": "192.168.1.17"
+        "value": "",
+        "hint": "192.168.1.17"
       },
       {
         "id": "port",
@@ -60,7 +61,8 @@
         "label": {
           "en": "Port"
         },
-        "value": 5081
+        "value": 21,
+        "hint": "21"
       },
       {
         "id": "username",
@@ -68,7 +70,7 @@
         "label": {
           "en": "Username"
         },
-        "value": "anonymous",        
+        "value": "",        
         "hint": "anonymous"
       },
       {
