@@ -21,8 +21,6 @@ class MyApp extends Homey.App {
     this.log('MyApp has been initialized');
     //if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
 
-    if(this.homey.platform=='local' && this.homey.platformVersion>=2 ) process.chdir('../'); //Fix the location for ./userdata folder/
-    
     // Required
     await BL.init({
       homey:this.homey,      

@@ -70,16 +70,16 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         // let filesandfoldersdonwloads = await readdirAsync('./..');
 
 
-        if (!(await existsAsync(`./userdata/downloads/`))) await mkdirAsync(`./userdata/downloads/`);
-        await emptyDirectory(`./userdata/downloads/`);
+        if (!(await existsAsync(`/userdata/downloads/`))) await mkdirAsync(`/userdata/downloads/`);
+        await emptyDirectory(`/userdata/downloads/`);
         
-        // let filesandfolders = await readdirAsync('./userdata/');
+        // let filesandfolders = await readdirAsync('/userdata/');
         
-        //let filesandfoldersdonwloads = await readdirAsync('./userdata/downloads/');
+        //let filesandfoldersdonwloads = await readdirAsync('/userdata/downloads/');
 
 
         // var greenlock = Greenlock.create({
-        //     packageRoot:'./userdata/',
+        //     packageRoot:'/userdata/',
         //     configDir: 'greenlock.d/config.json',
         //     packageAgent: pkg.name + '/' + pkg.version,
         //     maintainerEmail: "arie@qluster-it.nl",// pkg.author,
@@ -554,20 +554,20 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
     async getFileUrl({ file, device, type , createToken}) {
         try {
-            // let filesandfolders = await readdirAsync('./userdata/');
+            // let filesandfolders = await readdirAsync('/userdata/');
             // for (let i = 0; i < filesandfolders.length; i++) {
             //     const faf = filesandfolders[i];
-            //     let stats = await statAsync(path.join('./userdata/',faf));
+            //     let stats = await statAsync(path.join('/userdata/',faf));
             //     try {
-            //         if(stats.isDirectory()) await rmAsync(path.join('./userdata/',faf), {force:true, recursive:true});
-            //         else await unlinkAsync(path.join('./userdata/',faf));
+            //         if(stats.isDirectory()) await rmAsync(path.join('/userdata/',faf), {force:true, recursive:true});
+            //         else await unlinkAsync(path.join('/userdata/',faf));
                         
             //     } catch (error) {
             //         this.error(error);                    
             //     }
             // }
 
-            //let filesandfolders1 = await readdirAsync(`./userdata/downloads/`);
+            //let filesandfolders1 = await readdirAsync(`/userdata/downloads/`);
 
             let stream = new Writable();
             let s = '';
@@ -632,7 +632,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 delete fileObject.timeout;
                 if(fileObject.randomId)  {
                     this.log('deleting file');
-                    if ((await existsAsync(`./userdata/downloads/${fileObject.randomId}`))) await rmAsync(`./userdata/downloads/${fileObject.randomId}`, {force:true, recursive:true});                
+                    if ((await existsAsync(`/userdata/downloads/${fileObject.randomId}`))) await rmAsync(`/userdata/downloads/${fileObject.randomId}`, {force:true, recursive:true});                
                 }
                 // if(fileObject.token)  {
                 //     this.log('deleting token');
@@ -656,8 +656,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             let token, image;
             if(useUrl==='cloudssl' || useUrl==='localssl' || createToken) {
                 this.fileDownloads[id].randomId = randomId;
-                if (!(await existsAsync(`./userdata/downloads/${randomId}/`))) await mkdirAsync(`./userdata/downloads/${randomId}/`, {recursive:true});
-                path = `./userdata/${id}`;
+                if (!(await existsAsync(`/userdata/downloads/${randomId}/`))) await mkdirAsync(`/userdata/downloads/${randomId}/`, {recursive:true});
+                path = `/userdata/${id}`;
                 await writeFileAsync(path, buf);
                 
                 this.log('writefile', path);
@@ -671,7 +671,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     //   await this.fileDownloads[id].token.setValue(this.fileDownloads[id].image);
                 }
 
-               // let filesandfolders = await readdirAsync(`./userdata/downloads/${randomId}/`);
+               // let filesandfolders = await readdirAsync(`/userdata/downloads/${randomId}/`);
 
             } 
             

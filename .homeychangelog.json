@@ -86,7 +86,7 @@
   "1.3.7": {
     "en": "Added: (Automatisch finding/) Support for Athom's HTTP/FTP Server. Bugfixed root directory handling."
   },
-  "1.3.8": {
+  "1.3.9": {
     "en": "Improved: Works with Early 2023!"
   }
 }
