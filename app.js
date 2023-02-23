@@ -19,7 +19,15 @@ class MyApp extends Homey.App {
    */
   async onInit() {
     this.log('MyApp has been initialized');
-    //if (process.env.DEBUG === '1') require('inspector').open(9220, '0.0.0.0', true);
+
+    if (process.env.DEBUG === '1' || false) {
+      try {
+        require('inspector').waitForDebugger();
+      }
+      catch (error) {
+        require('inspector').open(9213, '0.0.0.0', true);
+      }
+    }
 
     // Required
     await BL.init({
