@@ -19,14 +19,20 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		this.id = await this.getStoreValue('id');
 
 		this.ftpClient = new FtpClient();
+		let settings;
 		if(this.driver.username) {
-			await this.setSettings({username:this.driver.username});
+			if(!settings) settings={};
+			settings.username = this.driver.username;
+			//await this.setSettings({username:this.driver.username});
 			delete this.driver.username;
 		}
 		if(this.driver.password) {
-			await this.setSettings({password:this.driver.password});
+			if(!settings) settings={};
+			settings.password = this.driver.password;
+			//await this.setSettings({password:this.driver.password});
 			delete this.driver.password;
 		}
+		if(settings) await this.setSettings(settings);
 		
 		if(this.driver.isConnected) delete this.driver.isConnected;
 

@@ -320,7 +320,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 data: {
                     id: discoveryResult.id && discoveryResult.id != 'undefined' ? discoveryResult.id : discoveryResult.fullname,
                 },
-                settings: { ip: discoveryResult.address, port: discoveryResult.port }
+                settings: { ip: discoveryResult.address, port: discoveryResult.port, username:"", password:"" }
             });
         });
 
@@ -334,7 +334,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         try {
             let isConnected = await ftpClientMWS.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
             if (isConnected) {
-                devs.push({ name: 'Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous' } });
+                devs.push({ name: 'Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous', password:"" } });
             }
         } catch (error) { }
 
@@ -345,7 +345,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         try {
             let isConnected = await ftpClientHFS.getFeatures();//{ip: this.homey.app.ip, port: 5081 });
             if (isConnected) {
-                devs.push({ name: 'HTTP/FTP Server', data: { id: 'FtpClientHFS' }, settings: { ip: this.homey.app.ip, port: 2100 } });
+                devs.push({ name: 'HTTP/FTP Server', data: { id: 'FtpClientHFS' }, settings: { ip: this.homey.app.ip, port: 2100, username:"", password:"" } });
             }
         } catch (error) { }
 
@@ -404,7 +404,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             let ftpClient = new FtpClient();
             ftpClient.init({                
-			homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
+			    homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
             });
             try {
                 let isConnected = await ftpClient.exec({action:'list', oneTry:true});

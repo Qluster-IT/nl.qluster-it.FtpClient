@@ -30,7 +30,7 @@ class MyApp extends Homey.App {
     }
 
     // Required
-    await BL.init({
+    let bl = await BL.init({
       homey:this.homey,      
       modules:[
 				"_"
