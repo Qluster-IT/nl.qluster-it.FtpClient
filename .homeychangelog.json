@@ -94,5 +94,8 @@
   },
   "1.4.0": {
     "en": "Improved: Works correctly with all Homey Pro's again."
+  },
+  "1.4.1": {
+    "en": "Improved: Works correctly with all Homey Pro's again (part 2)."
   }
 }
