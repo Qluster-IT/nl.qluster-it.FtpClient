@@ -103,5 +103,8 @@
   },
   "1.4.3": {
     "en": "Improved: BLL updates while running."
+  },
+  "1.4.4": {
+    "en": "Bugfixed: Startup issues."
   }
 }
