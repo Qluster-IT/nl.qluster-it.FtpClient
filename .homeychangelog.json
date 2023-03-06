@@ -115,5 +115,8 @@
   },
   "1.4.7": {
     "en": "Bugfixed: No more startup issues!"
+  },
+  "1.4.8": {
+    "en": "Bugfixed: Startup issues finally resolved."
   }
 }
