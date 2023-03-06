@@ -112,5 +112,8 @@
   },
   "1.4.6": {
     "en": "Bugfixed: TEST VERSION: might contain a bug!"
+  },
+  "1.4.7": {
+    "en": "Bugfixed: No more startup issues!"
   }
 }
