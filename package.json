@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "basic-ftp": "^5.0.2",
-    "betterlogiclibrary": "^0.7.3"
+    "betterlogiclibrary": "^0.7.4"
   }
 }
