@@ -648,7 +648,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
                 await deleteFile(this.fileDownloads[id]);
-                
+                 
             }
 
             this.fileDownloads[id] = { name: name, id };
