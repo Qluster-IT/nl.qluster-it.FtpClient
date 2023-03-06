@@ -118,5 +118,8 @@
   },
   "1.4.8": {
     "en": "Bugfixed: Startup issues finally resolved."
+  },
+  "1.4.9": {
+    "en": "Improved: Memory performance."
   }
 }
