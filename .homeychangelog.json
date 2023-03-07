@@ -127,5 +127,8 @@
   },
   "1.4.11": {
     "en": "Bugfixed: Solved another startup bug."
+  },
+  "1.4.12": {
+    "en": "Bugfixed: Solved another potential HP2023 startup bug."
   }
 }
