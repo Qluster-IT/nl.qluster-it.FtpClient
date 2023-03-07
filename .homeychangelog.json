@@ -124,5 +124,8 @@
   },
   "1.4.10": {
     "en": "Improved: Memory performance."
+  },
+  "1.4.11": {
+    "en": "Bugfixed: Solved another startup bug."
   }
 }
