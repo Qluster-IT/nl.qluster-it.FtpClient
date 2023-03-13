@@ -261,6 +261,49 @@
         ]
       },
       {
+        "id": "action_ftpclient_save_file_base64",
+        "title": {
+          "en": "Save File from base64",
+          "nl": "Sla een bestand op vanaf base64"
+        },
+        "titleFormatted": {
+          "en": "Save [[file]] to [[directory]] / [[path]]",
+          "nl": "Sla [[file]] op als [[directory]] / [[path]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          },
+          {
+            "name": "file",
+            "type": "text",
+            "required": false,
+            "placeholder": "file (base64)"
+          },
+          {
+            "name": "directory",
+            "type": "autocomplete",
+            "required": false,
+            "placeholder": "directory"
+          },
+          {
+            "name": "path",
+            "type": "text",
+            "required": false,
+            "placeholder": {
+              "en": "(Path+) Filename (* BLL supported)",
+              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+            },
+            "title": {
+              "en": "Filename",
+              "nl": "Bestandsnaam"
+            }
+          }
+        ]
+      },
+      {
         "id": "action_ftpclient_save_imagetoken",
         "droptoken": [
           "image"

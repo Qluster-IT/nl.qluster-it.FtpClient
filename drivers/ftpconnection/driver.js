@@ -194,9 +194,9 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length))) 
                 throw new Error('An directory and/or path must be set.');
                                     
-                let time = Date.now();
+                //let time = Date.now();
                 args.path = await BL.decode(args.path); 
-                BL.homey.log('BL.decode time: ', Date.now() - time);
+                //BL.homey.log('BL.decode time: ', Date.now() - time);
 
                 let path = args.path;
                 if(args.directory) {
@@ -222,6 +222,38 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             } catch (error) { this.error('action_ftpclient_save_imagetoken.directory.registerAutocompleteListener.error :', error); throw error; }
         });
 
+
+        const action_ftpclient_save_file_base64 = this.homey.flow.getActionCard('action_ftpclient_save_file_base64');
+        action_ftpclient_save_file_base64.registerRunListener(async (args) => {
+            try {
+                if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length))) 
+                throw new Error('An directory and/or path must be set.');
+                                    
+                args.path = await BL.decode(args.path); 
+                
+                let path = args.path;
+                if(args.directory) {
+                    if(args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/')?'/':'') + path : '');
+                    else path = args.directory.id;
+                }
+                await this.saveFile({device:args.device, path, buffer:Buffer.from(args.file, 'base64')});
+                return true;
+                // let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
+                // files = BL._.map(files, x=>x.id);
+                
+                // return {files:JSON.stringify(files)};
+
+            } catch (error) {
+                console.log('Error: ' + error);
+                throw typeof(error)==='string'?new Error(error) : error;
+            }
+
+        });
+        action_ftpclient_save_file_base64.getArgument('directory').registerAutocompleteListener(async (query, args) => {
+            try {
+                return await this.getFiles({file:args.image, query, device:args.device, type:'folder' });
+            } catch (error) { this.error('action_ftpclient_save_file_base64.directory.registerAutocompleteListener.error :', error); throw error; }
+        });
 
         
         const action_ftpclient_get_files = this.homey.flow.getActionCard('action_ftpclient_get_files');
@@ -540,14 +572,14 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     }
 
-    async saveFile({path, device, stream}) {
+    async saveFile({path, device, stream, buffer}) {
         let parentPath = path.split('/'); parentPath.pop(); parentPath = parentPath.join('/');
         try {
             await device.ftpClient.exec({action:'ensureDir'}, parentPath);            
         } catch (error) {
             
         }
-        const buf = await stream2buffer(stream);
+        const buf = buffer || await stream2buffer(stream);
         let newStream = Readable.from(buf);
 
         return await device.ftpClient.exec({action:'uploadFrom'}, newStream, path);
