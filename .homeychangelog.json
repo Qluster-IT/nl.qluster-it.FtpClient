@@ -130,5 +130,8 @@
   },
   "1.4.12": {
     "en": "Bugfixed: Solved another potential HP2023 startup bug."
+  },
+  "1.4.13": {
+    "en": "Added: New flowcard to save a base64-string/text as a file on the FTP client (can be used for the Log of Simple Log or the Variables of Better Logic Library."
   }
 }
