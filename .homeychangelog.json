@@ -133,5 +133,8 @@
   },
   "1.5.0": {
     "en": "Added: New flowcard to save a base64-string/text as a file on the FTP client (can be used for the Log of Simple Log or the Variables of Better Logic Library)."
+  },
+  "1.5.1": {
+    "en": "Bugfixed: Secure ftp could not login unless manually."
   }
 }

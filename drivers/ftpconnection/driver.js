@@ -435,16 +435,24 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
 
             let ftpClient = new FtpClient();
-            ftpClient.init({                
-			    homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password
-            });
+            ftpClient.init({ homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password });
             try {
-                let isConnected = await ftpClient.exec({action:'list', oneTry:true});
+                try {
+                    
+                    let isConnected = await ftpClient.exec({action:'list', oneTry:true});
+                } catch (error) {
+                    this.error('login unsecure error', error);
+                    ftpClient.init({ homey:this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password ,secure:true });
+            
+                }
                 this.isConnected = true;
                 this.username = data.username;
                 this.password = data.password;
+                this.secure = data.secure;
                 return true;
-            } catch (error) { }
+            } catch (error) {
+                this.error('login secure error', error);                    
+             }
             return false;
 
         });
