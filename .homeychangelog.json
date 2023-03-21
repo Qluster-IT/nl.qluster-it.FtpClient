@@ -136,5 +136,8 @@
   },
   "1.5.1": {
     "en": "Bugfixed: Secure ftp could not login unless manually."
+  },
+  "1.5.2": {
+    "en": "Bugfixed: Startup."
   }
 }
