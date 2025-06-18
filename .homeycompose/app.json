@@ -1,6 +1,6 @@
 {
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -87,6 +87,11 @@
       "method": "POST",
       "path": "/uploadFilePartials",
       "public":true
+    },
+    "getDownloadUrl": {
+      "method": "POST",
+      "path": "/getdownloadurl/",
+      "public": true
     }
   }
 }

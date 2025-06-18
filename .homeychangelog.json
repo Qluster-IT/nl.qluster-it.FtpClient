@@ -139,5 +139,8 @@
   },
   "1.5.2": {
     "en": "Bugfixed: Startup."
+  },
+  "1.5.3": {
+    "en": "Improved: Setting added to allow incorrect certificate."
   }
 }

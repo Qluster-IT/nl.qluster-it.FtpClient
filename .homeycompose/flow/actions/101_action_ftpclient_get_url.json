@@ -28,6 +28,14 @@
           "en":"URL",
           "nl":"Url"
         }
+      },
+      {
+        "name":"cloudUrl",
+        "type":"string",
+        "title":{
+          "en":"Cloud URL",
+          "nl":"Cloud Url"
+        }
       }
     ]
   }

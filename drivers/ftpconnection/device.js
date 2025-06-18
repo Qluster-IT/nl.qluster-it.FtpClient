@@ -39,6 +39,12 @@ module.exports = class FtpClientDevice extends Homey.Device {
 			//await this.setSettings({username:this.driver.username});
 			delete this.driver.secure;
 		}
+		if(this.driver.allow_incorrect_certificate!==undefined && this.driver.allow_incorrect_certificate!==null) {
+			if(!settings) settings={};
+			settings.allow_incorrect_certificate = this.driver.allow_incorrect_certificate;
+			//await this.setSettings({username:this.driver.username});
+			delete this.driver.allow_incorrect_certificate;
+		}
 		if(settings) await this.setSettings(settings);
 		
 		if(this.driver.isConnected) delete this.driver.isConnected;
@@ -62,7 +68,7 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		this.ftpClient.init({
 			homey:this.homey,
 			ip: this.settings.ip, port: this.settings.port,
-			username: this.settings.username, password: this.settings.password, secure: this.settings.secure
+			username: this.settings.username, password: this.settings.password, secure: this.settings.secure, allow_incorrect_certificate:this.settings.allow_incorrect_certificate
 		});
 	}
 

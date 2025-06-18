@@ -90,6 +90,14 @@
         "value": false
       },
       {
+        "id": "allow_incorrect_certificate",
+        "type": "checkbox",
+        "label": {
+          "en": "Allow incorrect certificate"
+        },
+        "value": false
+      },
+      {
         "id": "workdirectory",
         "type": "text",
         "label": {
