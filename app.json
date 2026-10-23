@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.qluster-it.FtpClient",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -44,9 +44,9 @@
     "tools"
   ],
   "homeyCommunityTopicId": 70876,
-  "source": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/",
+  "source": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/",
   "bugs": {
-    "url": "https://bitbucket.org/QlusterIT/nl.qluster-it.FtpClient/issues"
+    "url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
   },
   "permissions": [
     "homey:app:net.i-dev.betterlogic"
