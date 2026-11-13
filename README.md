@@ -35,3 +35,7 @@ Flowcard to retrieve an Url.
 It retrieves the file from the FTP server and keeps it accessable for 60* seconds through a url (* can be set per device in device-settings).
 
 This works perfectly on Sonos speakers or any other device accepting a Url, like sending a image or movie to a TV with a Browser.
+
+FTP commands submitted through the command queue execute one at a time, including
+after connection failures. Routine commands no longer issue an extra working-
+directory query just for logging. Protocol logging is enabled only in debug mode.

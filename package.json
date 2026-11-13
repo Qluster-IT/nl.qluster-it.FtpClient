@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "app.js",
   "--author": "arie@qluster-it.nl",
-  "scripts": {},
+  "scripts": {
+    "test": "node --test"
+  },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.11",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.3",

@@ -616,7 +616,6 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 buffer.push(_buf);
                 done();
             };
-            await device.ftpClient.cd('/');
 
             await device.ftpClient.downloadTo(stream, file.id);
             stream = null;
@@ -660,7 +659,6 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 buf.push(_buf);
                 done();
             };
-            await device.ftpClient.cd('/');
             let name = file.filename || file.name;
 
             //await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + name);
