@@ -8,7 +8,10 @@ module.exports = class FtpClientDevice extends Homey.Device {
 
 
 	onDeleted() {
-		//delete Homeyman.Current.VirtualDevices[this.getName()];
+		if (this.ftpClient) this.ftpClient.close();
+	}
+	onUninit() {
+		if (this.ftpClient) this.ftpClient.close();
 	}
 	// this method is called when the Device is inited
 	async onInit() {

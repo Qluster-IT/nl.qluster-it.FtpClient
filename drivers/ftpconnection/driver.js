@@ -13,7 +13,7 @@ const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, s
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
-const { stream2buffer } = require('../../lib/proto');
+const { stream2buffer, createBufferWriter } = require('../../lib/proto');
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -129,11 +129,15 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
                 const link = await BL.getDownloadUrl({ contentType: '*/*', filename:args.file.filename });
                 this.homey.setTimeout(async () => {
-                    let file = await this.getFile({ file: args.file, device: args.device  });
-                    
-                    await BL.setDownloadUrl({ link, buffer:file.buffer, callback: ()=> {
-                        defer.resolve({url : encodeURI(link.localUrl), cloudUrl : encodeURI(link.cloudUrl)});
-                    } });
+                    try {
+                        let file = await this.getFile({ file: args.file, device: args.device  });
+                        
+                        await BL.setDownloadUrl({ link, buffer:file.buffer, callback: ()=> {
+                            defer.resolve({url : encodeURI(link.localUrl), cloudUrl : encodeURI(link.cloudUrl)});
+                        } });
+                    } catch (error) {
+                        defer.reject(error);
+                    }
                 }, 0);
 
                 return defer.promise;                
@@ -379,6 +383,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 devs.push({ name: 'Micro Web Server', data: { id: 'FtpClientMWS' }, settings: { ip: this.homey.app.ip, port: 5081, username: 'anonymous', password: "" } });
             }
         } catch (error) { }
+        finally { ftpClientMWS.close(); }
 
         let ftpClientHFS = new FtpClient();
         ftpClientHFS.init({
@@ -390,6 +395,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 devs.push({ name: 'HTTP/FTP Server', data: { id: 'FtpClientHFS' }, settings: { ip: this.homey.app.ip, port: 2100, username: "", password: "" } });
             }
         } catch (error) { }
+        finally { ftpClientHFS.close(); }
 
 
         devs.push(device);
@@ -607,24 +613,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
     async getFile({ file, device }) {
         try {
-            let stream = new Writable();
-            let s = '';
-            let buffer = [];
-            stream._write = function (chunk, encoding, done) {
-                s += chunk.toString();
-                let _buf = Buffer.from(chunk, encoding);
-                buffer.push(_buf);
-                done();
-            };
-
-            await device.ftpClient.downloadTo(stream, file.id);
-            stream = null;
-
+            const writer = createBufferWriter();
+            await device.ftpClient.downloadTo(writer.stream, file.id);
             await device.ftpClient.refresh();
-            buffer = Buffer.concat(buffer);
-
-
-            return { buffer };
+            return { buffer: writer.toBuffer() };
 
         } catch (error) {
             this.error(error);
@@ -649,24 +641,12 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             //let filesandfolders1 = await readdirAsync(`/userdata/downloads/`);
 
-            let stream = new Writable();
-            let s = '';
-            //let buffer = Buffer.from);
-            let buf = [];
-            stream._write = function (chunk, encoding, done) {
-                s += chunk.toString();
-                let _buf = Buffer.from(chunk, encoding);
-                buf.push(_buf);
-                done();
-            };
+            const writer = createBufferWriter();
             let name = file.filename || file.name;
 
-            //await device.ftpClient.downloadTo(stream, (file.path.length ? file.path + '/' : '') + name);
-            await device.ftpClient.downloadTo(stream, file.id);
-            stream = null;
-            //global.gc();
+            await device.ftpClient.downloadTo(writer.stream, file.id);
             await device.ftpClient.refresh();
-            buf = Buffer.concat(buf);
+            let buf = writer.toBuffer();
             //buf.
 
             //base64 = buf.toString('base64');                
