@@ -90,11 +90,6 @@
       "method": "POST",
       "path": "/uploadFilePartials",
       "public": true
-    },
-    "getDownloadUrl": {
-      "method": "POST",
-      "path": "/getdownloadurl/",
-      "public": true
     }
   },
   "flow": {

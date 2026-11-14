@@ -69,6 +69,40 @@ test('downloads share the command queue and do not issue diagnostic directory qu
   assert.deepEqual(order, ['start:list', 'end:list', 'start:download', 'end:download', 'start:list', 'end:list']);
 });
 
+test('basic-ftp, https and zlib are loaded on first use instead of at startup', async () => {
+  const { PassThrough } = require('node:stream');
+  const stubs = {
+    'basic-ftp': { Client: function () { return { ftp: {}, access: async () => {}, close() {} }; } },
+    https: { get: (url, options, callback) => {
+      const res = new PassThrough();
+      res.statusCode = 200;
+      return { on() {}, end() { callback(res); res.end('ok'); } };
+    } }
+  };
+  const load = file => {
+    const filename = require.resolve(file);
+    const m = new Module(filename, module);
+    m.filename = filename;
+    m.paths = module.paths;
+    const loaded = [];
+    m.require = id => { loaded.push(id); return stubs[id] || Module.prototype.require.call(m, id); };
+    m._compile(fs.readFileSync(filename, 'utf8'), filename);
+    return { exports: m.exports, loaded };
+  };
+
+  const client = load('../lib/ftp-client');
+  const proto = load('../lib/proto');
+  assert.ok(!client.loaded.includes('basic-ftp'), 'ftp-client loads basic-ftp at startup');
+  assert.ok(!proto.loaded.includes('https'), 'proto loads https at startup');
+  assert.ok(!proto.loaded.includes('zlib'), 'proto loads zlib at startup');
+
+  const ftpClient = new client.exports();
+  ftpClient.homey = { error() {} };
+  assert.ok(await ftpClient.getClient());
+  assert.equal(await proto.exports.httpsGet({ url: 'https://example.invalid' }), 'ok');
+  assert.equal((await proto.exports.ungzip(await proto.exports.gzip('text'))).toString(), 'text');
+});
+
 test('failed login closes and discards the client instead of returning an unusable connection', async () => {
   let closed = 0;
   let created = 0;

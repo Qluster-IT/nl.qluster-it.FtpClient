@@ -232,7 +232,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         action_ftpclient_save_imagetoken.getArgument('directory').registerAutocompleteListener(async (query, args) => {
             try {
-                return await this.getFiles({ file: args.image, query, device: args.device, type: 'folder' });
+                return await this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' });
             } catch (error) { this.error('action_ftpclient_save_imagetoken.directory.registerAutocompleteListener.error :', error); throw error; }
         });
 
@@ -265,7 +265,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         action_ftpclient_save_file_base64.getArgument('directory').registerAutocompleteListener(async (query, args) => {
             try {
-                return await this.getFiles({ file: args.image, query, device: args.device, type: 'folder' });
+                return await this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' });
             } catch (error) { this.error('action_ftpclient_save_file_base64.directory.registerAutocompleteListener.error :', error); throw error; }
         });
 
@@ -289,7 +289,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
         action_ftpclient_get_files.getArgument('directory').registerAutocompleteListener(async (query, args) => {
             try {
-                return await this.getFiles({ file: args.image, query, device: args.device, type: 'folder' });
+                return await this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' });
             } catch (error) { this.error('action_ftpclient_get_files.directory.registerAutocompleteListener.error :', error); throw error; }
         });
 
@@ -300,15 +300,11 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         let pathsAbove = path.split('/');
         pathsAbove.pop();
         let pathAbove = pathsAbove.join('/');
+        const iconPath = '/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/';
         let startUrl =
-            device.settings.urlforicons ===
-                'local' ?
-                `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
-                'localssl' ?
-                    `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/` :
-                    'cloudssl' ?
-                        `https://${this.homey.app.cloudId}.connect.athom.com/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/`
-                        : '';
+            device.settings.urlforicons === 'local' ? `http://${this.homey.app.ip}${iconPath}` :
+                device.settings.urlforicons === 'cloudssl' ? `https://${this.homey.app.cloudId}.connect.athom.com${iconPath}` :
+                    `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com${iconPath}`;
 
         let r = await device.ftpClient.exec({ action: 'list' }, path);
 
@@ -329,7 +325,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             return { id: id, filename: filename, name: id, path: p, description: path, isDirectory: x.isDirectory, isFile: x.isFile };
         });
         r = BL._.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
-        if (type) r = BL._.filter(r, x => (x.isDirectory && includeDiretories) || Icons.getFileType(x).contains(type));
+        if (type) r = BL._.filter(r, x => (x.isDirectory && includeDiretories) || Icons.getFileType(x).includes(type));
 
         if (includeDiretories && path && path.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
         BL._.each(r, (x) => {
@@ -425,9 +421,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             if (data === 'loading_credentials') {
                 if (device.custom) session.showView('add_devices');
                 else if (device.settings && device.settings) { //}.ip === this.homey.app.ip) {
+                    const ftpClient = new FtpClient();
                     try {
-
-                        let ftpClient = new FtpClient();
                         ftpClient.init({
                             homey: this.homey, ip: device.settings.ip, port: device.settings.port
                         });
@@ -439,6 +434,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     } catch (error) {
                         session.showView('login_credentials');
                         return true;
+                    } finally {
+                        ftpClient.close();
                     }
                 }
                 else session.showView('login_credentials');
@@ -459,7 +456,9 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     let isConnected = await ftpClient.exec({ action: 'list', oneTry: true });
                 } catch (error) {
                     this.error('login unsecure error', error);
-                    ftpClient.init({ homey: this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password, secure: true });
+                    // Pairing has no certificate option, so this only checks the credentials; the device setting decides about certificates afterwards.
+                    ftpClient.init({ homey: this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password, secure: true, allow_incorrect_certificate: true });
+                    await ftpClient.exec({ action: 'list', oneTry: true });
                     data.secure = true;
 
                 }
@@ -471,6 +470,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 return true;
             } catch (error) {
                 this.error('login secure error', error);
+            } finally {
+                ftpClient.close();
             }
             return false;
 
@@ -743,11 +744,17 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             buf = null;
             //global.gc();
 
-            this.fileDownloads[id].timeout = setTimeout((async (id) => {
-                await deleteFile(this.fileDownloads[id]);
-            }).bind(this, id), device.settings.downloadtime * 1000);
+            const fileObject = this.fileDownloads[id];
+            fileObject.timeout = setTimeout(async () => {
+                if (this.fileDownloads[id] === fileObject) delete this.fileDownloads[id];
+                try {
+                    await deleteFile(fileObject);
+                } catch (error) {
+                    this.error('Expired download could not be removed', error);
+                }
+            }, device.settings.downloadtime * 1000);
 
-            return { id, url, path, image: this.fileDownloads[id].image }; //base64 //, token:this.fileDownloads[id].token
+            return { id, url, path, image: fileObject.image }; //base64 //, token:this.fileDownloads[id].token
 
         } catch (error) {
             this.error(error);
