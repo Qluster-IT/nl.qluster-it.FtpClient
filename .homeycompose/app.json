@@ -44,6 +44,7 @@
   ],
   "homeyCommunityTopicId": 70876,
 	"source": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/",
+  "homepage": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/wiki",
   	"bugs": {
 		"url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
 	  },
