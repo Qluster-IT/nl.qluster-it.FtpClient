@@ -8,6 +8,7 @@ const FileServer = require('../../lib/file-server');
 const DownloadCache = require('../../lib/download-cache');
 const UploadSpool = require('../../lib/upload-spool');
 const openSyslogExport = require('../../lib/syslog-export');
+const createUrlSource = require('../../lib/url-source');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
 const { BL, Defer } = require('betterlogiclibrary');
@@ -270,18 +271,21 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         const action_ftpclient_save_syslog_export = this.homey.flow.getActionCard('action_ftpclient_save_syslog_export');
         action_ftpclient_save_syslog_export.registerRunListener(async ({ device, format, directory, path }) => {
-            const filename = await BL.decode(path);
-            if (typeof filename !== 'string' || ['', '.', '..'].includes(filename.split('/').pop().trim())) {
-                throw new Error(this.homey.__('errors.pathRequired'));
-            }
-            if (directory && (typeof directory.id !== 'string' || ![true, 'true'].includes(directory.isDirectory))) {
-                throw new Error(this.homey.__('errors.folderRequired'));
-            }
-            const destination = directory?.id ? `${directory.id}/${filename.replace(/^\/+/, '')}` : filename;
+            const destination = await this.getSaveDestination(directory, path);
             await this.saveFile({ device, path: destination, prepare: () => openSyslogExport(this.homey, format) });
             return true;
         });
         action_ftpclient_save_syslog_export.getArgument('directory').registerAutocompleteListener((query, args) =>
+            this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' }));
+
+        const saveFileFromUrl = this.homey.flow.getActionCard('action_ftpclient_save_file_from_url');
+        saveFileFromUrl.registerRunListener(async ({ device, url, directory, path }) => {
+            const destination = await this.getSaveDestination(directory, path);
+            const getStream = createUrlSource(url);
+            await this.saveFile({ device, path: destination, getStream });
+            return true;
+        });
+        saveFileFromUrl.getArgument('directory').registerAutocompleteListener((query, args) =>
             this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' }));
 
         const action_ftpclient_get_files = this.homey.flow.getActionCard('action_ftpclient_get_files');
@@ -627,6 +631,17 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
             throw error;
         }
+    }
+
+    async getSaveDestination(directory, path) {
+        const filename = await BL.decode(path);
+        if (typeof filename !== 'string' || ['', '.', '..'].includes(filename.split('/').pop().trim())) {
+            throw new Error(this.homey.__('errors.pathRequired'));
+        }
+        if (directory && (typeof directory.id !== 'string' || ![true, 'true'].includes(directory.isDirectory))) {
+            throw new Error(this.homey.__('errors.folderRequired'));
+        }
+        return directory?.id ? `${directory.id}/${filename.replace(/^\/+/, '')}` : filename;
     }
 
     async saveFile({ path, device, getStream, prepare }) {

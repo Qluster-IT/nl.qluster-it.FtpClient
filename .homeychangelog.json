@@ -157,5 +157,20 @@
     "ru": "Изменили исходный код и задачи с Bitbucket на GitHub.",
     "ko": "소스 코드와 문제를 Bitbucket에서 GitHub로 변경했습니다.",
     "ar": "تم تغيير الشيفرة المصدرية والمشكلات من Bitbucket إلى GitHub."
+  },
+  "1.5.5": {
+    "en": "Save files from HTTP, HTTPS and FTP URLs, including Simple (Sys) Log exports. Improved file browsing, root handling and large transfers; added connection status and transfer alerts.",
+    "nl": "Sla bestanden op vanaf HTTP-, HTTPS- en FTP-URL's, inclusief Simple (Sys) Log-exports. Verbeterde bestandsweergave, hoofdmapbegrenzing en grote overdrachten; verbindingsstatus en overdrachtsmeldingen toegevoegd.",
+    "da": "Gem filer fra HTTP-, HTTPS- og FTP-URL'er, herunder Simple (Sys) Log-eksporter. Forbedret filvisning, rodmappehåndtering og store overførsler; tilføjet forbindelsesstatus og overførselsadvarsler.",
+    "de": "Dateien von HTTP-, HTTPS- und FTP-URLs speichern, einschließlich Simple (Sys) Log-Exporten. Dateiansicht, Stammordnerbegrenzung und große Übertragungen verbessert; Verbindungsstatus und Übertragungswarnungen hinzugefügt.",
+    "es": "Guarda archivos desde URL HTTP, HTTPS y FTP, incluidas exportaciones de Simple (Sys) Log. Mejoras en la navegación, la carpeta raíz y las transferencias grandes; estado de conexión y alertas de transferencia.",
+    "fr": "Enregistrez des fichiers depuis des URL HTTP, HTTPS et FTP, y compris les exports Simple (Sys) Log. Navigation, dossier racine et transferts volumineux améliorés ; ajout de l’état de connexion et des alertes de transfert.",
+    "it": "Salva file da URL HTTP, HTTPS e FTP, incluse le esportazioni di Simple (Sys) Log. Migliorati navigazione, cartella radice e trasferimenti di grandi dimensioni; aggiunti stato della connessione e avvisi di trasferimento.",
+    "no": "Lagre filer fra HTTP-, HTTPS- og FTP-URL-er, inkludert Simple (Sys) Log-eksporter. Forbedret filvisning, rotmappehåndtering og store overføringer; lagt til tilkoblingsstatus og overføringsvarsler.",
+    "sv": "Spara filer från HTTP-, HTTPS- och FTP-URL:er, inklusive Simple (Sys) Log-exporter. Förbättrad filvisning, rotmappshantering och stora överföringar; anslutningsstatus och överföringsvarningar tillagda.",
+    "pl": "Zapisuj pliki z adresów HTTP, HTTPS i FTP, w tym eksporty Simple (Sys) Log. Ulepszono przeglądanie, obsługę folderu głównego i duże transfery; dodano stan połączenia i alerty transferu.",
+    "ru": "Сохранение файлов по HTTP, HTTPS и FTP, включая экспорт Simple (Sys) Log. Улучшены просмотр файлов, работа с корневой папкой и передача больших файлов; добавлены состояние подключения и предупреждения об ошибках передачи.",
+    "ko": "Simple (Sys) Log 내보내기를 포함한 HTTP, HTTPS, FTP URL에서 파일을 저장합니다. 파일 탐색, 루트 폴더 처리 및 대용량 전송을 개선하고 연결 상태와 전송 알림을 추가했습니다.",
+    "ar": "حفظ الملفات من عناوين HTTP وHTTPS وFTP، بما في ذلك صادرات Simple (Sys) Log. تحسين تصفّح الملفات والمجلد الجذر وعمليات النقل الكبيرة، وإضافة حالة الاتصال وتنبيهات النقل."
   }
 }

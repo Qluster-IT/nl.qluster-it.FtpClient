@@ -1,0 +1,72 @@
+{
+  "id": "action_ftpclient_save_file_from_url",
+  "title": {
+    "en": "Save file from URL",
+    "nl": "Bestand opslaan vanaf URL",
+    "de": "Datei von URL speichern",
+    "fr": "Enregistrer un fichier depuis une URL",
+    "it": "Salva un file da un URL",
+    "es": "Guardar un archivo desde una URL",
+    "sv": "Spara fil från URL",
+    "no": "Lagre fil fra URL",
+    "da": "Gem fil fra URL",
+    "ru": "Сохранить файл по URL",
+    "pl": "Zapisz plik z adresu URL",
+    "ko": "URL에서 파일 저장",
+    "ar": "حفظ ملف من عنوان URL"
+  },
+  "titleFormatted": {
+    "en": "Save the file from [[url]] to [[directory]] / [[path]]",
+    "nl": "Sla het bestand van [[url]] op in [[directory]] / [[path]]",
+    "de": "Datei von [[url]] unter [[directory]] / [[path]] speichern",
+    "fr": "Enregistrer le fichier de [[url]] dans [[directory]] / [[path]]",
+    "it": "Salva il file da [[url]] in [[directory]] / [[path]]",
+    "es": "Guarda el archivo de [[url]] en [[directory]] / [[path]]",
+    "sv": "Spara filen från [[url]] till [[directory]] / [[path]]",
+    "no": "Lagre filen fra [[url]] til [[directory]] / [[path]]",
+    "da": "Gem filen fra [[url]] i [[directory]] / [[path]]",
+    "ru": "Сохранить файл по адресу [[url]] в [[directory]] / [[path]]",
+    "pl": "Zapisz plik z adresu [[url]] w [[directory]] / [[path]]",
+    "ko": "[[url]]의 파일을 [[directory]] / [[path]]에 저장",
+    "ar": "حفظ الملف من [[url]] في [[directory]] / [[path]]"
+  },
+  "args": [
+    { "name": "device", "type": "device", "filter": "driver_id=ftpconnection" },
+    { "name": "url", "type": "text", "placeholder": "https://", "title": "URL" },
+    {
+      "name": "directory",
+      "type": "autocomplete",
+      "required": false,
+      "placeholder": {
+        "en": "Path", "nl": "Pad", "de": "Pfad", "fr": "Chemin", "it": "Percorso",
+        "es": "Ruta", "sv": "Sökväg", "no": "Sti", "da": "Sti", "ru": "Путь",
+        "pl": "Ścieżka", "ko": "경로", "ar": "المسار"
+      }
+    },
+    {
+      "name": "path",
+      "type": "text",
+      "placeholder": {
+        "en": "(Path +) Filename (* BLL supported)",
+        "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+        "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+        "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+        "it": "(Percorso +) nome file (* BLL supportato)",
+        "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+        "sv": "(Sökväg +) filnamn (* BLL stöds)",
+        "no": "(Sti +) filnavn (* BLL støttes)",
+        "da": "(Sti +) filnavn (* BLL understøttes)",
+        "ru": "(Путь +) имя файла (* поддержка BLL)",
+        "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+        "ko": "(경로 +) 파일 이름 (* BLL 지원)",
+        "ar": "(المسار +) اسم الملف (* يدعم BLL)"
+      },
+      "title": {
+        "en": "Filename", "nl": "Bestandsnaam", "de": "Dateiname", "fr": "Nom du fichier",
+        "it": "Nome file", "es": "Nombre del archivo", "sv": "Filnamn", "no": "Filnavn",
+        "da": "Filnavn", "ru": "Имя файла", "pl": "Nazwa pliku", "ko": "파일 이름",
+        "ar": "اسم الملف"
+      }
+    }
+  ]
+}

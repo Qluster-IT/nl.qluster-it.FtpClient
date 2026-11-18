@@ -35,7 +35,7 @@ Done!
 
 Install the FTP Client.
 * Install the FTP Client App.
-* Create a new FTP Client device.
+* Add an **FTP Connection** device.
 * Select the FTP Micro Web Server and press next.
 * Choose a root directory, or leave it empty for the FTP server root.
 Done!
@@ -74,12 +74,35 @@ deliver the entire Base64 token before FTP Client can decode it, so that card
 cannot bypass Homey's Flow payload limits.
 
 For large logs, use **Save a Simple (Sys) Log export** instead. Choose CSV,
-Excel (.xlsx), or JSON. Optionally select an FTP folder and enter the filename
+Excel (.xlsx), or JSON. Optionally select an FTP directory in **Path** and enter the filename
 (for example, select `exports` and enter `homey-log.xlsx`, or leave the picker
 empty and enter `exports/homey-log.xlsx`). The card streams the completed export from the same
 Homey without passing the file through a Flow token. Simple (Sys) Log and
 Better Logic Library must be running; export preparation still depends on those
 apps and available storage.
+
+Use **Save file from URL** for files from Simple (Sys) Log or any other source.
+Pass the log export URL token (or enter a direct `http://`, `https://`, or `ftp://`
+link reachable from Homey), optionally select a directory in **Path**, and enter a filename or
+relative path. Only the URL passes through the Flow; Homey streams the file to
+the configured FTP connection. With Simple (Sys) Log, connect its
+**Get log export URL** card's **Local URL** or **Local SSL URL** token to this
+card's **URL** field. The export card waits until the file is ready to download.
+Choose your own destination filename, including its extension.
+
+HTTP redirects are followed, and HTTPS certificates are verified. FTP source
+URLs can include a username and password when required. Source files must be
+reachable from Homey, whether on the internet or your local network.
+Use trusted links: Homey can reach local network
+services, and plain HTTP and FTP do not encrypt the download. Treat private
+download URLs as secrets.
+
+### Changes in 1.5.5
+
+- Save files from HTTP, HTTPS, and FTP URLs, including Simple (Sys) Log export links.
+- Improved file browsing, configured-root handling, and large-file transfers.
+- Added FTP connection status and transfer alerts.
+- Save cards use **Path** and **Filename**.
 
 ### Connection status and transfer alerts
 

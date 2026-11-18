@@ -1,19 +1,19 @@
 {
   "id": "ftpconnection",
   "name": {
-    "en": "FTP Client",
-    "nl": "FTP Client",
-    "de": "FTP Client",
-    "fr": "FTP Client",
-    "it": "FTP Client",
-    "es": "FTP Client",
-    "sv": "FTP Client",
-    "no": "FTP Client",
-    "da": "FTP Client",
-    "ru": "FTP Client",
-    "pl": "FTP Client",
-    "ko": "FTP Client",
-    "ar": "FTP Client"
+    "en": "FTP Connection",
+    "nl": "FTP-verbinding",
+    "de": "FTP-Verbindung",
+    "fr": "Connexion FTP",
+    "it": "Connessione FTP",
+    "es": "Conexión FTP",
+    "sv": "FTP-anslutning",
+    "no": "FTP-tilkobling",
+    "da": "FTP-forbindelse",
+    "ru": "FTP-соединение",
+    "pl": "Połączenie FTP",
+    "ko": "FTP 연결",
+    "ar": "اتصال FTP"
   },
   "images": {
     "large": "drivers/ftpconnection/assets/images/large.png",

@@ -2,13 +2,15 @@ Sfoglia i file sul tuo server FTP e automatizza i trasferimenti da Homey. Salva 
 
 • Gestisci i file da Homey: carica e scarica file, crea cartelle, rinomina, sposta o elimina file e cartelle.
 • Automatizza con Flow: salva immagini o file codificati in base64, ottieni elenchi di file in JSON, carica immagini nei Flow o crea un link di download temporaneo.
+• Salva file da URL: trasferisci i download HTTP, HTTPS o FTP al tuo server, inclusi i link di esportazione di Simple (Sys) Log, senza passare il file attraverso un token Flow.
+• Supporto per Simple (Sys) Log: salva le esportazioni CSV, Excel o JSON con la scheda di esportazione dedicata, oppure collega la sua scheda URL di esportazione a «Salva un file da un URL» per i log di grandi dimensioni.
 • Monitora la connessione: Homey controlla automaticamente la cartella configurata. Avvia un Flow quando il server FTP non è più disponibile, torna raggiungibile o un trasferimento non riesce.
 
-Aggiungi un dispositivo FTP Client e inserisci i dati del server. Durante l’abbinamento Homey prova prima FTP sicuro (FTPS) e, se necessario, passa a FTP non cifrato. Se scegli una cartella iniziale, la navigazione e le operazioni sui file nei Flow restano limitate a quella cartella. Apri la schermata di riparazione del dispositivo per sfogliare i file nell’app Homey o nell’app web.
+Aggiungi un dispositivo di tipo «Connessione FTP» e inserisci i dati del server. Durante l’abbinamento Homey prova prima FTP sicuro (FTPS) e, se necessario, passa a FTP non cifrato. Se scegli una cartella iniziale, la navigazione e le operazioni sui file nei Flow restano limitate a quella cartella. Apri la schermata di riparazione del dispositivo per sfogliare i file nell’app Homey o nell’app web.
 
 Funziona con i server FTP, incluso Micro Web Server.
 
-Richiede l’app Better Logic Library.
+Richiede l’app Better Logic Library. Il codice BLL è supportato nei campi di testo per nome file e percorso. Consulta le impostazioni dell’app Better Logic Library per le istruzioni sull’uso del codice BLL.
 
 Per ulteriori informazioni, consulta la discussione dedicata all’app nel forum della community di Homey.
 Per accedere al wiki e al manuale utente di FTP Client, seleziona «Visita il sito web» sotto «Sito web dello sviluppatore» nella pagina dell’app su Homey App Store.

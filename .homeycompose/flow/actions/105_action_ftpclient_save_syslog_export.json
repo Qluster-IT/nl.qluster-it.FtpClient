@@ -46,19 +46,19 @@
       "type": "autocomplete",
       "required": false,
       "placeholder": {
-        "en": "Folder",
-        "nl": "Map",
-        "de": "Ordner",
-        "fr": "Dossier",
-        "it": "Cartella",
-        "es": "Carpeta",
-        "sv": "Mapp",
-        "no": "Mappe",
-        "da": "Mappe",
-        "ru": "Папка",
-        "pl": "Folder",
-        "ko": "폴더",
-        "ar": "مجلد"
+        "en": "Path",
+        "nl": "Pad",
+        "de": "Pfad",
+        "fr": "Chemin",
+        "it": "Percorso",
+        "es": "Ruta",
+        "sv": "Sökväg",
+        "no": "Sti",
+        "da": "Sti",
+        "ru": "Путь",
+        "pl": "Ścieżka",
+        "ko": "경로",
+        "ar": "المسار"
       }
     },
     {

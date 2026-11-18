@@ -1192,6 +1192,127 @@ test('the Sys Log export card accepts an optional folder selection and a BLL fil
   assert.deepEqual(destinations, ['media/archive/log.xlsx', 'media/exports/log.xlsx']);
 });
 
+test('Save file from URL streams a large HTTP download to the selected folder and reopens it on retry', async t => {
+  const { createServer } = require('node:http');
+  const payload = Buffer.alloc(6 * 1024 * 1024, 0x7d);
+  let downloads = 0;
+  const server = createServer((req, res) => {
+    if (req.url === '/redirect') {
+      res.writeHead(302, { Location: '/file?token=fixture' }).end();
+    } else if (req.url === '/file?token=fixture') {
+      downloads++;
+      res.writeHead(200, { 'Content-Length': payload.length }).end(payload);
+    } else {
+      res.writeHead(404).end();
+    }
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const Driver = loadDriver({ BL: { decode: async value => value === '{[name]}' ? '/log.bin' : value } });
+  const driver = new Driver();
+  driver.log = driver.error = () => {};
+  const cards = {};
+  const getCard = id => cards[id] ||= {
+    registerRunListener(listener) { this.run = listener; },
+    getArgument: () => ({ registerAutocompleteListener(listener) { cards[id].autocomplete = listener; } })
+  };
+  driver.homey = { __: translate, app: {}, flow: { getActionCard: getCard, getConditionCard: getCard } };
+  await driver.onInit();
+
+  const card = cards.action_ftpclient_save_file_from_url;
+  const directory = { id: 'media/archive', isDirectory: true };
+  const destinations = [];
+  const parents = [];
+  const device = { settings: { workdirectory: 'media' }, ftpClient: {
+    async exec({ action, createTransferStream }, parent, destination) {
+      if (action === 'ensureDir') return parents.push(parent);
+      assert.equal(action, 'uploadFrom');
+      destinations.push(destination);
+      if (destinations.length === 1) {
+        for await (const chunk of createTransferStream()) {
+          assert.ok(chunk.length < payload.length);
+          break;
+        }
+      }
+      const chunks = [];
+      for await (const chunk of createTransferStream()) chunks.push(chunk);
+      assert.deepEqual(Buffer.concat(chunks), payload);
+    }
+  } };
+  driver.getFiles = async args => {
+    assert.deepEqual(args, { file: undefined, query: '', device, type: 'folder' });
+    return [directory];
+  };
+  assert.deepEqual(await card.autocomplete('', { device }), [directory]);
+  await card.run({ device, url: `${base}/redirect`, directory, path: '{[name]}' });
+  await card.run({ device, url: `${base}/redirect`, path: 'exports/log.bin' });
+  await assert.rejects(card.run({ device, url: 'file:///local', path: 'log.bin' }), /valid HTTP, HTTPS, or FTP/);
+  assert.deepEqual(parents, ['media/archive', 'media/exports']);
+  assert.deepEqual(destinations, ['media/archive/log.bin', 'media/exports/log.bin']);
+  assert.equal(downloads, 3);
+});
+
+test('URL source validates HTTPS, bounds redirects, and does not expose private URL details', async () => {
+  const { EventEmitter } = require('node:events');
+  const createSource = loadModule('lib/url-source.js', {
+    https: {
+      get(url, options, callback) {
+        assert.equal(options.rejectUnauthorized, true);
+        const request = new EventEmitter();
+        request.setTimeout = () => {};
+        const cases = {
+          '/file': [200, {}],
+          '/loop': [302, { location: '/loop' }],
+          '/missing': [404, {}],
+          '/to-ftp': [302, { location: 'ftp://source.invalid/file' }]
+        };
+        const [statusCode, headers] = cases[url.pathname];
+        queueMicrotask(() => callback(Object.assign(Readable.from([Buffer.from('content')]), {
+          statusCode, headers, complete: true
+        })));
+        return request;
+      }
+    }
+  });
+  async function read(path) {
+    const chunks = [];
+    for await (const chunk of createSource(`https://source.invalid${path}?token=private`)()) chunks.push(chunk);
+    return Buffer.concat(chunks).toString();
+  }
+  assert.equal(await read('/file'), 'content');
+  await assert.rejects(read('/loop'), /redirect limit/);
+  await assert.rejects(read('/to-ftp'), /Unsupported source HTTP redirect/);
+  await assert.rejects(read('/missing'), { message: 'Source server returned HTTP 404.' });
+});
+
+test('an FTP source passes decoded file and login values safely and requires download completion', async () => {
+  const createSource = loadModule('lib/url-source.js', {
+    'basic-ftp': {
+      Client: class {
+        constructor(timeout, options) { assert.equal(options.allowSeparateTransferHost, false); }
+        async access(options) {
+          assert.deepEqual(options, { host: 'ftp.example', port: 2121, user: 'user', password: 'a@b' });
+        }
+        async downloadTo(stream, path) {
+          stream.end(Buffer.from('payload'));
+          if (path === '/failed.bin') throw new Error('Private source error');
+          assert.equal(path, '/nested folder/file.bin');
+        }
+        close() {}
+      }
+    }
+  });
+  const read = async path => {
+    const chunks = [];
+    for await (const chunk of createSource(`ftp://user:a%40b@ftp.example:2121${path}`)()) chunks.push(chunk);
+    return Buffer.concat(chunks).toString();
+  };
+  assert.equal(await read('/nested%20folder/file.bin'), 'payload');
+  await assert.rejects(read('/failed.bin'), { message: 'Could not download the file from the FTP source.' });
+  assert.throws(() => createSource('ftp://ftp.example/file%0d%0a'), /pointing to a file/);
+});
+
 test('Sys Log export waits for the matching ready event, then opens a fresh local stream for each retry', async () => {
   const { EventEmitter } = require('node:events');
   const app = new EventEmitter();
