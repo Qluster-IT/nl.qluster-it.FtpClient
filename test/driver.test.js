@@ -151,7 +151,7 @@ test('repair reports an inaccessible configured root instead of browsing the ser
   });
   assert.deepEqual(listed, ['/missing']);
   assert.equal(scope.vars.content.children.length, 0);
-  assert.deepEqual(errors, [failure, failure]);
+  assert.deepEqual(errors, [failure.message]);
 });
 
 test('repair moves require confirmation and cancelling does not send an FTP command', async () => {
@@ -197,7 +197,7 @@ test('a failed confirmed move is reported instead of refreshing as if it succeed
   directoryScope.moveItem({ id: '/media/a', name: 'a', isDirectory: false }, scope.vars.content, { id: '/media/b' });
   directoryScope.confirmMove();
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(errors, [failure, failure]);
+  assert.deepEqual(errors, [failure.message]);
 });
 
 test('repair refresh preserves loaded subfolders and does not reload cached empty folders', async () => {
@@ -275,7 +275,7 @@ test('repair folder rename failure reaches the error dialog and preserves the pe
   await directoryScope.renameDirectory(directory);
   assert.equal(directory.renameName, 'renamed');
   assert.equal(directory.rename, true);
-  assert.deepEqual(errors, [failure, failure]);
+  assert.deepEqual(errors, [failure.message]);
 });
 
 test('repair upload errors stop the upload and retain the dialog for retry', async () => {
@@ -346,7 +346,7 @@ test('getFile returns the downloaded bytes unchanged, including non-UTF-8 data',
   assert.deepEqual(buffer, bytes);
 });
 
-test('the get-URL Flow card rejects when the download fails instead of never finishing', async () => {
+test('the get-URL Flow card raises a refused data connection instead of hanging or logging it', async () => {
   const Driver = loadDriver({ BL: { getDownloadUrl: async () => ({ localUrl: 'l', cloudUrl: 'c' }), setDownloadUrl: async () => {} } });
   const driver = new Driver();
   const cards = {};
@@ -354,21 +354,29 @@ test('the get-URL Flow card rejects when the download fails instead of never fin
     registerRunListener(listener) { this.run = listener; return this; },
     getArgument: () => ({ registerAutocompleteListener() {} })
   };
-  driver.log = driver.error = () => {};
+  driver.log = () => {};
+  driver.error = () => assert.fail('Flow-owned error was logged');
   driver.homey = {
     app: {},
     flow: { getActionCard: card, getConditionCard: card },
     setTimeout: (callback, ms) => setTimeout(callback, ms)
   };
   await driver.onInit();
-  driver.getFile = async () => { throw new Error('download failed'); };
+  const refused = Object.assign(new Error('Connection refused'), { code: 'ECONNREFUSED' });
+  driver.getFile = async () => { throw refused; };
   let timer;
   try {
     await Promise.race([
-      assert.rejects(cards.action_ftpconnection_get_url.run({ file: { isFile: true, filename: 'a' }, device: {} }), /download failed/),
+      assert.rejects(cards.action_ftpconnection_get_url.run({ file: { isFile: true, filename: 'a' }, device: {} }), error => error === refused),
       new Promise((resolve, reject) => { timer = setTimeout(() => reject(new Error('Flow card hangs')), 200); })
     ]);
   } finally { clearTimeout(timer); }
+});
+
+test('Repair shows the FTP error message without logging the same failure on the driver', async () => {
+  const failure = new Error('Timeout (control socket)');
+  const { errors } = await openRepairBrowser('/configured', async () => { throw failure; });
+  assert.deepEqual(errors, [failure.message]);
 });
 
 test('the files JSON Flow token contains root-relative paths instead of physical picker IDs', async () => {
@@ -392,11 +400,15 @@ test('pairing closes the FTP connections used to probe the local servers', async
   class FtpClient {
     constructor() { this.closed = 0; clients.push(this); }
     init() {}
-    async getFeatures() { if (clients.length === 2) throw new Error('offline'); return true; }
+    async getFeatures() {
+      if (clients.length === 2) throw Object.assign(new Error('offline'), { code: 'ECONNREFUSED' });
+      return true;
+    }
     close() { this.closed++; }
   }
   const Driver = loadDriver({ FtpClient });
   const driver = new Driver();
+  driver.error = () => assert.fail('an absent optional local server should not log an error');
   driver.homey = {
     __: key => key,
     app: { ip: '127.0.0.1' },
@@ -954,6 +966,29 @@ test('changing the FTP root cancels a stale check and keeps an existing transfer
   assert.deepEqual(triggers, []);
   assert.equal(probes[1].client.options.workdirectory, '/different');
   assert.equal(device.hasTransferError(), true);
+  device.onUninit();
+});
+
+test('background FTP probe failures are logged once while an explicit check reports to its caller', async () => {
+  const { device, probes, timers } = monitoredDevice();
+  const logged = [];
+  device.error = (...args) => logged.push(args);
+  await device.onInit();
+  const startup = device.checkConnection();
+  probes[0].resolve([]);
+  await startup;
+
+  const refusal = Object.assign(new Error('Connection refused'), { code: 'ECONNREFUSED' });
+  [...timers.values()][0].callback();
+  const scheduled = device.checkConnection();
+  probes[1].reject(refusal);
+  assert.equal(await scheduled, false);
+  assert.deepEqual(logged, [['FTP connection check failed', refusal]]);
+
+  const requested = device.checkConnection();
+  probes[2].reject(new Error('Timeout (control socket)'));
+  assert.equal(await requested, false);
+  assert.equal(logged.length, 1);
   device.onUninit();
 });
 

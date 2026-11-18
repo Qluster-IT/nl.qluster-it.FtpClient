@@ -6,6 +6,16 @@ const Module = require('node:module');
 const test = require('node:test');
 const FtpClient = require('../lib/ftp-client');
 
+function withBasicFtp(Client) {
+  const filename = require.resolve('../lib/ftp-client');
+  const m = new Module(filename, module);
+  m.filename = filename;
+  m.paths = module.paths;
+  m.require = id => id === 'basic-ftp' ? { Client } : Module.prototype.require.call(m, id);
+  m._compile(fs.readFileSync(filename, 'utf8'), filename);
+  return new m.exports();
+}
+
 test('three queued FTP commands execute in order without sharing the connection concurrently', async () => {
   const client = new FtpClient();
   client.homey = { error() {} };
@@ -106,27 +116,20 @@ test('basic-ftp, https and zlib are loaded on first use instead of at startup', 
 test('failed login closes and discards the client instead of returning an unusable connection', async () => {
   let closed = 0;
   let created = 0;
-  const ftp = { Client: function () {
+  const client = withBasicFtp(function () {
     const fail = created++ === 0;
     return {
       ftp: {},
       access: async () => { if (fail) throw new Error('login failed'); },
       close: () => { closed++; }
     };
-  } };
-  const filename = require.resolve('../lib/ftp-client');
-  const m = new Module(filename, module);
-  m.filename = filename;
-  m.paths = module.paths;
-  m.require = id => id === 'basic-ftp' ? ftp : Module.prototype.require.call(m, id);
-  m._compile(fs.readFileSync(filename, 'utf8'), filename);
-  const client = new m.exports();
+  });
   const errors = [];
   client.homey = { error: (...args) => errors.push(args) };
   await assert.rejects(client.getClient(), /login failed/);
   assert.equal(closed, 1);
   assert.equal(client.client, undefined);
-  assert.equal(errors.length, 1);
+  assert.equal(errors.length, 0, 'the caller owns logging or displaying the terminal error');
   assert.ok(await client.getClient());
   assert.equal(created, 2);
 });
@@ -177,4 +180,87 @@ test('FTP retries use the same rooted path and never continue when resetting the
   assert.deepEqual(paths, ['media/root/child', 'media/root/child']);
   client.getClient = async () => ({ cd: async () => { throw new Error('550 Root unavailable'); }, list: () => assert.fail('must not list from an unknown directory') });
   await assert.rejects(client.exec({ action: 'list' }), /Root unavailable/);
+});
+
+test('a command reconnects after a control timeout and returns persistent data connection refusals to the caller', async () => {
+  const client = new FtpClient();
+  client.init({ homey: { error: () => assert.fail('caller-owned error logged by the FTP queue') }, workdirectory: '/root' });
+  const timeout = Object.assign(new Error('Timeout (control socket)'), { code: 'ETIMEDOUT' });
+  const refused = Object.assign(new Error('Connection refused'), { code: 'ECONNREFUSED' });
+  const attempts = [];
+  let refuse = false;
+  client.getClient = async ({ refresh }) => {
+    attempts.push(refresh);
+    return {
+      cd: async () => { if (attempts.length === 1) throw timeout; },
+      list: async () => { if (refuse) throw refused; return ['file']; }
+    };
+  };
+  assert.deepEqual(await client.getList(), ['file']);
+  refuse = true;
+  await assert.rejects(client.getList(), error => error === refused);
+  assert.deepEqual(attempts, [false, true, false, true]);
+});
+
+test('a stale socket is replaced and queued commands wait for the fresh login', async () => {
+  let releaseLogin, startLogin, connections = 0, closed = 0;
+  const started = new Promise(resolve => { startLogin = resolve; });
+  const waiting = new Promise(resolve => { releaseLogin = resolve; });
+  const order = [];
+  const client = withBasicFtp(function () {
+    connections++;
+    let loggedIn = false;
+    return {
+      ftp: {},
+      async access() {
+        startLogin();
+        await waiting;
+        loggedIn = true;
+      },
+      async cd() { assert.ok(loggedIn, 'command ran during login'); },
+      async downloadTo() { order.push('download'); },
+      async features() { assert.ok(loggedIn, 'feature probe ran during login'); order.push('features'); },
+      async list() { order.push('list'); return ['fresh']; }
+    };
+  });
+  client.init({ homey: {} });
+  client.client = { closed: true, close() { closed++; }, cd: () => assert.fail('used stale socket') };
+  const results = Promise.all([client.downloadTo({}, '/file'), client.getFeatures(), client.getList({ oneTry: true })]);
+  await started;
+  releaseLogin();
+  assert.deepEqual((await results)[2], ['fresh']);
+  assert.deepEqual(order, ['download', 'features', 'list']);
+  assert.equal(closed, 1);
+  assert.equal(connections, 1);
+});
+
+test('reconfiguration cancels an active retry and rejects queued work for the old root', async () => {
+  const client = new FtpClient();
+  client.init({ homey: {}, workdirectory: '/old' });
+  let connections = 0;
+  let started;
+  const active = new Promise(resolve => { started = resolve; });
+  const interrupted = new Error('socket closed');
+  client.getClient = async () => {
+    connections++;
+    return client.client = {
+      cd: async () => {},
+      list: path => path === '/new' ? ['new file'] : new Promise((resolve, reject) => {
+        client.client.close = () => reject(interrupted);
+        started();
+      }),
+      close() {}
+    };
+  };
+  const running = client.getList();
+  const queued = client.getList();
+  const oldResults = Promise.all([
+    assert.rejects(running, error => error === interrupted),
+    assert.rejects(queued, /closed or reconfigured/)
+  ]);
+  await active;
+  client.init({ workdirectory: '/new' });
+  await oldResults;
+  assert.deepEqual(await client.getList(), ['new file']);
+  assert.equal(connections, 2);
 });

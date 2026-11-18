@@ -103,6 +103,7 @@ download URLs as secrets.
 - Improved file browsing, configured-root handling, and large-file transfers.
 - Added FTP connection status and transfer alerts.
 - Save cards use **Path** and **Filename**.
+- Fixed connection conflicts when downloads run at the same time and improved recovery after connection failures.
 
 ### Connection status and transfer alerts
 
@@ -121,6 +122,10 @@ already on. That trigger provides the operation, relative path, and short
 reason. The original action still fails normally, so Advanced Flow error
 branches continue to work.
 
+If reconnecting and retrying an FTP operation still fails, Repair shows an error
+and Flow cards report the failure. Failed scheduled connection checks are written
+to the app's error log without opening a dialog.
+
 The app interface, device settings, and Flow cards are available in all 13
 Homey-supported languages.
 
@@ -130,7 +135,3 @@ Flowcard to retrieve an Url.
 It retrieves the file from the FTP server and keeps it accessable for 60* seconds through a url (* can be set per device in device-settings).
 
 This works perfectly on Sonos speakers or any other device accepting a Url, like sending a image or movie to a TV with a Browser.
-
-FTP commands submitted through the command queue execute one at a time, including
-after connection failures. Routine commands no longer issue an extra working-
-directory query just for logging. Protocol logging is enabled only in debug mode.

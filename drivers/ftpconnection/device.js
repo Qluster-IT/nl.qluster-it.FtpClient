@@ -72,7 +72,7 @@ module.exports = class FtpClientDevice extends Homey.Device {
 	async startMonitoring() {
 		this.failedChecks = 0;
 		await this.setCapabilityValue(STATUS, 'checking');
-		if (this.monitoring) this.checkConnection().catch(error => this.error('FTP status update failed', error));
+		if (this.monitoring) this.checkConnectionInBackground();
 	}
 
 	scheduleConnectionCheck() {
@@ -81,16 +81,23 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		const delay = this.failedChecks === 1 ? RETRY_INTERVAL : minutes * 60_000;
 		this.checkTimer = this.homey.setTimeout(() => {
 			this.checkTimer = null;
-			this.checkConnection().catch(error => this.error('FTP status update failed', error));
+			this.checkConnectionInBackground();
 		}, delay);
 	}
 
-	checkConnection() {
+	checkConnectionInBackground() {
+		this.checkConnection({ background: true }).catch(error => this.error('FTP status update failed', error));
+	}
+
+	checkConnection({ background = false } = {}) {
 		if (!this.monitoring) return Promise.resolve(false);
-		if (this.connectionCheck) return this.connectionCheck.result;
+		if (this.connectionCheck) {
+			this.connectionCheck.background ||= background;
+			return this.connectionCheck.result;
+		}
 		if (this.checkTimer != null) this.homey.clearTimeout(this.checkTimer);
 		this.checkTimer = null;
-		const check = this.connectionCheck = { client: new FtpClient() };
+		const check = this.connectionCheck = { client: new FtpClient(), background };
 		check.result = this.runConnectionCheck(check).finally(() => {
 			check.client.close();
 			if (this.connectionCheck !== check) return;
@@ -109,7 +116,7 @@ module.exports = class FtpClientDevice extends Homey.Device {
 		} catch (error) {
 			if (this.connectionCheck !== check) return false;
 			ready = false;
-			if (this.failedChecks === 1) this.error('FTP connection check failed twice', error);
+			if (check.background) this.error('FTP connection check failed', error);
 		}
 		if (this.connectionCheck !== check) return false;
 		this.failedChecks = ready ? 0 : this.failedChecks + 1;

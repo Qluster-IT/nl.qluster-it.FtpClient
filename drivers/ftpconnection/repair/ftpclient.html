@@ -41,7 +41,7 @@
 
 		function handleError(err) {
 			Homey.hideLoadingOverlay();
-			Homey.alert(err, 'error');
+			Homey.alert(err?.message || String(err), 'error');
 			return;
 		}
 

@@ -17,6 +17,7 @@ This is a Homey app. Before making changes, read and follow the general instruct
 - Default the device's status polling interval to five minutes. Changing it must not interrupt transfers or delay the 15-second confirmation retry after the first failed check.
 - Initialize an unset transfer alarm to `false` (shown as **No**) on new devices and when adding the capability to an existing device. Preserve any active alarm across app restarts.
 - Latch the transfer alarm until acknowledged, and emit the per-transfer trigger after the final failed attempt without masking the original error. Build fresh streams for transfer retries, and expose only a relative path and a safe error reason in Flow tokens.
+- Keep login, commands, and reconnects serialized on each FTP client. Propagate final failures to Repair and Flow callers; log background failures at their owner rather than logging each attempt in the shared command layer.
 
 ## Temporary downloads
 
