@@ -42,6 +42,7 @@ This is a Homey app. Before making changes, read and follow the general instruct
 - Keep reusable repair-browser files inside `FTP Client tests` under the device's configured Work (Default) Directory. Leave other server files untouched.
 - Reuse the `FTP Client` Flow folder and its grouped manual Advanced Flow checks instead of creating duplicates.
 - Use actual FTP picker selections, full-path inputs, and the supporting BLL variable `FTP Client test value`. Verify both evaluated filenames and downloaded file contents.
+- For SDK autocomplete tests, use `type: 'flowcardaction'` and JSON-stringified `args` on HP2019's legacy API; HP2023 uses `type: 'action'` with object `args`. An `invalid_card` response from the wrong API type does not establish a picker bug.
 - Log Flow test progress and results under `FTP Client` using Simple (Sys) Log's Flows facility (`16`).
 - SSL logging cards accept numeric strings for severity/facility (`6`/`16`), but JSON exports contain readable labels (`Info`/`Flow`). Verify the saved Flows' actual completion messages, not an assumed number of log entries.
 - For SSL export integration, call `tools/ssl-ftp-exports.integration.js` with `{ homey, deviceId }`, using an authenticated SDK client pinned to the authorized test Homey. It exercises CSV text, CSV base64 and Excel exports through real Flow cards, saves them in the FTP fixture directory, and verifies downloaded bytes and parsed contents. CSV text is UTF-8/base64 encoded by the runner because the FTP save card accepts base64.
