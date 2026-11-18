@@ -97,14 +97,6 @@ Use trusted links: Homey can reach local network
 services, and plain HTTP and FTP do not encrypt the download. Treat private
 download URLs as secrets.
 
-### Changes in 1.5.5
-
-- Save files from HTTP, HTTPS, and FTP URLs, including Simple (Sys) Log export links.
-- Improved file browsing, configured-root handling, and large-file transfers.
-- Added FTP connection status and transfer alerts.
-- Save cards use **Path** and **Filename**.
-- Fixed connection conflicts when downloads run at the same time and improved recovery after connection failures.
-
 ### Connection status and transfer alerts
 
 **FTP status** (server icon) checks whether Homey can sign in and list the configured folder.
@@ -135,3 +127,210 @@ Flowcard to retrieve an Url.
 It retrieves the file from the FTP server and keeps it accessable for 60* seconds through a url (* can be set per device in device-settings).
 
 This works perfectly on Sonos speakers or any other device accepting a Url, like sending a image or movie to a TV with a Browser.
+
+## Changelog
+
+### 1.6.0
+
+- Save files from HTTP, HTTPS, and FTP URLs, including Simple (Sys) Log export links.
+- Improved file browsing, configured-root handling, and large-file transfers.
+- Added FTP connection status and transfer alerts.
+- Save cards use **Path** and **Filename**.
+- Fixed connection conflicts when downloads run at the same time and improved recovery after connection failures.
+
+### 1.5.4
+
+- Moved the source code and issue tracker from Bitbucket to GitHub.
+
+### 1.5.3
+
+- Added a setting to allow an invalid FTP certificate.
+
+### 1.5.2
+
+- Fixed a startup issue.
+
+### 1.5.1
+
+- Fixed secure FTP login requiring manual intervention.
+
+### 1.5.0
+
+- Added a Flow card to save Base64 text as a file on the FTP server, for example to save Simple Log exports or Better Logic Library variables.
+
+### 1.4.12
+
+- Fixed another potential startup issue on Homey Pro (Early 2023).
+
+### 1.4.11
+
+- Fixed another startup issue.
+
+### 1.4.10
+
+- Improved memory performance.
+
+### 1.4.9
+
+- Improved memory performance.
+
+### 1.4.8
+
+- Resolved startup issues.
+
+### 1.4.7
+
+- Fixed startup issues.
+
+### 1.4.6
+
+- Test release with startup fixes; may contain bugs.
+
+### 1.4.5
+
+- Fixed startup issues.
+
+### 1.4.4
+
+- Fixed startup issues.
+
+### 1.4.3
+
+- Improved handling of Better Logic Library updates while the app is running.
+
+### 1.4.2
+
+- Bug fixes.
+
+### 1.4.1
+
+- Further compatibility fixes for all Homey Pro models.
+
+### 1.4.0
+
+- Restored compatibility with all Homey Pro models.
+
+### 1.3.10
+
+- Improved Better Logic Library support.
+
+### 1.3.9
+
+- Added compatibility with Homey Pro (Early 2023).
+
+### 1.3.7
+
+- Added automatic discovery and support for Athom's HTTP/FTP Server.
+- Fixed root directory handling.
+
+### 1.3.6
+
+- Fixed the Better Logic Library restart message.
+
+### 1.3.5
+
+- Improved performance.
+
+### 1.3.4
+
+- Improved performance.
+
+### 1.3.3
+
+- Supported Better Logic Library (BLL) coding in Flow cards.
+
+### 1.3.2
+
+- Supported Better Logic Library coding in Flow cards.
+
+### 1.3.1
+
+- Added support for Better Logic Library coding in Flow cards.
+
+### 1.3.0
+
+- Added support for Better Logic Library coding in Flow cards.
+
+### 1.2.12
+
+- Fixed uploading an Image Token to FTP.
+
+### 1.2.10
+
+- Completed testing.
+
+### 1.2.9
+
+- Test release.
+
+### 1.2.8
+
+- Test release.
+
+### 1.2.7
+
+- Improved the Flow card that gets an Image Token from a URL.
+
+### 1.2.6
+
+- Added a Flow card to get an Image Token from a URL.
+
+### 1.2.5
+
+- Fixed retrieving an Image Token.
+
+### 1.2.4
+
+- Added Patreon and GitHub Sponsors as contribution options alongside PayPal.
+
+### 1.2.3
+
+- Added App Store links to the issue tracker and source code.
+
+### 1.2.2
+
+- Added a Flow card to save an Image Token to the FTP server.
+
+### 1.2.1
+
+- Added a Flow card to list files in a directory as JSON for use with JSON Handler.
+
+### 1.2.0
+
+- Added a Flow card to retrieve an image as an Image Token.
+
+### 1.1.2
+
+- Improved the app description.
+
+### 1.1.1
+
+- Improved interface text.
+
+### 1.1.0
+
+- Completed the basic file browser interface.
+
+### 1.0.5
+
+- Improved scrolling while dragging items on phones.
+
+### 1.0.4
+
+- Further improved drag and drop on phones.
+
+### 1.0.3
+
+- Added support for files larger than 1 MB and improved drag and drop and error handling.
+
+### 1.0.2
+
+- Improved drag and drop.
+
+### 1.0.1
+
+- Improved the interface.
+
+### 1.0.0
+
+- First release.

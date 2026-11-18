@@ -158,7 +158,7 @@
     "ko": "소스 코드와 문제를 Bitbucket에서 GitHub로 변경했습니다.",
     "ar": "تم تغيير الشيفرة المصدرية والمشكلات من Bitbucket إلى GitHub."
   },
-  "1.5.5": {
+  "1.6.0": {
     "en": "Save files from HTTP, HTTPS and FTP URLs, including Simple (Sys) Log exports. Improved file browsing, root handling and large transfers; added connection status and transfer alerts. Fixed simultaneous download conflicts and improved recovery after connection failures.",
     "nl": "Sla bestanden op vanaf HTTP-, HTTPS- en FTP-URL's, inclusief Simple (Sys) Log-exports. Verbeterde bestandsweergave, hoofdmapbegrenzing en grote overdrachten; verbindingsstatus en overdrachtsmeldingen toegevoegd. Conflicten bij gelijktijdige downloads opgelost en herstel na verbindingsfouten verbeterd.",
     "da": "Gem filer fra HTTP-, HTTPS- og FTP-URL'er, herunder Simple (Sys) Log-eksporter. Forbedret filvisning, rodmappehåndtering og store overførsler; tilføjet forbindelsesstatus og overførselsadvarsler. Rettet problemer med samtidige downloads og forbedret genetablering efter forbindelsesfejl.",
