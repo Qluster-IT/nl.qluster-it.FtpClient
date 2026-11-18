@@ -8,10 +8,34 @@
     "local"
   ],
   "name": {
-    "en": "FTP Client"
+    "en": "FTP Client",
+    "nl": "FTP Client",
+    "de": "FTP Client",
+    "fr": "FTP Client",
+    "it": "FTP Client",
+    "es": "FTP Client",
+    "sv": "FTP Client",
+    "no": "FTP Client",
+    "da": "FTP Client",
+    "ru": "FTP Client",
+    "pl": "FTP Client",
+    "ko": "FTP Client",
+    "ar": "FTP Client"
   },
   "description": {
-    "en": "Control FTP Servers through a directory-based UI in the Homey App or Web App."
+    "en": "Control FTP servers through a folder-based interface in the Homey app or web app.",
+    "nl": "Bedien FTP-servers via een mappeninterface in de Homey-app of webapp.",
+    "de": "Steuere FTP-Server über eine Ordneransicht in der Homey-App oder Web-App.",
+    "fr": "Contrôlez des serveurs FTP depuis une interface de dossiers dans l’app Homey ou l’app web.",
+    "it": "Controlla i server FTP tramite un’interfaccia a cartelle nell’app Homey o nell’app web.",
+    "es": "Controla servidores FTP desde una interfaz de carpetas en la app Homey o la app web.",
+    "sv": "Styr FTP-servrar via ett mappgränssnitt i Homey-appen eller webbappen.",
+    "no": "Styr FTP-servere via et mappegrensesnitt i Homey-appen eller nettappen.",
+    "da": "Styr FTP-servere via en mappevisning i Homey-appen eller webappen.",
+    "ru": "Управляйте FTP-серверами через интерфейс папок в приложении Homey или веб-приложении.",
+    "pl": "Steruj serwerami FTP za pomocą widoku folderów w aplikacji Homey lub aplikacji internetowej.",
+    "ko": "Homey 앱 또는 웹 앱의 폴더 인터페이스로 FTP 서버를 제어하세요.",
+    "ar": "تحكّم في خوادم FTP من خلال واجهة مجلدات في تطبيق Homey أو تطبيق الويب."
   },
   "tags": {
     "en": [
@@ -24,19 +48,99 @@
     ],
     "nl": [
       "opslag",
-      "lokale",
+      "lokaal",
       "soundboard",
-      "grabber",
+      "ophalen",
       "afbeelding",
       "server"
     ],
     "de": [
-      "lagerung",
+      "Speicher",
       "lokal",
+      "Soundboard",
+      "Abrufen",
+      "Bild",
+      "Server"
+    ],
+    "fr": [
+      "stockage",
+      "local",
+      "table sonore",
+      "capture",
+      "image",
+      "serveur"
+    ],
+    "it": [
+      "archiviazione",
+      "locale",
       "soundboard",
-      "grabber",
+      "acquisizione",
+      "immagine",
+      "server"
+    ],
+    "es": [
+      "almacenamiento",
+      "local",
+      "panel de sonidos",
+      "captura",
+      "imagen",
+      "servidor"
+    ],
+    "sv": [
+      "lagring",
+      "lokal",
+      "ljudpanel",
+      "hämtning",
       "bild",
       "server"
+    ],
+    "no": [
+      "lagring",
+      "lokal",
+      "lydpanel",
+      "henting",
+      "bilde",
+      "server"
+    ],
+    "da": [
+      "lagring",
+      "lokal",
+      "lydpanel",
+      "hentning",
+      "billede",
+      "server"
+    ],
+    "ru": [
+      "хранилище",
+      "локально",
+      "звуковая панель",
+      "загрузка",
+      "изображение",
+      "сервер"
+    ],
+    "pl": [
+      "pamięć",
+      "lokalny",
+      "panel dźwiękowy",
+      "pobieranie",
+      "obraz",
+      "serwer"
+    ],
+    "ko": [
+      "저장소",
+      "로컬",
+      "사운드보드",
+      "가져오기",
+      "이미지",
+      "서버"
+    ],
+    "ar": [
+      "تخزين",
+      "محلي",
+      "لوحة أصوات",
+      "جلب",
+      "صورة",
+      "خادم"
     ]
   },
   "brandColor": "#2B738C",
@@ -94,19 +198,233 @@
       "method": "POST",
       "path": "/uploadFilePartials",
       "public": true
+    },
+    "apiReady": {
+      "method": "GET",
+      "path": "/api-ready"
     }
   },
   "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "FTP became ready",
+          "nl": "FTP is gereed geworden",
+          "de": "FTP ist jetzt bereit",
+          "fr": "Le FTP est devenu prêt",
+          "it": "FTP è diventato disponibile",
+          "es": "FTP está listo de nuevo",
+          "sv": "FTP blev redo",
+          "no": "FTP ble klar",
+          "da": "FTP blev klar",
+          "ru": "FTP стал доступен",
+          "pl": "FTP jest już gotowy",
+          "ko": "FTP가 준비 상태로 바뀜",
+          "ar": "أصبح FTP جاهزًا"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_became_ready"
+      },
+      {
+        "title": {
+          "en": "FTP became unavailable",
+          "nl": "FTP is niet meer beschikbaar",
+          "de": "FTP ist nicht mehr verfügbar",
+          "fr": "Le FTP est devenu indisponible",
+          "it": "FTP è diventato non disponibile",
+          "es": "FTP dejó de estar disponible",
+          "sv": "FTP blev otillgängligt",
+          "no": "FTP ble utilgjengelig",
+          "da": "FTP blev utilgængelig",
+          "ru": "FTP стал недоступен",
+          "pl": "FTP stał się niedostępny",
+          "ko": "FTP를 사용할 수 없게 됨",
+          "ar": "أصبح FTP غير متاح"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_became_unavailable"
+      },
+      {
+        "title": {
+          "en": "A transfer failed",
+          "nl": "Een overdracht is mislukt",
+          "de": "Eine Übertragung ist fehlgeschlagen",
+          "fr": "Un transfert a échoué",
+          "it": "Un trasferimento non è riuscito",
+          "es": "Una transferencia falló",
+          "sv": "En överföring misslyckades",
+          "no": "En overføring mislyktes",
+          "da": "En overførsel mislykkedes",
+          "ru": "Не удалось передать файл",
+          "pl": "Przesyłanie nie powiodło się",
+          "ko": "전송이 실패함",
+          "ar": "فشل نقل ملف"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "operation",
+            "type": "string",
+            "title": {
+              "en": "Operation",
+              "nl": "Bewerking",
+              "de": "Vorgang",
+              "fr": "Opération",
+              "it": "Operazione",
+              "es": "Operación",
+              "sv": "Åtgärd",
+              "no": "Operasjon",
+              "da": "Handling",
+              "ru": "Операция",
+              "pl": "Operacja",
+              "ko": "작업",
+              "ar": "العملية"
+            }
+          },
+          {
+            "name": "path",
+            "type": "string",
+            "title": {
+              "en": "File path",
+              "nl": "Bestandspad",
+              "de": "Dateipfad",
+              "fr": "Chemin du fichier",
+              "it": "Percorso del file",
+              "es": "Ruta del archivo",
+              "sv": "Filsökväg",
+              "no": "Filbane",
+              "da": "Filsti",
+              "ru": "Путь к файлу",
+              "pl": "Ścieżka pliku",
+              "ko": "파일 경로",
+              "ar": "مسار الملف"
+            }
+          },
+          {
+            "name": "reason",
+            "type": "string",
+            "title": {
+              "en": "Reason",
+              "nl": "Reden",
+              "de": "Grund",
+              "fr": "Raison",
+              "it": "Motivo",
+              "es": "Motivo",
+              "sv": "Orsak",
+              "no": "Årsak",
+              "da": "Årsag",
+              "ru": "Причина",
+              "pl": "Powód",
+              "ko": "이유",
+              "ar": "السبب"
+            }
+          }
+        ],
+        "id": "ftp_transfer_failed"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "FTP is ready",
+          "nl": "FTP is gereed",
+          "de": "FTP ist bereit",
+          "fr": "Le FTP est prêt",
+          "it": "FTP è pronto",
+          "es": "FTP está listo",
+          "sv": "FTP är redo",
+          "no": "FTP er klar",
+          "da": "FTP er klar",
+          "ru": "FTP готов",
+          "pl": "FTP jest gotowy",
+          "ko": "FTP가 준비됨",
+          "ar": "FTP جاهز"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_is_ready"
+      },
+      {
+        "title": {
+          "en": "Transfer error is active",
+          "nl": "De overdrachtsfout is actief",
+          "de": "Übertragungsfehler ist aktiv",
+          "fr": "L’erreur de transfert est active",
+          "it": "L’errore di trasferimento è attivo",
+          "es": "El error de transferencia está activo",
+          "sv": "Överföringsfelet är aktivt",
+          "no": "Overføringsfeilen er aktiv",
+          "da": "Overførselsfejlen er aktiv",
+          "ru": "Ошибка передачи активна",
+          "pl": "Błąd przesyłania jest aktywny",
+          "ko": "전송 오류가 활성화됨",
+          "ar": "خطأ النقل نشط"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_transfer_error_active"
+      }
+    ],
     "actions": [
       {
         "id": "action_app_get_imagetokenfromurl",
         "title": {
           "en": "Get an Image Token from URL",
-          "nl": "Ontvang een afbeeldingstoken van Url"
+          "nl": "Haal een afbeeldingstoken op via URL",
+          "de": "Bild-Token aus URL abrufen",
+          "fr": "Obtenir un jeton d’image depuis une URL",
+          "it": "Ottieni un token immagine da URL",
+          "es": "Obtener un token de imagen de una URL",
+          "sv": "Hämta en bildtoken från URL",
+          "no": "Hent et bildetoken fra URL",
+          "da": "Hent et billedtoken fra URL",
+          "ru": "Получить токен изображения по URL",
+          "pl": "Pobierz token obrazu z URL",
+          "ko": "URL에서 이미지 토큰 가져오기",
+          "ar": "الحصول على رمز صورة من عنوان URL"
         },
         "titleFormatted": {
           "en": "Get an Image Token for [[url]], available for [[availableduration]] seconds",
-          "nl": "Ontvang een Afbeelding Token voor [[url]], beschikbaar voor [[availableduration]] seconden"
+          "nl": "Haal een afbeeldingstoken op voor [[url]], beschikbaar gedurende [[availableduration]] seconden",
+          "de": "Bild-Token für [[url]] abrufen, verfügbar für [[availableduration]] Sekunden",
+          "fr": "Obtenir un jeton d’image pour [[url]], disponible pendant [[availableduration]] secondes",
+          "it": "Ottieni un token immagine per [[url]], disponibile per [[availableduration]] secondi",
+          "es": "Obtener un token de imagen para [[url]], disponible durante [[availableduration]] segundos",
+          "sv": "Hämta en bildtoken för [[url]], tillgänglig i [[availableduration]] sekunder",
+          "no": "Hent et bildetoken for [[url]], tilgjengelig i [[availableduration]] sekunder",
+          "da": "Hent et billedtoken til [[url]], tilgængeligt i [[availableduration]] sekunder",
+          "ru": "Получить токен изображения для [[url]], доступный [[availableduration]] секунд",
+          "pl": "Pobierz token obrazu dla [[url]], dostępny przez [[availableduration]] sekund",
+          "ko": "[[url]]의 이미지 토큰 가져오기, [[availableduration]]초 동안 사용 가능",
+          "ar": "الحصول على رمز صورة لـ [[url]]، متاح لمدة [[availableduration]] ثانية"
         },
         "args": [
           {
@@ -114,23 +432,67 @@
             "type": "text",
             "placeholder": {
               "en": "URL (* BLL supported)",
-              "nl": "Url (* BLL ondersteund)"
+              "nl": "URL (* BLL ondersteund)",
+              "de": "URL (* BLL unterstützt)",
+              "fr": "URL (* BLL pris en charge)",
+              "it": "URL (* BLL supportato)",
+              "es": "URL (* compatible con BLL)",
+              "sv": "URL (* BLL stöds)",
+              "no": "URL (* BLL støttes)",
+              "da": "URL (* BLL understøttes)",
+              "ru": "URL (* поддержка BLL)",
+              "pl": "URL (* obsługa BLL)",
+              "ko": "URL(* BLL 지원)",
+              "ar": "عنوان URL (* يدعم BLL)"
             },
             "title": {
               "en": "URL",
-              "nl": "Url"
+              "nl": "URL",
+              "de": "URL",
+              "fr": "URL",
+              "it": "URL",
+              "es": "URL",
+              "sv": "URL",
+              "no": "URL",
+              "da": "URL",
+              "ru": "URL",
+              "pl": "URL",
+              "ko": "URL",
+              "ar": "URL"
             }
           },
           {
             "name": "availableduration",
             "type": "number",
             "placeholder": {
-              "en": "0 = untill app restart",
-              "nl": "0 = tot app herstart"
+              "en": "0 = until app restart",
+              "nl": "0 = tot herstart van de app",
+              "de": "0 = bis zum App-Neustart",
+              "fr": "0 = jusqu’au redémarrage de l’app",
+              "it": "0 = fino al riavvio dell’app",
+              "es": "0 = hasta reiniciar la app",
+              "sv": "0 = tills appen startas om",
+              "no": "0 = til appen startes på nytt",
+              "da": "0 = indtil appen genstartes",
+              "ru": "0 = до перезапуска приложения",
+              "pl": "0 = do ponownego uruchomienia aplikacji",
+              "ko": "0 = 앱을 다시 시작할 때까지",
+              "ar": "0 = حتى إعادة تشغيل التطبيق"
             },
             "title": {
-              "en": "Number of",
-              "nl": "Aantal"
+              "en": "Number of seconds",
+              "nl": "Aantal seconden",
+              "de": "Anzahl Sekunden",
+              "fr": "Nombre de secondes",
+              "it": "Numero di secondi",
+              "es": "Número de segundos",
+              "sv": "Antal sekunder",
+              "no": "Antall sekunder",
+              "da": "Antal sekunder",
+              "ru": "Количество секунд",
+              "pl": "Liczba sekund",
+              "ko": "시간(초)",
+              "ar": "عدد الثواني"
             },
             "min": 0,
             "value": 60
@@ -142,7 +504,18 @@
             "type": "image",
             "title": {
               "en": "Image",
-              "nl": "Afbeelding"
+              "nl": "Afbeelding",
+              "de": "Bild",
+              "fr": "Image",
+              "it": "Immagine",
+              "es": "Imagen",
+              "sv": "Bild",
+              "no": "Bilde",
+              "da": "Billede",
+              "ru": "Изображение",
+              "pl": "Obraz",
+              "ko": "이미지",
+              "ar": "صورة"
             }
           }
         ]
@@ -151,11 +524,33 @@
         "id": "action_ftpconnection_get_url",
         "title": {
           "en": "Get file URL",
-          "nl": "Ontvang bestand url"
+          "nl": "Bestands-URL ophalen",
+          "de": "Datei-URL abrufen",
+          "fr": "Obtenir l’URL du fichier",
+          "it": "Ottieni URL del file",
+          "es": "Obtener URL del archivo",
+          "sv": "Hämta fil-URL",
+          "no": "Hent fil-URL",
+          "da": "Hent fil-URL",
+          "ru": "Получить URL файла",
+          "pl": "Pobierz URL pliku",
+          "ko": "파일 URL 가져오기",
+          "ar": "الحصول على عنوان URL للملف"
         },
         "titleFormatted": {
           "en": "Get URL for [[file]]",
-          "nl": "Ontvang Url voor [[file]]"
+          "nl": "Haal de URL op voor [[file]]",
+          "de": "URL für [[file]] abrufen",
+          "fr": "Obtenir l’URL de [[file]]",
+          "it": "Ottieni URL per [[file]]",
+          "es": "Obtener URL de [[file]]",
+          "sv": "Hämta URL för [[file]]",
+          "no": "Hent URL for [[file]]",
+          "da": "Hent URL til [[file]]",
+          "ru": "Получить URL для [[file]]",
+          "pl": "Pobierz URL dla [[file]]",
+          "ko": "[[file]]의 URL 가져오기",
+          "ar": "الحصول على عنوان URL لـ [[file]]"
         },
         "args": [
           {
@@ -166,7 +561,21 @@
           {
             "name": "file",
             "type": "autocomplete",
-            "placeholder": "File"
+            "placeholder": {
+              "en": "File",
+              "nl": "Bestand",
+              "de": "Datei",
+              "fr": "Fichier",
+              "it": "File",
+              "es": "Archivo",
+              "sv": "Fil",
+              "no": "Fil",
+              "da": "Fil",
+              "ru": "Файл",
+              "pl": "Plik",
+              "ko": "파일",
+              "ar": "ملف"
+            }
           }
         ],
         "tokens": [
@@ -175,7 +584,18 @@
             "type": "string",
             "title": {
               "en": "URL",
-              "nl": "Url"
+              "nl": "URL",
+              "de": "URL",
+              "fr": "URL",
+              "it": "URL",
+              "es": "URL",
+              "sv": "URL",
+              "no": "URL",
+              "da": "URL",
+              "ru": "URL",
+              "pl": "URL",
+              "ko": "URL",
+              "ar": "URL"
             }
           },
           {
@@ -183,7 +603,18 @@
             "type": "string",
             "title": {
               "en": "Cloud URL",
-              "nl": "Cloud Url"
+              "nl": "Cloud-URL",
+              "de": "Cloud-URL",
+              "fr": "URL cloud",
+              "it": "URL cloud",
+              "es": "URL de la nube",
+              "sv": "Moln-URL",
+              "no": "Sky-URL",
+              "da": "Cloud-URL",
+              "ru": "Облачный URL",
+              "pl": "URL w chmurze",
+              "ko": "클라우드 URL",
+              "ar": "عنوان URL سحابي"
             }
           }
         ]
@@ -192,11 +623,33 @@
         "id": "action_ftpclient_get_files",
         "title": {
           "en": "Get files (JSON)",
-          "nl": "Ontvang bestanden (JSON)"
+          "nl": "Bestanden ophalen (JSON)",
+          "de": "Dateien abrufen (JSON)",
+          "fr": "Obtenir les fichiers (JSON)",
+          "it": "Ottieni file (JSON)",
+          "es": "Obtener archivos (JSON)",
+          "sv": "Hämta filer (JSON)",
+          "no": "Hent filer (JSON)",
+          "da": "Hent filer (JSON)",
+          "ru": "Получить файлы (JSON)",
+          "pl": "Pobierz pliki (JSON)",
+          "ko": "파일 가져오기(JSON)",
+          "ar": "الحصول على الملفات (JSON)"
         },
         "titleFormatted": {
           "en": "Get files from [[directory]] (JSON)",
-          "nl": "Ontvang bestanden uit [[directory]] (JSON)"
+          "nl": "Haal bestanden op uit [[directory]] (JSON)",
+          "de": "Dateien aus [[directory]] abrufen (JSON)",
+          "fr": "Obtenir les fichiers de [[directory]] (JSON)",
+          "it": "Ottieni file da [[directory]] (JSON)",
+          "es": "Obtener archivos de [[directory]] (JSON)",
+          "sv": "Hämta filer från [[directory]] (JSON)",
+          "no": "Hent filer fra [[directory]] (JSON)",
+          "da": "Hent filer fra [[directory]] (JSON)",
+          "ru": "Получить файлы из [[directory]] (JSON)",
+          "pl": "Pobierz pliki z [[directory]] (JSON)",
+          "ko": "[[directory]]에서 파일 가져오기(JSON)",
+          "ar": "الحصول على الملفات من [[directory]] (JSON)"
         },
         "args": [
           {
@@ -207,7 +660,21 @@
           {
             "name": "directory",
             "type": "autocomplete",
-            "placeholder": "Directory"
+            "placeholder": {
+              "en": "Folder",
+              "nl": "Map",
+              "de": "Ordner",
+              "fr": "Dossier",
+              "it": "Cartella",
+              "es": "Carpeta",
+              "sv": "Mapp",
+              "no": "Mappe",
+              "da": "Mappe",
+              "ru": "Папка",
+              "pl": "Folder",
+              "ko": "폴더",
+              "ar": "مجلد"
+            }
           }
         ],
         "tokens": [
@@ -216,7 +683,18 @@
             "type": "string",
             "title": {
               "en": "Files (JSON)",
-              "nl": "Bestanden (JSON)"
+              "nl": "Bestanden (JSON)",
+              "de": "Dateien (JSON)",
+              "fr": "Fichiers (JSON)",
+              "it": "File (JSON)",
+              "es": "Archivos (JSON)",
+              "sv": "Filer (JSON)",
+              "no": "Filer (JSON)",
+              "da": "Filer (JSON)",
+              "ru": "Файлы (JSON)",
+              "pl": "Pliki (JSON)",
+              "ko": "파일(JSON)",
+              "ar": "الملفات (JSON)"
             }
           }
         ]
@@ -225,11 +703,33 @@
         "id": "action_ftpclient_get_imagetoken",
         "title": {
           "en": "Get an Image Token",
-          "nl": "Ontvang een afbeeldingstoken"
+          "nl": "Afbeeldingstoken ophalen",
+          "de": "Bild-Token abrufen",
+          "fr": "Obtenir un jeton d’image",
+          "it": "Ottieni un token immagine",
+          "es": "Obtener un token de imagen",
+          "sv": "Hämta en bildtoken",
+          "no": "Hent et bildetoken",
+          "da": "Hent et billedtoken",
+          "ru": "Получить токен изображения",
+          "pl": "Pobierz token obrazu",
+          "ko": "이미지 토큰 가져오기",
+          "ar": "الحصول على رمز صورة"
         },
         "titleFormatted": {
           "en": "Get an Image Token for [[image]] / [[path]]",
-          "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
+          "nl": "Haal een afbeeldingstoken op voor [[image]] / [[path]]",
+          "de": "Bild-Token für [[image]] / [[path]] abrufen",
+          "fr": "Obtenir un jeton d’image pour [[image]] / [[path]]",
+          "it": "Ottieni un token immagine per [[image]] / [[path]]",
+          "es": "Obtener un token de imagen para [[image]] / [[path]]",
+          "sv": "Hämta en bildtoken för [[image]] / [[path]]",
+          "no": "Hent et bildetoken for [[image]] / [[path]]",
+          "da": "Hent et billedtoken til [[image]] / [[path]]",
+          "ru": "Получить токен изображения для [[image]] / [[path]]",
+          "pl": "Pobierz token obrazu dla [[image]] / [[path]]",
+          "ko": "[[image]] / [[path]]의 이미지 토큰 가져오기",
+          "ar": "الحصول على رمز صورة لـ [[image]] / [[path]]"
         },
         "args": [
           {
@@ -241,10 +741,35 @@
             "name": "image",
             "type": "autocomplete",
             "required": false,
-            "placeholder": "Image",
+            "placeholder": {
+              "en": "Image",
+              "nl": "Afbeelding",
+              "de": "Bild",
+              "fr": "Image",
+              "it": "Immagine",
+              "es": "Imagen",
+              "sv": "Bild",
+              "no": "Bilde",
+              "da": "Billede",
+              "ru": "Изображение",
+              "pl": "Obraz",
+              "ko": "이미지",
+              "ar": "صورة"
+            },
             "title": {
-              "en": "Select an image or Directory",
-              "nl": "Selecteer een afbeelding of map"
+              "en": "Select an image or folder",
+              "nl": "Selecteer een afbeelding of map",
+              "de": "Bild oder Ordner auswählen",
+              "fr": "Sélectionnez une image ou un dossier",
+              "it": "Seleziona un’immagine o una cartella",
+              "es": "Selecciona una imagen o carpeta",
+              "sv": "Välj en bild eller mapp",
+              "no": "Velg et bilde eller en mappe",
+              "da": "Vælg et billede eller en mappe",
+              "ru": "Выберите изображение или папку",
+              "pl": "Wybierz obraz lub folder",
+              "ko": "이미지 또는 폴더 선택",
+              "ar": "اختر صورة أو مجلدًا"
             }
           },
           {
@@ -252,12 +777,34 @@
             "type": "text",
             "required": false,
             "placeholder": {
-              "en": "(Path+) Filename (* BLL supported)",
-              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+              "en": "(Path +) Filename (* BLL supported)",
+              "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+              "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+              "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+              "it": "(Percorso +) nome file (* BLL supportato)",
+              "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+              "sv": "(Sökväg +) filnamn (* BLL stöds)",
+              "no": "(Sti +) filnavn (* BLL støttes)",
+              "da": "(Sti +) filnavn (* BLL understøttes)",
+              "ru": "(Путь +) имя файла (* поддержка BLL)",
+              "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+              "ko": "(경로 +) 파일 이름(* BLL 지원)",
+              "ar": "(المسار +) اسم الملف (* يدعم BLL)"
             },
             "title": {
               "en": "Filename",
-              "nl": "Bestandsnaam"
+              "nl": "Bestandsnaam",
+              "de": "Dateiname",
+              "fr": "Nom du fichier",
+              "it": "Nome file",
+              "es": "Nombre del archivo",
+              "sv": "Filnamn",
+              "no": "Filnavn",
+              "da": "Filnavn",
+              "ru": "Имя файла",
+              "pl": "Nazwa pliku",
+              "ko": "파일 이름",
+              "ar": "اسم الملف"
             }
           }
         ],
@@ -267,7 +814,18 @@
             "type": "image",
             "title": {
               "en": "Image",
-              "nl": "Afbeelding"
+              "nl": "Afbeelding",
+              "de": "Bild",
+              "fr": "Image",
+              "it": "Immagine",
+              "es": "Imagen",
+              "sv": "Bild",
+              "no": "Bilde",
+              "da": "Billede",
+              "ru": "Изображение",
+              "pl": "Obraz",
+              "ko": "이미지",
+              "ar": "صورة"
             }
           }
         ]
@@ -275,12 +833,34 @@
       {
         "id": "action_ftpclient_save_file_base64",
         "title": {
-          "en": "Save File from base64",
-          "nl": "Sla een bestand op vanaf base64"
+          "en": "Save file from base64",
+          "nl": "Bestand opslaan vanuit base64",
+          "de": "Datei aus base64 speichern",
+          "fr": "Enregistrer un fichier depuis base64",
+          "it": "Salva file da base64",
+          "es": "Guardar archivo desde base64",
+          "sv": "Spara fil från base64",
+          "no": "Lagre fil fra base64",
+          "da": "Gem fil fra base64",
+          "ru": "Сохранить файл из base64",
+          "pl": "Zapisz plik z base64",
+          "ko": "base64에서 파일 저장",
+          "ar": "حفظ ملف من base64"
         },
         "titleFormatted": {
           "en": "Save [[file]] to [[directory]] / [[path]]",
-          "nl": "Sla [[file]] op als [[directory]] / [[path]]"
+          "nl": "Sla [[file]] op in [[directory]] / [[path]]",
+          "de": "[[file]] in [[directory]] / [[path]] speichern",
+          "fr": "Enregistrer [[file]] dans [[directory]] / [[path]]",
+          "it": "Salva [[file]] in [[directory]] / [[path]]",
+          "es": "Guardar [[file]] en [[directory]] / [[path]]",
+          "sv": "Spara [[file]] i [[directory]] / [[path]]",
+          "no": "Lagre [[file]] i [[directory]] / [[path]]",
+          "da": "Gem [[file]] i [[directory]] / [[path]]",
+          "ru": "Сохранить [[file]] в [[directory]] / [[path]]",
+          "pl": "Zapisz [[file]] w [[directory]] / [[path]]",
+          "ko": "[[file]]을(를) [[directory]] / [[path]]에 저장",
+          "ar": "حفظ [[file]] في [[directory]] / [[path]]"
         },
         "args": [
           {
@@ -292,25 +872,75 @@
             "name": "file",
             "type": "text",
             "required": false,
-            "placeholder": "file (base64)"
+            "placeholder": {
+              "en": "File (base64)",
+              "nl": "Bestand (base64)",
+              "de": "Datei (base64)",
+              "fr": "Fichier (base64)",
+              "it": "File (base64)",
+              "es": "Archivo (base64)",
+              "sv": "Fil (base64)",
+              "no": "Fil (base64)",
+              "da": "Fil (base64)",
+              "ru": "Файл (base64)",
+              "pl": "Plik (base64)",
+              "ko": "파일(base64)",
+              "ar": "ملف (base64)"
+            }
           },
           {
             "name": "directory",
             "type": "autocomplete",
             "required": false,
-            "placeholder": "directory"
+            "placeholder": {
+              "en": "Folder",
+              "nl": "Map",
+              "de": "Ordner",
+              "fr": "Dossier",
+              "it": "Cartella",
+              "es": "Carpeta",
+              "sv": "Mapp",
+              "no": "Mappe",
+              "da": "Mappe",
+              "ru": "Папка",
+              "pl": "Folder",
+              "ko": "폴더",
+              "ar": "مجلد"
+            }
           },
           {
             "name": "path",
             "type": "text",
             "required": false,
             "placeholder": {
-              "en": "(Path+) Filename (* BLL supported)",
-              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+              "en": "(Path +) Filename (* BLL supported)",
+              "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+              "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+              "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+              "it": "(Percorso +) nome file (* BLL supportato)",
+              "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+              "sv": "(Sökväg +) filnamn (* BLL stöds)",
+              "no": "(Sti +) filnavn (* BLL støttes)",
+              "da": "(Sti +) filnavn (* BLL understøttes)",
+              "ru": "(Путь +) имя файла (* поддержка BLL)",
+              "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+              "ko": "(경로 +) 파일 이름(* BLL 지원)",
+              "ar": "(المسار +) اسم الملف (* يدعم BLL)"
             },
             "title": {
               "en": "Filename",
-              "nl": "Bestandsnaam"
+              "nl": "Bestandsnaam",
+              "de": "Dateiname",
+              "fr": "Nom du fichier",
+              "it": "Nome file",
+              "es": "Nombre del archivo",
+              "sv": "Filnamn",
+              "no": "Filnavn",
+              "da": "Filnavn",
+              "ru": "Имя файла",
+              "pl": "Nazwa pliku",
+              "ko": "파일 이름",
+              "ar": "اسم الملف"
             }
           }
         ]
@@ -322,11 +952,33 @@
         ],
         "title": {
           "en": "Save Image Token",
-          "nl": "Sla een afbeeldingstoken op"
+          "nl": "Afbeeldingstoken opslaan",
+          "de": "Bild-Token speichern",
+          "fr": "Enregistrer un jeton d’image",
+          "it": "Salva token immagine",
+          "es": "Guardar token de imagen",
+          "sv": "Spara bildtoken",
+          "no": "Lagre bildetoken",
+          "da": "Gem billedtoken",
+          "ru": "Сохранить токен изображения",
+          "pl": "Zapisz token obrazu",
+          "ko": "이미지 토큰 저장",
+          "ar": "حفظ رمز الصورة"
         },
         "titleFormatted": {
           "en": "Save [[droptoken]] to [[directory]] / [[path]]",
-          "nl": "Sla [[droptoken]] op als [[directory]] / [[path]]"
+          "nl": "Sla [[droptoken]] op in [[directory]] / [[path]]",
+          "de": "[[droptoken]] in [[directory]] / [[path]] speichern",
+          "fr": "Enregistrer [[droptoken]] dans [[directory]] / [[path]]",
+          "it": "Salva [[droptoken]] in [[directory]] / [[path]]",
+          "es": "Guardar [[droptoken]] en [[directory]] / [[path]]",
+          "sv": "Spara [[droptoken]] i [[directory]] / [[path]]",
+          "no": "Lagre [[droptoken]] i [[directory]] / [[path]]",
+          "da": "Gem [[droptoken]] i [[directory]] / [[path]]",
+          "ru": "Сохранить [[droptoken]] в [[directory]] / [[path]]",
+          "pl": "Zapisz [[droptoken]] w [[directory]] / [[path]]",
+          "ko": "[[droptoken]]을(를) [[directory]] / [[path]]에 저장",
+          "ar": "حفظ [[droptoken]] في [[directory]] / [[path]]"
         },
         "args": [
           {
@@ -338,22 +990,108 @@
             "name": "directory",
             "type": "autocomplete",
             "required": false,
-            "placeholder": "directory"
+            "placeholder": {
+              "en": "Folder",
+              "nl": "Map",
+              "de": "Ordner",
+              "fr": "Dossier",
+              "it": "Cartella",
+              "es": "Carpeta",
+              "sv": "Mapp",
+              "no": "Mappe",
+              "da": "Mappe",
+              "ru": "Папка",
+              "pl": "Folder",
+              "ko": "폴더",
+              "ar": "مجلد"
+            }
           },
           {
             "name": "path",
             "type": "text",
             "required": false,
             "placeholder": {
-              "en": "(Path+) Filename (* BLL supported)",
-              "nl": "(Pad+) bestandsnaam (* BLL ondersteund)"
+              "en": "(Path +) Filename (* BLL supported)",
+              "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+              "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+              "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+              "it": "(Percorso +) nome file (* BLL supportato)",
+              "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+              "sv": "(Sökväg +) filnamn (* BLL stöds)",
+              "no": "(Sti +) filnavn (* BLL støttes)",
+              "da": "(Sti +) filnavn (* BLL understøttes)",
+              "ru": "(Путь +) имя файла (* поддержка BLL)",
+              "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+              "ko": "(경로 +) 파일 이름(* BLL 지원)",
+              "ar": "(المسار +) اسم الملف (* يدعم BLL)"
             },
             "title": {
               "en": "Filename",
-              "nl": "Bestandsnaam"
+              "nl": "Bestandsnaam",
+              "de": "Dateiname",
+              "fr": "Nom du fichier",
+              "it": "Nome file",
+              "es": "Nombre del archivo",
+              "sv": "Filnamn",
+              "no": "Filnavn",
+              "da": "Filnavn",
+              "ru": "Имя файла",
+              "pl": "Nazwa pliku",
+              "ko": "파일 이름",
+              "ar": "اسم الملف"
             }
           }
         ]
+      },
+      {
+        "title": {
+          "en": "Check FTP connection now",
+          "nl": "Controleer de FTP-verbinding nu",
+          "de": "FTP-Verbindung jetzt prüfen",
+          "fr": "Vérifier la connexion FTP maintenant",
+          "it": "Verifica ora la connessione FTP",
+          "es": "Comprobar la conexión FTP ahora",
+          "sv": "Kontrollera FTP-anslutningen nu",
+          "no": "Kontroller FTP-tilkoblingen nå",
+          "da": "Kontrollér FTP-forbindelsen nu",
+          "ru": "Проверить подключение к FTP сейчас",
+          "pl": "Sprawdź połączenie FTP teraz",
+          "ko": "지금 FTP 연결 확인",
+          "ar": "تحقق من اتصال FTP الآن"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_check_connection"
+      },
+      {
+        "title": {
+          "en": "Clear transfer error",
+          "nl": "Wis de overdrachtsfout",
+          "de": "Übertragungsfehler zurücksetzen",
+          "fr": "Effacer l’erreur de transfert",
+          "it": "Cancella l’errore di trasferimento",
+          "es": "Borrar el error de transferencia",
+          "sv": "Rensa överföringsfelet",
+          "no": "Fjern overføringsfeilen",
+          "da": "Ryd overførselsfejlen",
+          "ru": "Сбросить ошибку передачи",
+          "pl": "Skasuj błąd przesyłania",
+          "ko": "전송 오류 지우기",
+          "ar": "امسح خطأ النقل"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          }
+        ],
+        "id": "ftp_clear_transfer_error"
       }
     ]
   },
@@ -361,14 +1099,63 @@
     {
       "id": "ftpconnection",
       "name": {
-        "en": "FTP Connection"
+        "en": "FTP Client",
+        "nl": "FTP Client",
+        "de": "FTP Client",
+        "fr": "FTP Client",
+        "it": "FTP Client",
+        "es": "FTP Client",
+        "sv": "FTP Client",
+        "no": "FTP Client",
+        "da": "FTP Client",
+        "ru": "FTP Client",
+        "pl": "FTP Client",
+        "ko": "FTP Client",
+        "ar": "FTP Client"
       },
       "images": {
         "large": "drivers/ftpconnection/assets/images/large.png",
         "small": "drivers/ftpconnection/assets/images/small.png"
       },
       "class": "other",
-      "capabilities": [],
+      "capabilities": [
+        "ftp_status",
+        "alarm_ftp_transfer"
+      ],
+      "capabilitiesOptions": {
+        "alarm_ftp_transfer": {
+          "titleFalse": {
+            "en": "No",
+            "nl": "Nee",
+            "de": "Nein",
+            "fr": "Non",
+            "it": "No",
+            "es": "No",
+            "sv": "Nej",
+            "no": "Nei",
+            "da": "Nej",
+            "ru": "Нет",
+            "pl": "Nie",
+            "ko": "아니요",
+            "ar": "لا"
+          },
+          "titleTrue": {
+            "en": "Yes",
+            "nl": "Ja",
+            "de": "Ja",
+            "fr": "Oui",
+            "it": "Sì",
+            "es": "Sí",
+            "sv": "Ja",
+            "no": "Ja",
+            "da": "Ja",
+            "ru": "Да",
+            "pl": "Tak",
+            "ko": "예",
+            "ar": "نعم"
+          }
+        }
+      },
       "pair": [
         {
           "id": "list_devices",
@@ -388,20 +1175,76 @@
           "id": "login_credentials",
           "template": "login_credentials",
           "options": {
-            "logo": "logo.png",
             "usernameLabel": {
-              "en": "Username"
+              "en": "Username",
+              "nl": "Gebruikersnaam",
+              "de": "Benutzername",
+              "fr": "Nom d’utilisateur",
+              "it": "Nome utente",
+              "es": "Nombre de usuario",
+              "sv": "Användarnamn",
+              "no": "Brukernavn",
+              "da": "Brugernavn",
+              "ru": "Имя пользователя",
+              "pl": "Nazwa użytkownika",
+              "ko": "사용자 이름",
+              "ar": "اسم المستخدم"
             },
             "usernamePlaceholder": {
-              "en": "anonymous"
+              "en": "anonymous",
+              "nl": "anonymous",
+              "de": "anonymous",
+              "fr": "anonymous",
+              "it": "anonymous",
+              "es": "anonymous",
+              "sv": "anonymous",
+              "no": "anonymous",
+              "da": "anonymous",
+              "ru": "anonymous",
+              "pl": "anonymous",
+              "ko": "anonymous",
+              "ar": "anonymous"
             },
             "passwordLabel": {
-              "en": "Password"
+              "en": "Password",
+              "nl": "Wachtwoord",
+              "de": "Passwort",
+              "fr": "Mot de passe",
+              "it": "Password",
+              "es": "Contraseña",
+              "sv": "Lösenord",
+              "no": "Passord",
+              "da": "Adgangskode",
+              "ru": "Пароль",
+              "pl": "Hasło",
+              "ko": "비밀번호",
+              "ar": "كلمة المرور"
             },
             "passwordPlaceholder": {
-              "en": ""
+              "en": "",
+              "nl": "",
+              "de": "",
+              "fr": "",
+              "it": "",
+              "es": "",
+              "sv": "",
+              "no": "",
+              "da": "",
+              "ru": "",
+              "pl": "",
+              "ko": "",
+              "ar": ""
             }
+          },
+          "navigation": {
+            "next": "root_directory"
           }
+        },
+        {
+          "id": "connection"
+        },
+        {
+          "id": "root_directory"
         },
         {
           "id": "add_devices",
@@ -418,7 +1261,19 @@
           "id": "ip",
           "type": "text",
           "label": {
-            "en": "IP or hostname"
+            "en": "IP or hostname",
+            "nl": "IP-adres of hostnaam",
+            "de": "IP-Adresse oder Hostname",
+            "fr": "Adresse IP ou nom d’hôte",
+            "it": "IP o nome host",
+            "es": "IP o nombre de host",
+            "sv": "IP-adress eller värdnamn",
+            "no": "IP-adresse eller vertsnavn",
+            "da": "IP-adresse eller værtsnavn",
+            "ru": "IP-адрес или имя хоста",
+            "pl": "Adres IP lub nazwa hosta",
+            "ko": "IP 또는 호스트 이름",
+            "ar": "عنوان IP أو اسم المضيف"
           },
           "value": "",
           "hint": "192.168.1.17"
@@ -427,7 +1282,19 @@
           "id": "port",
           "type": "number",
           "label": {
-            "en": "Port"
+            "en": "Port",
+            "nl": "Poort",
+            "de": "Port",
+            "fr": "Port",
+            "it": "Porta",
+            "es": "Puerto",
+            "sv": "Port",
+            "no": "Port",
+            "da": "Port",
+            "ru": "Порт",
+            "pl": "Port",
+            "ko": "포트",
+            "ar": "المنفذ"
           },
           "value": 21,
           "hint": "21"
@@ -436,7 +1303,19 @@
           "id": "username",
           "type": "text",
           "label": {
-            "en": "Username"
+            "en": "Username",
+            "nl": "Gebruikersnaam",
+            "de": "Benutzername",
+            "fr": "Nom d’utilisateur",
+            "it": "Nome utente",
+            "es": "Nombre de usuario",
+            "sv": "Användarnamn",
+            "no": "Brukernavn",
+            "da": "Brugernavn",
+            "ru": "Имя пользователя",
+            "pl": "Nazwa użytkownika",
+            "ko": "사용자 이름",
+            "ar": "اسم المستخدم"
           },
           "value": "",
           "hint": "anonymous"
@@ -445,7 +1324,19 @@
           "id": "password",
           "type": "password",
           "label": {
-            "en": "Password"
+            "en": "Password",
+            "nl": "Wachtwoord",
+            "de": "Passwort",
+            "fr": "Mot de passe",
+            "it": "Password",
+            "es": "Contraseña",
+            "sv": "Lösenord",
+            "no": "Passord",
+            "da": "Adgangskode",
+            "ru": "Пароль",
+            "pl": "Hasło",
+            "ko": "비밀번호",
+            "ar": "كلمة المرور"
           },
           "value": ""
         },
@@ -453,7 +1344,19 @@
           "id": "secure",
           "type": "checkbox",
           "label": {
-            "en": "Secure"
+            "en": "Secure",
+            "nl": "Beveiligd",
+            "de": "Verschlüsselt",
+            "fr": "Sécurisé",
+            "it": "Sicuro",
+            "es": "Seguro",
+            "sv": "Säker",
+            "no": "Sikker",
+            "da": "Sikker",
+            "ru": "Защищённое соединение",
+            "pl": "Bezpieczne połączenie",
+            "ko": "보안 연결",
+            "ar": "اتصال آمن"
           },
           "value": false
         },
@@ -461,7 +1364,19 @@
           "id": "allow_incorrect_certificate",
           "type": "checkbox",
           "label": {
-            "en": "Allow incorrect certificate"
+            "en": "Allow incorrect certificate",
+            "nl": "Ongeldig certificaat toestaan",
+            "de": "Ungültiges Zertifikat zulassen",
+            "fr": "Autoriser un certificat non valide",
+            "it": "Consenti certificati non validi",
+            "es": "Permitir certificado no válido",
+            "sv": "Tillåt ogiltigt certifikat",
+            "no": "Tillat ugyldig sertifikat",
+            "da": "Tillad ugyldigt certifikat",
+            "ru": "Разрешить недействительный сертификат",
+            "pl": "Zezwalaj na nieprawidłowy certyfikat",
+            "ko": "유효하지 않은 인증서 허용",
+            "ar": "السماح بشهادة غير صالحة"
           },
           "value": false
         },
@@ -469,16 +1384,77 @@
           "id": "workdirectory",
           "type": "text",
           "label": {
-            "en": "Work (Default) Directory"
+            "en": "Work (Default) Directory",
+            "nl": "Werkmap (standaard)",
+            "de": "Arbeitsordner (Standard)",
+            "fr": "Dossier de travail (par défaut)",
+            "it": "Cartella di lavoro (predefinita)",
+            "es": "Carpeta de trabajo (predeterminada)",
+            "sv": "Arbetsmapp (standard)",
+            "no": "Arbeidsmappe (standard)",
+            "da": "Arbejdsmappe (standard)",
+            "ru": "Рабочая папка (по умолчанию)",
+            "pl": "Folder roboczy (domyślny)",
+            "ko": "작업 폴더(기본값)",
+            "ar": "مجلد العمل (الافتراضي)"
           },
           "value": "",
-          "hint": "This will be considered the Root Directory."
+          "hint": {
+            "en": "This will be considered the Root Directory.",
+            "nl": "Deze map wordt als hoofdmap gebruikt.",
+            "de": "Dieser Ordner wird als Stammordner verwendet.",
+            "fr": "Ce dossier sera utilisé comme dossier racine.",
+            "it": "Questa cartella verrà usata come cartella radice.",
+            "es": "Esta carpeta se usará como carpeta raíz.",
+            "sv": "Den här mappen används som rotmapp.",
+            "no": "Denne mappen brukes som rotmappe.",
+            "da": "Denne mappe bruges som rodmappe.",
+            "ru": "Эта папка будет корневой.",
+            "pl": "Ten folder będzie folderem głównym.",
+            "ko": "이 폴더가 루트 폴더로 사용됩니다.",
+            "ar": "سيُستخدم هذا المجلد كمجلد جذر."
+          }
+        },
+        {
+          "id": "status_poll_minutes",
+          "type": "number",
+          "label": {
+            "en": "FTP status check interval (minutes)",
+            "nl": "FTP-statuscontrole-interval (minuten)",
+            "de": "FTP-Statusprüfintervall (Minuten)",
+            "fr": "Intervalle de vérification FTP (minutes)",
+            "it": "Intervallo di controllo FTP (minuti)",
+            "es": "Intervalo de comprobación de FTP (minutos)",
+            "sv": "Intervall för FTP-statuskontroll (minuter)",
+            "no": "Intervall for FTP-statuskontroll (minutter)",
+            "da": "Interval for FTP-statuskontrol (minutter)",
+            "ru": "Интервал проверки статуса FTP (минуты)",
+            "pl": "Odstęp między sprawdzeniami stanu FTP (minuty)",
+            "ko": "FTP 상태 확인 간격(분)",
+            "ar": "الفاصل الزمني للتحقق من حالة FTP (بالدقائق)"
+          },
+          "value": 5,
+          "min": 1,
+          "max": 1440,
+          "step": 1
         },
         {
           "id": "downloadtime",
           "type": "number",
           "label": {
-            "en": "Download Time (Seconds)"
+            "en": "Download Time (Seconds)",
+            "nl": "Downloadtijd (seconden)",
+            "de": "Downloadzeit (Sekunden)",
+            "fr": "Durée de téléchargement (secondes)",
+            "it": "Tempo di download (secondi)",
+            "es": "Tiempo de descarga (segundos)",
+            "sv": "Nedladdningstid (sekunder)",
+            "no": "Nedlastingstid (sekunder)",
+            "da": "Downloadtid (sekunder)",
+            "ru": "Время скачивания (секунды)",
+            "pl": "Czas pobierania (sekundy)",
+            "ko": "다운로드 시간(초)",
+            "ar": "مدة التنزيل (بالثواني)"
           },
           "value": 60
         },
@@ -486,26 +1462,74 @@
           "id": "urlforicons",
           "type": "dropdown",
           "label": {
-            "en": "Url's used for icons and images used by the Homey App and WebApp."
+            "en": "URLs for icons and images in Homey",
+            "nl": "URL’s voor pictogrammen en afbeeldingen in Homey",
+            "de": "URLs für Symbole und Bilder in Homey",
+            "fr": "URL des icônes et images dans Homey",
+            "it": "URL per icone e immagini in Homey",
+            "es": "URL de iconos e imágenes en Homey",
+            "sv": "URL:er för ikoner och bilder i Homey",
+            "no": "URL-er for ikoner og bilder i Homey",
+            "da": "URL’er til ikoner og billeder i Homey",
+            "ru": "URL значков и изображений в Homey",
+            "pl": "Adresy URL ikon i obrazów w Homey",
+            "ko": "Homey 아이콘 및 이미지 URL",
+            "ar": "عناوين URL للأيقونات والصور في Homey"
           },
-          "value": "local",
+          "value": "localssl",
           "values": [
             {
               "id": "local",
               "label": {
-                "en": "Local"
+                "en": "Local",
+                "nl": "Lokaal",
+                "de": "Lokal",
+                "fr": "Local",
+                "it": "Locale",
+                "es": "Local",
+                "sv": "Lokal",
+                "no": "Lokal",
+                "da": "Lokal",
+                "ru": "Локально",
+                "pl": "Lokalny",
+                "ko": "로컬",
+                "ar": "محلي"
               }
             },
             {
               "id": "localssl",
               "label": {
-                "en": "Local (SSL)"
+                "en": "Local (SSL)",
+                "nl": "Lokaal (SSL)",
+                "de": "Lokal (SSL)",
+                "fr": "Local (SSL)",
+                "it": "Locale (SSL)",
+                "es": "Local (SSL)",
+                "sv": "Lokal (SSL)",
+                "no": "Lokal (SSL)",
+                "da": "Lokal (SSL)",
+                "ru": "Локально (SSL)",
+                "pl": "Lokalny (SSL)",
+                "ko": "로컬(SSL)",
+                "ar": "محلي (SSL)"
               }
             },
             {
               "id": "cloudssl",
               "label": {
-                "en": "Cloud (SSL)"
+                "en": "Cloud (SSL)",
+                "nl": "Cloud (SSL)",
+                "de": "Cloud (SSL)",
+                "fr": "Cloud (SSL)",
+                "it": "Cloud (SSL)",
+                "es": "Nube (SSL)",
+                "sv": "Moln (SSL)",
+                "no": "Sky (SSL)",
+                "da": "Cloud (SSL)",
+                "ru": "Облако (SSL)",
+                "pl": "Chmura (SSL)",
+                "ko": "클라우드(SSL)",
+                "ar": "سحابي (SSL)"
               }
             }
           ]
@@ -514,26 +1538,74 @@
           "id": "urlforfiles",
           "type": "dropdown",
           "label": {
-            "en": "Url's used for downloading files"
+            "en": "URLs for downloading files",
+            "nl": "URL’s voor het downloaden van bestanden",
+            "de": "URLs zum Herunterladen von Dateien",
+            "fr": "URL pour télécharger les fichiers",
+            "it": "URL per scaricare i file",
+            "es": "URL para descargar archivos",
+            "sv": "URL:er för nedladdning av filer",
+            "no": "URL-er for nedlasting av filer",
+            "da": "URL’er til download af filer",
+            "ru": "URL для скачивания файлов",
+            "pl": "Adresy URL do pobierania plików",
+            "ko": "파일 다운로드 URL",
+            "ar": "عناوين URL لتنزيل الملفات"
           },
           "value": "localssl",
           "values": [
             {
               "id": "local",
               "label": {
-                "en": "Local"
+                "en": "Local",
+                "nl": "Lokaal",
+                "de": "Lokal",
+                "fr": "Local",
+                "it": "Locale",
+                "es": "Local",
+                "sv": "Lokal",
+                "no": "Lokal",
+                "da": "Lokal",
+                "ru": "Локально",
+                "pl": "Lokalny",
+                "ko": "로컬",
+                "ar": "محلي"
               }
             },
             {
               "id": "localssl",
               "label": {
-                "en": "Local (SSL)"
+                "en": "Local (SSL)",
+                "nl": "Lokaal (SSL)",
+                "de": "Lokal (SSL)",
+                "fr": "Local (SSL)",
+                "it": "Locale (SSL)",
+                "es": "Local (SSL)",
+                "sv": "Lokal (SSL)",
+                "no": "Lokal (SSL)",
+                "da": "Lokal (SSL)",
+                "ru": "Локально (SSL)",
+                "pl": "Lokalny (SSL)",
+                "ko": "로컬(SSL)",
+                "ar": "محلي (SSL)"
               }
             },
             {
               "id": "cloudssl",
               "label": {
-                "en": "Cloud (SSL)"
+                "en": "Cloud (SSL)",
+                "nl": "Cloud (SSL)",
+                "de": "Cloud (SSL)",
+                "fr": "Cloud (SSL)",
+                "it": "Cloud (SSL)",
+                "es": "Nube (SSL)",
+                "sv": "Moln (SSL)",
+                "no": "Sky (SSL)",
+                "da": "Cloud (SSL)",
+                "ru": "Облако (SSL)",
+                "pl": "Chmura (SSL)",
+                "ko": "클라우드(SSL)",
+                "ar": "سحابي (SSL)"
               }
             }
           ]
@@ -542,26 +1614,74 @@
           "id": "urlforurls",
           "type": "dropdown",
           "label": {
-            "en": "Url's used for the Url's for the files"
+            "en": "URLs for file links",
+            "nl": "URL’s voor bestandslinks",
+            "de": "URLs für Dateilinks",
+            "fr": "URL des liens de fichiers",
+            "it": "URL per i collegamenti ai file",
+            "es": "URL para enlaces de archivos",
+            "sv": "URL:er för fillänkar",
+            "no": "URL-er for filkoblinger",
+            "da": "URL’er til fillinks",
+            "ru": "URL ссылок на файлы",
+            "pl": "Adresy URL odnośników do plików",
+            "ko": "파일 링크 URL",
+            "ar": "عناوين URL لروابط الملفات"
           },
           "value": "localssl",
           "values": [
             {
               "id": "local",
               "label": {
-                "en": "Local"
+                "en": "Local",
+                "nl": "Lokaal",
+                "de": "Lokal",
+                "fr": "Local",
+                "it": "Locale",
+                "es": "Local",
+                "sv": "Lokal",
+                "no": "Lokal",
+                "da": "Lokal",
+                "ru": "Локально",
+                "pl": "Lokalny",
+                "ko": "로컬",
+                "ar": "محلي"
               }
             },
             {
               "id": "localssl",
               "label": {
-                "en": "Local (SSL)"
+                "en": "Local (SSL)",
+                "nl": "Lokaal (SSL)",
+                "de": "Lokal (SSL)",
+                "fr": "Local (SSL)",
+                "it": "Locale (SSL)",
+                "es": "Local (SSL)",
+                "sv": "Lokal (SSL)",
+                "no": "Lokal (SSL)",
+                "da": "Lokal (SSL)",
+                "ru": "Локально (SSL)",
+                "pl": "Lokalny (SSL)",
+                "ko": "로컬(SSL)",
+                "ar": "محلي (SSL)"
               }
             },
             {
               "id": "cloudssl",
               "label": {
-                "en": "Cloud (SSL)"
+                "en": "Cloud (SSL)",
+                "nl": "Cloud (SSL)",
+                "de": "Cloud (SSL)",
+                "fr": "Cloud (SSL)",
+                "it": "Cloud (SSL)",
+                "es": "Nube (SSL)",
+                "sv": "Moln (SSL)",
+                "no": "Sky (SSL)",
+                "da": "Cloud (SSL)",
+                "ru": "Облако (SSL)",
+                "pl": "Chmura (SSL)",
+                "ko": "클라우드(SSL)",
+                "ar": "سحابي (SSL)"
               }
             }
           ]
@@ -569,6 +1689,108 @@
       ]
     }
   ],
+  "capabilities": {
+    "alarm_ftp_transfer": {
+      "type": "boolean",
+      "title": {
+        "en": "Transfer error",
+        "nl": "Overdrachtsfout",
+        "de": "Übertragungsfehler",
+        "fr": "Erreur de transfert",
+        "it": "Errore di trasferimento",
+        "es": "Error de transferencia",
+        "sv": "Överföringsfel",
+        "no": "Overføringsfeil",
+        "da": "Overførselsfejl",
+        "ru": "Ошибка передачи",
+        "pl": "Błąd przesyłania",
+        "ko": "전송 오류",
+        "ar": "خطأ في النقل"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/transfer-error.svg"
+    },
+    "ftp_status": {
+      "type": "enum",
+      "title": {
+        "en": "FTP status",
+        "nl": "FTP-status",
+        "de": "FTP-Status",
+        "fr": "État FTP",
+        "it": "Stato FTP",
+        "es": "Estado de FTP",
+        "sv": "FTP-status",
+        "no": "FTP-status",
+        "da": "FTP-status",
+        "ru": "Статус FTP",
+        "pl": "Stan FTP",
+        "ko": "FTP 상태",
+        "ar": "حالة FTP"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/ftp-status.svg",
+      "values": [
+        {
+          "id": "checking",
+          "title": {
+            "en": "Checking",
+            "nl": "Controleren",
+            "de": "Wird geprüft",
+            "fr": "Vérification",
+            "it": "Verifica in corso",
+            "es": "Comprobando",
+            "sv": "Kontrollerar",
+            "no": "Kontrollerer",
+            "da": "Kontrollerer",
+            "ru": "Проверка",
+            "pl": "Sprawdzanie",
+            "ko": "확인 중",
+            "ar": "جارٍ التحقق"
+          }
+        },
+        {
+          "id": "ready",
+          "title": {
+            "en": "Ready",
+            "nl": "Gereed",
+            "de": "Bereit",
+            "fr": "Prêt",
+            "it": "Pronto",
+            "es": "Listo",
+            "sv": "Redo",
+            "no": "Klar",
+            "da": "Klar",
+            "ru": "Готов",
+            "pl": "Gotowy",
+            "ko": "준비됨",
+            "ar": "جاهز"
+          }
+        },
+        {
+          "id": "unavailable",
+          "title": {
+            "en": "Unavailable",
+            "nl": "Niet beschikbaar",
+            "de": "Nicht verfügbar",
+            "fr": "Indisponible",
+            "it": "Non disponibile",
+            "es": "No disponible",
+            "sv": "Otillgänglig",
+            "no": "Utilgjengelig",
+            "da": "Ikke tilgængelig",
+            "ru": "Недоступен",
+            "pl": "Niedostępny",
+            "ko": "사용 불가",
+            "ar": "غير متاح"
+          }
+        }
+      ]
+    }
+  },
   "discovery": {
     "ftp_mDNS-SD": {
       "type": "mdns-sd",

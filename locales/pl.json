@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Anuluj",
+    "rename": "Zmień nazwę",
+    "delete": "Usuń",
+    "download": "Pobierz",
+    "uploadFiles": "Prześlij pliki",
+    "uploadInto": "Prześlij do __directory__",
+    "addFolder": "Nowy folder",
+    "renameFolder": "Zmień nazwę folderu",
+    "renameFile": "Zmień nazwę pliku",
+    "deleteFolder": "Usunąć folder?",
+    "deleteFile": "Usunąć plik?",
+    "deleteFolderPrompt": "Usunąć „__name__” i całą zawartość?",
+    "deleteFilePrompt": "Usunąć „__name__”?",
+    "folderName": "Wpisz nazwę folderu:",
+    "fileName": "Wpisz nazwę pliku:",
+    "moveFolder": "Przenieść folder?",
+    "moveFile": "Przenieść plik?",
+    "movePrompt": "Przenieść „__name__” do „__directory__”?",
+    "listView": "Widok listy",
+    "gridView": "Widok siatki",
+    "refresh": "Odśwież",
+    "parentFolder": "Folder nadrzędny",
+    "bllRequired": "Zainstaluj aplikację Better Logic Library, aby korzystać z przeglądarki FTP.",
+    "uploadFailed": "Nie udało się odczytać pliku do przesłania.",
+    "move": "Przenieś"
+  },
+  "errors": {
+    "fileRequired": "Wybierz plik.",
+    "imageRequired": "Wybierz obraz lub podaj ścieżkę.",
+    "pathRequired": "Podaj folder i/lub ścieżkę.",
+    "folderRequired": "Wybierz folder.",
+    "urlRequired": "Podaj URL.",
+    "outsideRoot": "Ścieżka musi pozostać wewnątrz ustawionego folderu głównego.",
+    "rootProtected": "Wybierz plik lub podfolder wewnątrz ustawionego folderu głównego."
+  },
+  "pair": {
+    "custom": "Niestandardowy FTP Client",
+    "rootDirectory": "Folder główny",
+    "rootHint": "Przeglądanie plików i wszystkie operacje na plikach we Flow pozostają w tym folderze. Pozostaw puste, aby użyć katalogu głównego serwera FTP.",
+    "connectionTitle": "Serwer FTP",
+    "next": "Kontynuuj",
+    "invalidConnection": "Wpisz nazwę hosta i port od 1 do 65535.",
+    "loginRequired": "Najpierw połącz się z serwerem FTP.",
+    "host": "Adres IP lub nazwa hosta",
+    "port": "Port"
+  },
+  "flow": {
+    "root": "Folder główny"
+  },
+  "monitor": {
+    "upload": "Wysyłanie",
+    "download": "Pobieranie",
+    "connectionFailed": "Sprawdzenie połączenia FTP nie powiodło się.",
+    "transferFailed": "Przesyłanie pliku nie powiodło się."
+  }
+}

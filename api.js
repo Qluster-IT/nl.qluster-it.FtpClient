@@ -4,6 +4,9 @@ const Homey = require('homey');
 
 
 module.exports = {
+    async apiReady({ homey }) {
+        return { ready: homey.app.apiReady === true };
+    },
     async uploadFiles({ homey, body: { directory, files, id } }) {
         console.log(directory);
         let r = await homey.drivers.getDriver('ftpconnection').fileUploads[id].upload({ directory, files });

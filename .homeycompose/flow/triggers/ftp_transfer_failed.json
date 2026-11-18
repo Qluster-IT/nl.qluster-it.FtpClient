@@ -1,0 +1,83 @@
+{
+  "title": {
+    "en": "A transfer failed",
+    "nl": "Een overdracht is mislukt",
+    "de": "Eine Übertragung ist fehlgeschlagen",
+    "fr": "Un transfert a échoué",
+    "it": "Un trasferimento non è riuscito",
+    "es": "Una transferencia falló",
+    "sv": "En överföring misslyckades",
+    "no": "En overføring mislyktes",
+    "da": "En overførsel mislykkedes",
+    "ru": "Не удалось передать файл",
+    "pl": "Przesyłanie nie powiodło się",
+    "ko": "전송이 실패함",
+    "ar": "فشل نقل ملف"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "operation",
+      "type": "string",
+      "title": {
+        "en": "Operation",
+        "nl": "Bewerking",
+        "de": "Vorgang",
+        "fr": "Opération",
+        "it": "Operazione",
+        "es": "Operación",
+        "sv": "Åtgärd",
+        "no": "Operasjon",
+        "da": "Handling",
+        "ru": "Операция",
+        "pl": "Operacja",
+        "ko": "작업",
+        "ar": "العملية"
+      }
+    },
+    {
+      "name": "path",
+      "type": "string",
+      "title": {
+        "en": "File path",
+        "nl": "Bestandspad",
+        "de": "Dateipfad",
+        "fr": "Chemin du fichier",
+        "it": "Percorso del file",
+        "es": "Ruta del archivo",
+        "sv": "Filsökväg",
+        "no": "Filbane",
+        "da": "Filsti",
+        "ru": "Путь к файлу",
+        "pl": "Ścieżka pliku",
+        "ko": "파일 경로",
+        "ar": "مسار الملف"
+      }
+    },
+    {
+      "name": "reason",
+      "type": "string",
+      "title": {
+        "en": "Reason",
+        "nl": "Reden",
+        "de": "Grund",
+        "fr": "Raison",
+        "it": "Motivo",
+        "es": "Motivo",
+        "sv": "Orsak",
+        "no": "Årsak",
+        "da": "Årsag",
+        "ru": "Причина",
+        "pl": "Powód",
+        "ko": "이유",
+        "ar": "السبب"
+      }
+    }
+  ]
+}

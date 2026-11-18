@@ -1,11 +1,7 @@
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/jquery.ui.touch-punch.js"></script>
-<link rel="stylesheet" href="../../../../net.i-dev.betterlogic/assets/css/jquery-ui.css" type="text/css" />
 
 
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/angular.min.js"></script>
-<script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/angular-dragdrop.js"></script>
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/smart-table.min.js"></script>
 
 <script type="text/javascript" src="../../../../net.i-dev.betterlogic/assets/js/lodash.min.js"></script>
@@ -14,16 +10,16 @@
 
 <link rel="stylesheet" href="../../../assets/css/default.css" type="text/css" />
 
-<script type="text/javascript">console.log(window);	if (typeof window.angular === 'undefined') Homey.alert('The Better Logic Library App needs to be installed to run the settings.\nInstall the Better Logic Library App to continue to use this app.');	</script>
+<script type="text/javascript">if (typeof window.angular === 'undefined') Homey.alert(Homey.__('repair.bllRequired'));</script>
 
-<div ng-app="ftpclient" ng-controller="ftpclientCtrl as ftpclient">
+<div ng-app="ftpclient" ng-controller="ftpclientCtrl as ftpclient" dir="{{__('repair.direction')}}">
 
 	<form name="mainForm">
 		<ftp-directory-context-menu directory="vars.menuDirectory"></ftp-directory-context-menu>
 		<ftp-file-context-menu directory="vars.menuDirectory" file="vars.menuFile"></ftp-file-context-menu>
-		<div class="field text-center full-width">
-			<span class="fa fa-icon fa-stream" ng-click="view.display='list'; $event.stopPropagation();"></span>
-			<span class="fa fa-icon fa-th" ng-click="view.display='th-small'; $event.stopPropagation();"></span>
+		<div class="field text-center full-width ftp-view-switch">
+			<button type="button" class="hy-nostyle" ng-class="{'is-active':view.display==='list'}" title="{{__('repair.listView')}}" aria-label="{{__('repair.listView')}}" aria-pressed="{{view.display==='list'}}" ng-click="view.display='list'; $event.stopPropagation();"><span class="fa fa-stream" aria-hidden="true"></span></button>
+			<button type="button" class="hy-nostyle" ng-class="{'is-active':view.display==='th-small'}" title="{{__('repair.gridView')}}" aria-label="{{__('repair.gridView')}}" aria-pressed="{{view.display==='th-small'}}" ng-click="view.display='th-small'; $event.stopPropagation();"><span class="fa fa-th" aria-hidden="true"></span></button>
 		</div>
 		<div class="field">
 			<div class="field margin-bottom">
@@ -44,7 +40,7 @@
 			return;
 		}
 
-		angular.module('ftpclient', ['smart-table', 'ngDragDrop'])
+		angular.module('ftpclient', ['smart-table'])
 			.run(['$rootScope', function ($rootScope) {
 				$rootScope.menu = {};
 				$rootScope.menu.ftpDirectoryContextMenu = { show: false, element: null };
@@ -61,11 +57,13 @@
 						$rootScope.vars.menuFile = file;
 						menu.show = true;
 					});
-					let width = $(document).width();
-					if (event.pageX <= (width / 2))
-						menu.element.css({ 'top': event.pageY - 50, 'left': event.pageX, 'position': 'absolute' });
-					else
-						menu.element.css({ 'top': event.pageY - 50, 'left': (event.pageX - menu.element.outerWidth()), 'position': 'absolute' });
+					const width = document.documentElement.clientWidth;
+					const height = document.documentElement.clientHeight;
+					menu.element.css({
+						top: Math.max(8, Math.min(event.clientY, height - menu.element.outerHeight() - 8)),
+						left: Math.max(8, Math.min(event.clientX, width - menu.element.outerWidth() - 8)),
+						position: 'fixed'
+					});
 				}
 				$rootScope.closeMenu = function (menu) {
 					let fc = function () {
@@ -82,22 +80,38 @@
 				//let $;
 				const vars = $scope.vars = { path: '', content: { name: '', path: '', fullPath:'', isDirectory: true, children: [], show: true, root: true }, currentDirectory: null };
 				vars.currentDirectory = vars.content;
+				vars.displayPath = function (path) {
+					const root = vars.content.id;
+					const relative = root && (path === root || path.startsWith(root + '/')) ? path.slice(root.length) : path;
+					return relative.replace(/^\/+/, '') || '/';
+				};
 				$rootScope.vars = vars;
 
 				$scope.view = { display: 'th-small' }
 				$scope.stamp = Date.now();
 				let doc = $(document.body);
-				doc.on('click', function (event) {
+				const closeMenus = function () {
 					$rootScope.closeMenu();
-				});
+				};
+				doc.on('click', closeMenus);
+				$scope.$on('$destroy', function () { doc.off('click', closeMenus); });
 
 				if (typeof Homey !== 'undefined') {
 					$scope.__ = Homey.__;
 					Homey.showLoadingOverlay();
-					Homey.emit('getContent', { path: '' }).then((result) => {
+					Homey.emit('getRootPath').then((path) => {
+						$scope.$apply(() => {
+							vars.path = path;
+							vars.content.id = path;
+							vars.content.path = path;
+							vars.content.fullPath = path;
+						});
+						return Homey.emit('getContent', { path });
+					}).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							vars.content.children = result;
+							vars.content.loaded = true;
 							//for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = vars.currentDirectory;
 
 
@@ -119,44 +133,19 @@
 					});
 				};
 			})
-			.directive('tooltip', function ($compile) {
-				var contentContainer;
+			.directive('tooltip', function () {
 				return {
 					restrict: "A",
-					scope: {
-						myTooltipScope: "="
-					},
 					link: function (scope, element, attrs) {
-						var text = attrs.tooltip;
-
-						scope.hidden = true;
-
-						var tooltipElement = angular.element("<div ng-hide='hidden' class='tooltip'>");
-						tooltipElement.append("<div>" + text.replaceAll('\r\n', '<br/>') + "</div>");
-
-						element.append(tooltipElement);
-						element
-							.on('mouseenter', function (event) { 
-								scope.hidden = false; scope.$digest(); 
-								
-								let width = $(document).width();
-								if (event.pageX <= (width / 2))
-									tooltipElement.css({ 'top': event.pageY - 50, 'left': event.pageX, 'position': 'fixed' });
-								else
-									tooltipElement.css({ 'top': event.pageY - 50, 'left': (event.pageX - tooltipElement.outerWidth()), 'position': 'fixed' });
-							})
-							.on('mouseleave', function () { scope.hidden = true; scope.$digest(); })
-							.on('click', function () { scope.hidden = true; scope.$digest(); });
-
-						var toolTipScope = scope.$new(true);
-						angular.extend(toolTipScope, scope.myTooltipScope);
-						$compile(tooltipElement.contents())(toolTipScope);
-						$compile(tooltipElement)(scope);
+						attrs.$observe('tooltip', function (text) {
+							element.attr('title', text);
+						});
 					}
 				};
 			})
 
 			.controller('ftpDirectoryCtrl', function ($scope, $rootScope) {
+				$scope.__ = Homey.__;
 				$scope.vars = $scope.$parent.vars;
 				$scope.view = $scope.$parent.view;
 				$rootScope.ftpDirectoryCtrl = $scope;
@@ -167,46 +156,50 @@
 				// 		directory = $scope.vars.parentDirectories[directory.path+'/'+directory.name];
 				// 	}
 				// }
-				function dropItem(scopeSource, scopeTarget, func) {
-					if (scopeSource.file) {
-						$scope.moveItem(scopeSource.file, scopeSource.directory, scopeTarget.directory, func);
-					} else if (scopeSource.directory) {
-						$scope.moveItem(scopeSource.directory, scopeSource.parentDirectory, scopeTarget.directory, func);
-					}
-				}
-
 				//function getFullPath(directory) { return directory.path + '/' + directory.name; }
 				//function getFullPath(directory) { return ( directory.path &&  directory.path.length>0 ? directory.path + '/':'') + directory.name; }
 
 				$scope.hideMenus = function () { return $rootScope.closeMenu(); };
 
-				$scope.dropItem = function (a, b, c, d) {
-					a.stopPropagation();
-					var scopeTarget = angular.element($(a.target)).scope();
-					var scopeSource = angular.element(b.draggable.get(0)).scope();
-					dropItem(scopeSource, scopeTarget);
+				function getParent(directory, parent = $scope.vars.content) {
+					if ((parent.children || []).some(child => child.fullPath === directory.fullPath)) return parent;
+					for (const child of parent.children || []) {
+						if (child.isDirectory) {
+							const found = getParent(directory, child);
+							if (found) return found;
+						}
+					}
 				}
 
-				$scope.dropItemUp = function (a, b, c, d) {
-					a.stopPropagation();
-					var scopeTarget = angular.element($(a.target)).scope();
-					var scopeSource = angular.element(b.draggable.get(0)).scope();
-					dropItem(scopeSource, scopeTarget.$parent.$parent);					
+				function refreshParent(directory) {
+					const parent = getParent(directory) || $scope.vars.content;
+					if ($scope.isInPath(directory)) $scope.setCurrentDirectory(parent);
+					const selected = $scope.vars.selected;
+					if (selected && (selected.fullPath === directory.fullPath || selected.fullPath.startsWith(directory.fullPath + '/'))) {
+						$scope.vars.selected = null;
+					}
+					$scope.getChildren(parent, true);
 				}
-
 
 				$scope.getChildren = function (directory, refresh, func) {
-					if (directory.children && directory.children.length && !refresh) return;
+					if (directory.loaded && !refresh) return;
 					let oldChildren = directory.children;
 					// let path = directory.path + '/' + directory.name;
 					// if (path === '/') path = '';
 					Homey.showLoadingOverlay();
-					Homey.emit('getContent', { path:directory.fullPath }).then((result) => {
+					return Homey.emit('getContent', { path:directory.fullPath }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							directory.children = result;
-							if(oldChildren) for (const child of directory.children) {
-								child.show = (_.find(oldChildren, c=>c.fullPath==child.fullPath)||{}).show; //For list only
+							directory.loaded = true;
+							const previous = new Map((oldChildren || []).map(child => [child.fullPath, child]));
+							for (const child of directory.children) {
+								const old = previous.get(child.fullPath);
+								if (old) {
+									child.show = old.show;
+									child.loaded = old.loaded;
+									child.children = old.children;
+								}
 								if($scope.vars.selected && $scope.vars.selected.fullPath===child.fullPath) $scope.vars.selected = child;  //For thumbnails only
 								if($scope.vars.currentDirectory && $scope.vars.currentDirectory.fullPath===child.fullPath) $scope.vars.currentDirectory = child;  //For thumbnails only
 							}
@@ -222,16 +215,27 @@
 
 				$scope.isInPath = function (directory) {
 					let path = directory.fullPath;//getFullPath(directory);
-					return path === '' || $scope.vars.path.startsWith(path);
+					return path === '' || $scope.vars.path === path || $scope.vars.path.startsWith(path + '/');
 				}
 
 				$scope.moveItem = function (item, itemDirectory, targetDirectory, func) {
-					if(itemDirectory===targetDirectory) return;
+					if(itemDirectory===targetDirectory || itemDirectory.id===targetDirectory.id) return;
+					if(item.isDirectory && (targetDirectory.id===item.id || targetDirectory.id.startsWith(item.id + '/'))) return;
+					$scope.vars.pendingMove = { item, itemDirectory, targetDirectory, func };
+				}
+
+				$scope.confirmMove = function () {
+					const { item, itemDirectory, targetDirectory, func } = $scope.vars.pendingMove;
+					$scope.vars.pendingMove = null;
 					Homey.showLoadingOverlay();
-					Homey.emit('moveItem', { item, targetDirectory }).then((result) => {
+					return Homey.emit('moveItem', {
+						item: { id: item.id, name: item.name },
+						targetDirectory: { id: targetDirectory.id }
+					}).then((result) => {
 						Homey.hideLoadingOverlay();
 						//$scope
 						$rootScope.$apply(() => {
+							$scope.vars.selected = null;
 							$scope.getChildren(targetDirectory, true, ()=> {
 								if($scope.vars.currentDirectory && $scope.vars.currentDirectory.fullPath===itemDirectory.fullPath)
 									$scope.getChildren($scope.vars.currentDirectory, true);
@@ -244,37 +248,34 @@
 
 				$scope.deleteDirectory = function (directory) {
 					Homey.showLoadingOverlay();
-					Homey.emit('deleteDirectory', { directory }).then((result) => {
+					return Homey.emit('deleteDirectory', { directory }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							delete directory.delete;
-							$scope.getChildren($scope.$parent.directory || $scope.vars.currentDirectory, true);
+							refreshParent(directory);
 						});
 					}).catch(err => handleError(err));
 				}
 
 				$scope.renameDirectory = function (directory) {
 					Homey.showLoadingOverlay();
-					Homey.emit('renameDirectory', { directory }).then((result) => {
+					return Homey.emit('renameDirectory', { directory }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							delete directory.renameName;
-							console.log('$scope.directory');
-							console.log($scope.directory);
-							console.log('$scope.$parent.directory');
-							console.log($scope.$parent.directory);
-							$scope.getChildren($scope.$parent.directory || $scope.vars.currentDirectory, true);
+							delete directory.rename;
+							refreshParent(directory);
 						});
-					});
+					}).catch(err => handleError(err));
 				}
 				$scope.addDirectory = function (directory) {
 					Homey.showLoadingOverlay();
-					Homey.emit('addDirectory', { directory, name: directory.addName }).then((result) => {
+					return Homey.emit('addDirectory', { directory, name: directory.addName }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							delete directory.add;
 							delete directory.addName;
-							$scope.getChildren($scope.directory, true);
+							$scope.getChildren(directory, true);
 						});
 
 					}).catch(err => handleError(err));
@@ -307,9 +308,7 @@
 							e.preventDefault();
 							e.stopPropagation();
 							$parse(attrs.ftpDirectoryContextMenuClick)(scope); //.$parent
-							console.log(scope);
 							$rootScope.openMenu($rootScope.menu.ftpDirectoryContextMenu, scope.directory, null, e);
-							console.log("Element right clicked.");
 						});
 					}
 				};
@@ -336,6 +335,7 @@
 				};
 			}])
 			.controller('ftpFileCtrl', function ($scope, $rootScope) {
+				$scope.__ = Homey.__;
 				$scope.vars = $scope.$parent.vars;
 				$scope.view = $scope.$parent.view;
 				$rootScope.ftpFileCtrl = $scope;
@@ -344,7 +344,7 @@
 				$scope.deleteFile = function (file, directory) {
 
 					Homey.showLoadingOverlay();
-					Homey.emit('deleteFile', { file }).then((result) => {
+					return Homey.emit('deleteFile', { file }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							delete file.delete;
@@ -355,11 +355,12 @@
 
 				$scope.renameFile = function (file, directory) {
 					Homey.showLoadingOverlay();
-					Homey.emit('renameFile', { file }).then((result) => {
+					return Homey.emit('renameFile', { file }).then((result) => {
 
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
 							delete file.renameName;
+							delete file.rename;
 							$rootScope.ftpDirectoryCtrl.getChildren(directory, true);
 						});
 					}).catch(err => handleError(err));
@@ -411,7 +412,6 @@
 			})
 
 			.directive('ftpFile', [function () {
-
 				return {
 					templateUrl: 'ftp-file.template.html',
 					replace: true,
@@ -423,39 +423,7 @@
 						// scope.file.indent = matches ? matches.length : -1;
 						// scope.file.indent++;
 
-						scope.getFileIcon = function (file) {
-							let ext = _.last(file.name.split('.')).toLowerCase();
-							switch (ext) {
-								case 'mp3':
-								case 'wav':
-									return 'fa-file-audio';
-								case 'jpg':
-								case 'jpeg':
-								case 'gif':
-								case 'png':
-								case 'svg':
-								case 'bpm':
-									return 'fa-file-image';
-								case 'zip':
-								case 'rar':
-									return 'fa-file-archive';
-								case 'doc':
-								case 'docx':
-									return 'fa-file-word';
-								case 'xls':
-								case 'xlsx':
-									return 'fa-file-excel';
-								case 'js':
-								case 'json':
-									return 'fa-file-code';
-								case 'ppt':
-								case 'pptx':
-									return 'fa-file-powerpoint';
-								case 'pdf':
-									return 'fa-file-pdf';
-								default: return 'fa-file';
-							}
-						}
+						scope.getFileIcon = file => window.getFtpFileIcon(file.name);
 
 					}
 				};
@@ -473,71 +441,52 @@
 					//transclude:true,
 
 					controller: function ($scope) {
+						$scope.__ = Homey.__;
 
-						function _arrayBufferToBase64(buffer) {
-							var binary = '';
-							var bytes = new Uint8Array(buffer);
-							var len = bytes.byteLength;
-							for (var i = 0; i < len; i++) {
-								binary += String.fromCharCode(bytes[i]);
-							}
-							return window.btoa(binary);
-						}
-
-						console.log("ftpFileUpload controller function called");
 						$scope.attrs = null;
-						$scope.uploadFiles = function (element) {
-							console.log($scope);
-							let attrs = $scope.attrs;
-
-							let q = [];
-							let fc = () => {
-								console.log('emit');
-
-								Homey.showLoadingOverlay();
-								Homey.emit('uploadFiles').then(async (result) => {
-									let filesJson = JSON.stringify(q);
-									let filesJsonArray = filesJson.match(/.{1,1000000}/g);
-
-									for (let i = 0; i < filesJsonArray.length; i++) {
-										const partialFile = filesJsonArray[i];
-										await $http.post('../../../../../api/app/nl.qluster-it.FtpClient/uploadFilePartials', { directory: $scope.directory, partial:partialFile, id: result.id, lastPart:i===filesJsonArray.length-1 });
-									}
-									Homey.hideLoadingOverlay();
-									delete $scope.directory.uploading;
-									$scope.$parent.getChildren($scope.directory, true);
-									$scope.directory.show = $scope.directory.shown = true;
-									if (attrs.onOk) $parse(attrs.onOk)($scope.$parent);
-
-									//$http.post('../../../../../api/app/nl.qluster-it.FtpClient/uploadFiles', { directory: $scope.directory, files: q, id: result.id }).then(() => {
-									// 	Homey.hideLoadingOverlay();
-									// 	delete $scope.directory.uploading;
-									// 	$scope.$parent.getChildren($scope.directory, true);
-									// 	$scope.directory.show = $scope.directory.shown = true;
-									// 	if (attrs.onOk) $parse(attrs.onOk)($scope.$parent);									
-									// }).catch(err => handleError(err));
-								}).catch(err => handleError(err));
-							};
-							for (let i = 0; i < element.target.files.length; i++) {
-								const file = element.target.files[i];
-								r = new FileReader();
-
-								r.onloadend = function (e) {
-									var base64String = _arrayBufferToBase64(e.target.result);
-									q.push({ name: file.name, base64: base64String });
-									if (q.length === element.target.files.length) fc();
+						$scope.uploadFiles = async function (event) {
+							const files = Array.from(event.target.files);
+							if (!files.length) return;
+							Homey.showLoadingOverlay();
+							try {
+								const upload = [];
+								for (const file of files) {
+									const data = await new Promise((resolve, reject) => {
+										const reader = new FileReader();
+										reader.onload = () => resolve(reader.result);
+										reader.onerror = () => reject(reader.error);
+										reader.onabort = () => reject(new Error(Homey.__('repair.uploadFailed')));
+										reader.readAsDataURL(file);
+									});
+									upload.push({ name: file.name, base64: data.slice(data.indexOf(',') + 1) });
 								}
-								r.readAsArrayBuffer(file);
+								const { id } = await Homey.emit('uploadFiles');
+								const json = JSON.stringify(upload);
+								for (let offset = 0; offset < json.length; offset += 1000000) {
+									await $http.post('../../../../../api/app/nl.qluster-it.FtpClient/uploadFilePartials', {
+										directory: { id: $scope.directory.id },
+										partial: json.slice(offset, offset + 1000000), id,
+										lastPart: offset + 1000000 >= json.length
+									});
+								}
+								$scope.$apply(() => {
+									delete $scope.directory.uploading;
+									$scope.directory.show = true;
+									$scope.$parent.getChildren($scope.directory, true);
+									if ($scope.attrs.onOk) $parse($scope.attrs.onOk)($scope.$parent);
+								});
+							} catch (error) {
+								Homey.alert(error.message || (error.data && error.data.error) || String(error), 'error');
+							} finally {
+								Homey.hideLoadingOverlay();
+								event.target.value = '';
 							}
-						}
-						$scope.deleteDirectory = function (directory) {
-
 						}
 					},
 					link: function (scope, element, attrs) {
-						console.log('ftpFileUpload link');
 						scope.attrs = attrs;
 						scope.cancel = function ($event) {
+							$event.preventDefault();
 							$event.stopPropagation();
 							$parse(attrs.onCancel)(scope.$parent);
 
@@ -552,12 +501,10 @@
 					},
 					link: function (scope, element, attrs) {
 						element.on("contextmenu", function (e) {
-							console.log(scope);
 							e.preventDefault();
 							e.stopPropagation();
 							$parse(attrs.ftpFileContextMenuClick)(scope); //.$parent
 							$rootScope.openMenu($rootScope.menu.ftpFileContextMenu, scope.directory, scope.file, e);
-							console.log("Element right clicked.");
 						});
 					}
 				};
@@ -592,6 +539,40 @@
 					}
 				};
 			})
+			.directive('ftpDialog', ['$timeout', function ($timeout) {
+				return {
+					restrict: 'A',
+					link: function (scope, element, attrs) {
+						const node = element[0];
+						const previousFocus = document.activeElement;
+						const focusTask = $timeout(function () {
+							const target = node.querySelector('input') || node.querySelector('.ftp-button-secondary') || node;
+							target.focus({ preventScroll: true });
+						}, 0, false);
+						function keydown(event) {
+							if (event.key === 'Escape') {
+								event.preventDefault();
+								event.stopPropagation();
+								scope.$apply(() => scope.$eval(attrs.ftpDialog, { $event: event }));
+							} else if (event.key === 'Tab') {
+								const controls = Array.from(node.querySelectorAll('input:not(:disabled), button:not(:disabled)'))
+									.filter(control => control.getClientRects().length);
+								const first = controls[0], last = controls[controls.length - 1];
+								if (controls.length && (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+									event.preventDefault();
+									(event.shiftKey ? last : first).focus();
+								}
+							}
+						}
+						node.addEventListener('keydown', keydown);
+						scope.$on('$destroy', function () {
+							$timeout.cancel(focusTask);
+							node.removeEventListener('keydown', keydown);
+							if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+						});
+					}
+				};
+			}])
 			.directive('windowConfirm', ['$parse', function ($parse) {
 
 				return {
@@ -601,13 +582,20 @@
 						onOk: '@',
 						onCancel: '@',
 						title: '@',
-						message: '@'
+						message: '@',
+						action: '@'
 
 					},
 					restrict: 'E',
 					transclude: true,
 					controller: function ($scope) {
-
+						$scope.__ = Homey.__;
+						$scope.confirmKey = {
+							create: 'repair.addFolder', rename: 'repair.rename', delete: 'repair.delete', move: 'repair.move'
+						}[$scope.action] || 'repair.ok';
+						$scope.actionIcon = {
+							create: 'fa-folder-plus', rename: 'fa-i-cursor', delete: 'fa-trash-alt', move: 'fa-exchange-alt'
+						}[$scope.action] || 'fa-check';
 					},
 					link: function (scope, element, attrs) {
 						scope.closed = false;
@@ -628,4 +616,6 @@
 
 			;
 	</script>
+	<script type="text/javascript" src="ftp-drag-drop.js"></script>
+	<script type="text/javascript" src="ftp-file-icons.js"></script>
 </div>

@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Annuller",
+    "rename": "Omdøb",
+    "delete": "Slet",
+    "download": "Download",
+    "uploadFiles": "Upload filer",
+    "uploadInto": "Upload til __directory__",
+    "addFolder": "Ny mappe",
+    "renameFolder": "Omdøb mappe",
+    "renameFile": "Omdøb fil",
+    "deleteFolder": "Slet mappe?",
+    "deleteFile": "Slet fil?",
+    "deleteFolderPrompt": "Slet \"__name__\" og alt indholdet?",
+    "deleteFilePrompt": "Slet \"__name__\"?",
+    "folderName": "Indtast mappenavnet:",
+    "fileName": "Indtast filnavnet:",
+    "moveFolder": "Flyt mappe?",
+    "moveFile": "Flyt fil?",
+    "movePrompt": "Flyt \"__name__\" til \"__directory__\"?",
+    "listView": "Listevisning",
+    "gridView": "Gittervisning",
+    "refresh": "Opdater",
+    "parentFolder": "Overordnet mappe",
+    "bllRequired": "Installer appen Better Logic Library for at bruge FTP-browseren.",
+    "uploadFailed": "Filen kunne ikke læses til upload.",
+    "move": "Flyt"
+  },
+  "errors": {
+    "fileRequired": "Vælg en fil.",
+    "imageRequired": "Vælg et billede, eller angiv en sti.",
+    "pathRequired": "Angiv en mappe og/eller en sti.",
+    "folderRequired": "Vælg en mappe.",
+    "urlRequired": "Angiv en URL.",
+    "outsideRoot": "Stien skal forblive inden for den angivne rodmappe.",
+    "rootProtected": "Vælg en fil eller undermappe inden for den angivne rodmappe."
+  },
+  "pair": {
+    "custom": "Brugerdefineret FTP Client",
+    "rootDirectory": "Rodmappe",
+    "rootHint": "Filbrowseren og alle filhandlinger i Flows forbliver i denne mappe. Lad feltet stå tomt for FTP-serverens rodmappe.",
+    "connectionTitle": "FTP-server",
+    "next": "Fortsæt",
+    "invalidConnection": "Indtast et værtsnavn og en port mellem 1 og 65535.",
+    "loginRequired": "Opret først forbindelse til FTP-serveren.",
+    "host": "IP-adresse eller værtsnavn",
+    "port": "Port"
+  },
+  "flow": {
+    "root": "Rodmappe"
+  },
+  "monitor": {
+    "upload": "Upload",
+    "download": "Download",
+    "connectionFailed": "Kontrollen af FTP-forbindelsen mislykkedes.",
+    "transferFailed": "Filoverførslen mislykkedes."
+  }
+}

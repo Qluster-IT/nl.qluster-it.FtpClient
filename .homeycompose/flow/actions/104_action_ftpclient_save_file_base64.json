@@ -1,43 +1,115 @@
 {
-    "id": "action_ftpclient_save_file_base64",
-    "title": {
-      "en": "Save File from base64",
-      "nl": "Sla een bestand op vanaf base64"
-    },
-    "titleFormatted": {
-      "en": "Save [[file]] to [[directory]] / [[path]]",
-      "nl": "Sla [[file]] op als [[directory]] / [[path]]"
-    },
-    "args": [
+  "id": "action_ftpclient_save_file_base64",
+  "title": {
+    "en": "Save file from base64",
+    "nl": "Bestand opslaan vanuit base64",
+    "de": "Datei aus base64 speichern",
+    "fr": "Enregistrer un fichier depuis base64",
+    "it": "Salva file da base64",
+    "es": "Guardar archivo desde base64",
+    "sv": "Spara fil från base64",
+    "no": "Lagre fil fra base64",
+    "da": "Gem fil fra base64",
+    "ru": "Сохранить файл из base64",
+    "pl": "Zapisz plik z base64",
+    "ko": "base64에서 파일 저장",
+    "ar": "حفظ ملف من base64"
+  },
+  "titleFormatted": {
+    "en": "Save [[file]] to [[directory]] / [[path]]",
+    "nl": "Sla [[file]] op in [[directory]] / [[path]]",
+    "de": "[[file]] in [[directory]] / [[path]] speichern",
+    "fr": "Enregistrer [[file]] dans [[directory]] / [[path]]",
+    "it": "Salva [[file]] in [[directory]] / [[path]]",
+    "es": "Guardar [[file]] en [[directory]] / [[path]]",
+    "sv": "Spara [[file]] i [[directory]] / [[path]]",
+    "no": "Lagre [[file]] i [[directory]] / [[path]]",
+    "da": "Gem [[file]] i [[directory]] / [[path]]",
+    "ru": "Сохранить [[file]] в [[directory]] / [[path]]",
+    "pl": "Zapisz [[file]] w [[directory]] / [[path]]",
+    "ko": "[[file]]을(를) [[directory]] / [[path]]에 저장",
+    "ar": "حفظ [[file]] في [[directory]] / [[path]]"
+  },
+  "args": [
     {
-        "name": "device",
-        "type": "device",
-        "filter": "driver_id=ftpconnection"
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
     },
     {
       "name": "file",
       "type": "text",
-      "required":false,
-      "placeholder": "file (base64)"
-    },  
+      "required": false,
+      "placeholder": {
+        "en": "File (base64)",
+        "nl": "Bestand (base64)",
+        "de": "Datei (base64)",
+        "fr": "Fichier (base64)",
+        "it": "File (base64)",
+        "es": "Archivo (base64)",
+        "sv": "Fil (base64)",
+        "no": "Fil (base64)",
+        "da": "Fil (base64)",
+        "ru": "Файл (base64)",
+        "pl": "Plik (base64)",
+        "ko": "파일(base64)",
+        "ar": "ملف (base64)"
+      }
+    },
     {
       "name": "directory",
       "type": "autocomplete",
-      "required":false,
-      "placeholder": "directory"
-    },    
+      "required": false,
+      "placeholder": {
+        "en": "Folder",
+        "nl": "Map",
+        "de": "Ordner",
+        "fr": "Dossier",
+        "it": "Cartella",
+        "es": "Carpeta",
+        "sv": "Mapp",
+        "no": "Mappe",
+        "da": "Mappe",
+        "ru": "Папка",
+        "pl": "Folder",
+        "ko": "폴더",
+        "ar": "مجلد"
+      }
+    },
     {
       "name": "path",
       "type": "text",
-      "required":false,
-      "placeholder":{
-        "en":"(Path+) Filename (* BLL supported)",
-        "nl":"(Pad+) bestandsnaam (* BLL ondersteund)"
+      "required": false,
+      "placeholder": {
+        "en": "(Path +) Filename (* BLL supported)",
+        "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+        "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+        "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+        "it": "(Percorso +) nome file (* BLL supportato)",
+        "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+        "sv": "(Sökväg +) filnamn (* BLL stöds)",
+        "no": "(Sti +) filnavn (* BLL støttes)",
+        "da": "(Sti +) filnavn (* BLL understøttes)",
+        "ru": "(Путь +) имя файла (* поддержка BLL)",
+        "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+        "ko": "(경로 +) 파일 이름(* BLL 지원)",
+        "ar": "(المسار +) اسم الملف (* يدعم BLL)"
       },
-      "title":{
-        "en":"Filename",
-        "nl":"Bestandsnaam"
+      "title": {
+        "en": "Filename",
+        "nl": "Bestandsnaam",
+        "de": "Dateiname",
+        "fr": "Nom du fichier",
+        "it": "Nome file",
+        "es": "Nombre del archivo",
+        "sv": "Filnamn",
+        "no": "Filnavn",
+        "da": "Filnavn",
+        "ru": "Имя файла",
+        "pl": "Nazwa pliku",
+        "ko": "파일 이름",
+        "ar": "اسم الملف"
       }
     }
-    ]
-  }
+  ]
+}

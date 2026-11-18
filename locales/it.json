@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Annulla",
+    "rename": "Rinomina",
+    "delete": "Elimina",
+    "download": "Scarica",
+    "uploadFiles": "Carica file",
+    "uploadInto": "Carica in __directory__",
+    "addFolder": "Nuova cartella",
+    "renameFolder": "Rinomina cartella",
+    "renameFile": "Rinomina file",
+    "deleteFolder": "Eliminare la cartella?",
+    "deleteFile": "Eliminare il file?",
+    "deleteFolderPrompt": "Eliminare \"__name__\" e tutto il suo contenuto?",
+    "deleteFilePrompt": "Eliminare \"__name__\"?",
+    "folderName": "Inserisci il nome della cartella:",
+    "fileName": "Inserisci il nome del file:",
+    "moveFolder": "Spostare la cartella?",
+    "moveFile": "Spostare il file?",
+    "movePrompt": "Spostare \"__name__\" in \"__directory__\"?",
+    "listView": "Vista elenco",
+    "gridView": "Vista griglia",
+    "refresh": "Aggiorna",
+    "parentFolder": "Cartella superiore",
+    "bllRequired": "Installa l’app Better Logic Library per usare il browser FTP.",
+    "uploadFailed": "Impossibile leggere il file da caricare.",
+    "move": "Sposta"
+  },
+  "errors": {
+    "fileRequired": "Seleziona un file.",
+    "imageRequired": "Seleziona un’immagine o inserisci un percorso.",
+    "pathRequired": "Imposta una cartella e/o un percorso.",
+    "folderRequired": "Seleziona una cartella.",
+    "urlRequired": "Inserisci un URL.",
+    "outsideRoot": "Il percorso deve rimanere nella cartella radice configurata.",
+    "rootProtected": "Scegli un file o una sottocartella nella cartella radice configurata."
+  },
+  "pair": {
+    "custom": "FTP Client personalizzato",
+    "rootDirectory": "Cartella radice",
+    "rootHint": "La navigazione e tutte le operazioni sui file nei Flow rimangono in questa cartella. Lascia vuoto per usare la radice del server FTP.",
+    "connectionTitle": "Server FTP",
+    "next": "Continua",
+    "invalidConnection": "Inserisci un nome host e una porta tra 1 e 65535.",
+    "loginRequired": "Connettiti prima al server FTP.",
+    "host": "IP o nome host",
+    "port": "Porta"
+  },
+  "flow": {
+    "root": "Cartella radice"
+  },
+  "monitor": {
+    "upload": "Caricamento",
+    "download": "Scaricamento",
+    "connectionFailed": "La verifica della connessione FTP non è riuscita.",
+    "transferFailed": "Il trasferimento del file non è riuscito."
+  }
+}

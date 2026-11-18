@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Check FTP connection now",
+    "nl": "Controleer de FTP-verbinding nu",
+    "de": "FTP-Verbindung jetzt prüfen",
+    "fr": "Vérifier la connexion FTP maintenant",
+    "it": "Verifica ora la connessione FTP",
+    "es": "Comprobar la conexión FTP ahora",
+    "sv": "Kontrollera FTP-anslutningen nu",
+    "no": "Kontroller FTP-tilkoblingen nå",
+    "da": "Kontrollér FTP-forbindelsen nu",
+    "ru": "Проверить подключение к FTP сейчас",
+    "pl": "Sprawdź połączenie FTP teraz",
+    "ko": "지금 FTP 연결 확인",
+    "ar": "تحقق من اتصال FTP الآن"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ]
+}

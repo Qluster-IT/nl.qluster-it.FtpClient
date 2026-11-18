@@ -7,10 +7,34 @@
     "local"
   ],
   "name": {
-    "en": "FTP Client"
+    "en": "FTP Client",
+    "nl": "FTP Client",
+    "de": "FTP Client",
+    "fr": "FTP Client",
+    "it": "FTP Client",
+    "es": "FTP Client",
+    "sv": "FTP Client",
+    "no": "FTP Client",
+    "da": "FTP Client",
+    "ru": "FTP Client",
+    "pl": "FTP Client",
+    "ko": "FTP Client",
+    "ar": "FTP Client"
   },
   "description": {
-    "en": "Control FTP Servers through a directory-based UI in the Homey App or Web App."
+    "en": "Control FTP servers through a folder-based interface in the Homey app or web app.",
+    "nl": "Bedien FTP-servers via een mappeninterface in de Homey-app of webapp.",
+    "de": "Steuere FTP-Server über eine Ordneransicht in der Homey-App oder Web-App.",
+    "fr": "Contrôlez des serveurs FTP depuis une interface de dossiers dans l’app Homey ou l’app web.",
+    "it": "Controlla i server FTP tramite un’interfaccia a cartelle nell’app Homey o nell’app web.",
+    "es": "Controla servidores FTP desde una interfaz de carpetas en la app Homey o la app web.",
+    "sv": "Styr FTP-servrar via ett mappgränssnitt i Homey-appen eller webbappen.",
+    "no": "Styr FTP-servere via et mappegrensesnitt i Homey-appen eller nettappen.",
+    "da": "Styr FTP-servere via en mappevisning i Homey-appen eller webappen.",
+    "ru": "Управляйте FTP-серверами через интерфейс папок в приложении Homey или веб-приложении.",
+    "pl": "Steruj serwerami FTP za pomocą widoku folderów w aplikacji Homey lub aplikacji internetowej.",
+    "ko": "Homey 앱 또는 웹 앱의 폴더 인터페이스로 FTP 서버를 제어하세요.",
+    "ar": "تحكّم في خوادم FTP من خلال واجهة مجلدات في تطبيق Homey أو تطبيق الويب."
   },
   "tags": {
     "en": [
@@ -23,19 +47,99 @@
     ],
     "nl": [
       "opslag",
-      "lokale",
+      "lokaal",
       "soundboard",
-      "grabber",
+      "ophalen",
       "afbeelding",
       "server"
     ],
     "de": [
-      "lagerung",
+      "Speicher",
       "lokal",
+      "Soundboard",
+      "Abrufen",
+      "Bild",
+      "Server"
+    ],
+    "fr": [
+      "stockage",
+      "local",
+      "table sonore",
+      "capture",
+      "image",
+      "serveur"
+    ],
+    "it": [
+      "archiviazione",
+      "locale",
       "soundboard",
-      "grabber",
+      "acquisizione",
+      "immagine",
+      "server"
+    ],
+    "es": [
+      "almacenamiento",
+      "local",
+      "panel de sonidos",
+      "captura",
+      "imagen",
+      "servidor"
+    ],
+    "sv": [
+      "lagring",
+      "lokal",
+      "ljudpanel",
+      "hämtning",
       "bild",
       "server"
+    ],
+    "no": [
+      "lagring",
+      "lokal",
+      "lydpanel",
+      "henting",
+      "bilde",
+      "server"
+    ],
+    "da": [
+      "lagring",
+      "lokal",
+      "lydpanel",
+      "hentning",
+      "billede",
+      "server"
+    ],
+    "ru": [
+      "хранилище",
+      "локально",
+      "звуковая панель",
+      "загрузка",
+      "изображение",
+      "сервер"
+    ],
+    "pl": [
+      "pamięć",
+      "lokalny",
+      "panel dźwiękowy",
+      "pobieranie",
+      "obraz",
+      "serwer"
+    ],
+    "ko": [
+      "저장소",
+      "로컬",
+      "사운드보드",
+      "가져오기",
+      "이미지",
+      "서버"
+    ],
+    "ar": [
+      "تخزين",
+      "محلي",
+      "لوحة أصوات",
+      "جلب",
+      "صورة",
+      "خادم"
     ]
   },
   "brandColor": "#2B738C",
@@ -43,12 +147,14 @@
     "tools"
   ],
   "homeyCommunityTopicId": 70876,
-	"source": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/",
+  "source": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/",
   "homepage": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/wiki",
-  	"bugs": {
-		"url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
-	  },
-  "permissions": ["homey:app:net.i-dev.betterlogic"],
+  "bugs": {
+    "url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
+  },
+  "permissions": [
+    "homey:app:net.i-dev.betterlogic"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
@@ -58,22 +164,22 @@
     "name": "Arie J. Godschalk",
     "email": "arie@qluster-it.nl"
   },
-	"contributing": {
-		"donate": {
-			"paypal": {
-				"username": "QlusterIT"
-			},
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "QlusterIT"
+      },
       "patreon": {
-				"username": "QlusterIT"
-			},
+        "username": "QlusterIT"
+      },
       "githubSponsors": {
         "username": "Qluster-IT"
       },
       "bunq": {
         "username": "QlusterIT"
       }
-		}
-	},
+    }
+  },
   "contributors": {
     "translators": [
       {
@@ -85,12 +191,16 @@
     "uploadFiles": {
       "method": "POST",
       "path": "/uploadFiles",
-      "public":true
+      "public": true
     },
     "uploadFilePartials": {
       "method": "POST",
       "path": "/uploadFilePartials",
-      "public":true
+      "public": true
+    },
+    "apiReady": {
+      "method": "GET",
+      "path": "/api-ready"
     }
   }
 }

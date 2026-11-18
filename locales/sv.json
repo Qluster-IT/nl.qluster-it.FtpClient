@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Avbryt",
+    "rename": "Byt namn",
+    "delete": "Ta bort",
+    "download": "Ladda ned",
+    "uploadFiles": "Ladda upp filer",
+    "uploadInto": "Ladda upp till __directory__",
+    "addFolder": "Ny mapp",
+    "renameFolder": "Byt namn på mapp",
+    "renameFile": "Byt namn på fil",
+    "deleteFolder": "Ta bort mappen?",
+    "deleteFile": "Ta bort filen?",
+    "deleteFolderPrompt": "Ta bort \"__name__\" och allt innehåll?",
+    "deleteFilePrompt": "Ta bort \"__name__\"?",
+    "folderName": "Ange mappens namn:",
+    "fileName": "Ange filens namn:",
+    "moveFolder": "Flytta mappen?",
+    "moveFile": "Flytta filen?",
+    "movePrompt": "Flytta \"__name__\" till \"__directory__\"?",
+    "listView": "Listvy",
+    "gridView": "Rutnätsvy",
+    "refresh": "Uppdatera",
+    "parentFolder": "Överordnad mapp",
+    "bllRequired": "Installera appen Better Logic Library för att använda FTP-utforskaren.",
+    "uploadFailed": "Filen kunde inte läsas för uppladdning.",
+    "move": "Flytta"
+  },
+  "errors": {
+    "fileRequired": "Välj en fil.",
+    "imageRequired": "Välj en bild eller ange en sökväg.",
+    "pathRequired": "Ange en mapp och/eller en sökväg.",
+    "folderRequired": "Välj en mapp.",
+    "urlRequired": "Ange en URL.",
+    "outsideRoot": "Sökvägen måste stanna inom den inställda rotmappen.",
+    "rootProtected": "Välj en fil eller undermapp inom den inställda rotmappen."
+  },
+  "pair": {
+    "custom": "Anpassad FTP Client",
+    "rootDirectory": "Rotmapp",
+    "rootHint": "Filbläddraren och alla filåtgärder i Flows stannar i denna mapp. Lämna tomt för FTP-serverns rotmapp.",
+    "connectionTitle": "FTP-server",
+    "next": "Fortsätt",
+    "invalidConnection": "Ange ett värdnamn och en port mellan 1 och 65535.",
+    "loginRequired": "Anslut till FTP-servern först.",
+    "host": "IP-adress eller värdnamn",
+    "port": "Port"
+  },
+  "flow": {
+    "root": "Rotmapp"
+  },
+  "monitor": {
+    "upload": "Uppladdning",
+    "download": "Nedladdning",
+    "connectionFailed": "Kontrollen av FTP-anslutningen misslyckades.",
+    "transferFailed": "Filöverföringen misslyckades."
+  }
+}

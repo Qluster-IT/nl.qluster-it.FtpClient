@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "rename": "Renommer",
+    "delete": "Supprimer",
+    "download": "Télécharger",
+    "uploadFiles": "Envoyer des fichiers",
+    "uploadInto": "Envoyer vers __directory__",
+    "addFolder": "Nouveau dossier",
+    "renameFolder": "Renommer le dossier",
+    "renameFile": "Renommer le fichier",
+    "deleteFolder": "Supprimer le dossier ?",
+    "deleteFile": "Supprimer le fichier ?",
+    "deleteFolderPrompt": "Supprimer « __name__ » et tout son contenu ?",
+    "deleteFilePrompt": "Supprimer « __name__ » ?",
+    "folderName": "Saisissez le nom du dossier :",
+    "fileName": "Saisissez le nom du fichier :",
+    "moveFolder": "Déplacer le dossier ?",
+    "moveFile": "Déplacer le fichier ?",
+    "movePrompt": "Déplacer « __name__ » vers « __directory__ » ?",
+    "listView": "Vue en liste",
+    "gridView": "Vue en grille",
+    "refresh": "Actualiser",
+    "parentFolder": "Dossier parent",
+    "bllRequired": "Installez l’app Better Logic Library pour utiliser le navigateur FTP.",
+    "uploadFailed": "Impossible de lire le fichier à envoyer.",
+    "move": "Déplacer"
+  },
+  "errors": {
+    "fileRequired": "Sélectionnez un fichier.",
+    "imageRequired": "Sélectionnez une image ou saisissez un chemin.",
+    "pathRequired": "Indiquez un dossier et/ou un chemin.",
+    "folderRequired": "Sélectionnez un dossier.",
+    "urlRequired": "Saisissez une URL.",
+    "outsideRoot": "Le chemin doit rester dans le dossier racine configuré.",
+    "rootProtected": "Choisissez un fichier ou un sous-dossier dans le dossier racine configuré."
+  },
+  "pair": {
+    "custom": "FTP Client personnalisé",
+    "rootDirectory": "Dossier racine",
+    "rootHint": "La navigation et toutes les opérations sur les fichiers dans les Flows restent dans ce dossier. Laissez vide pour utiliser la racine du serveur FTP.",
+    "connectionTitle": "Serveur FTP",
+    "next": "Continuer",
+    "invalidConnection": "Saisissez un nom d’hôte et un port entre 1 et 65535.",
+    "loginRequired": "Connectez-vous d’abord au serveur FTP.",
+    "host": "Adresse IP ou nom d’hôte",
+    "port": "Port"
+  },
+  "flow": {
+    "root": "Dossier racine"
+  },
+  "monitor": {
+    "upload": "Envoi",
+    "download": "Téléchargement",
+    "connectionFailed": "La vérification de la connexion FTP a échoué.",
+    "transferFailed": "Le transfert du fichier a échoué."
+  }
+}

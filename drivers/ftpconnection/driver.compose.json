@@ -1,157 +1,589 @@
 {
-    "id": "ftpconnection",
-    "name": {
-      "en": "FTP Connection"
+  "id": "ftpconnection",
+  "name": {
+    "en": "FTP Client",
+    "nl": "FTP Client",
+    "de": "FTP Client",
+    "fr": "FTP Client",
+    "it": "FTP Client",
+    "es": "FTP Client",
+    "sv": "FTP Client",
+    "no": "FTP Client",
+    "da": "FTP Client",
+    "ru": "FTP Client",
+    "pl": "FTP Client",
+    "ko": "FTP Client",
+    "ar": "FTP Client"
+  },
+  "images": {
+    "large": "drivers/ftpconnection/assets/images/large.png",
+    "small": "drivers/ftpconnection/assets/images/small.png"
+  },
+  "class": "other",
+  "capabilities": ["ftp_status", "alarm_ftp_transfer"],
+  "capabilitiesOptions": {
+    "alarm_ftp_transfer": {
+      "titleFalse": {
+        "en": "No",
+        "nl": "Nee",
+        "de": "Nein",
+        "fr": "Non",
+        "it": "No",
+        "es": "No",
+        "sv": "Nej",
+        "no": "Nei",
+        "da": "Nej",
+        "ru": "Нет",
+        "pl": "Nie",
+        "ko": "아니요",
+        "ar": "لا"
+      },
+      "titleTrue": {
+        "en": "Yes",
+        "nl": "Ja",
+        "de": "Ja",
+        "fr": "Oui",
+        "it": "Sì",
+        "es": "Sí",
+        "sv": "Ja",
+        "no": "Ja",
+        "da": "Ja",
+        "ru": "Да",
+        "pl": "Tak",
+        "ko": "예",
+        "ar": "نعم"
+      }
+    }
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "loading_credentials"
+      },
+      "options": {
+        "singular": true
+      }
     },
-    "images": {
-      "large": "drivers/ftpconnection/assets/images/large.png",
-      "small": "drivers/ftpconnection/assets/images/small.png"
+    {
+      "id": "loading_credentials",
+      "template": "loading"
     },
-    "class": "other",
-    "capabilities": [],    
-    "pair": [        
-      {
-        "id": "list_devices",
-        "template": "list_devices",
-        "navigation": {
-          "next": "loading_credentials"
+    {
+      "id": "login_credentials",
+      "template": "login_credentials",
+      "options": {
+        "usernameLabel": {
+          "en": "Username",
+          "nl": "Gebruikersnaam",
+          "de": "Benutzername",
+          "fr": "Nom d’utilisateur",
+          "it": "Nome utente",
+          "es": "Nombre de usuario",
+          "sv": "Användarnamn",
+          "no": "Brukernavn",
+          "da": "Brugernavn",
+          "ru": "Имя пользователя",
+          "pl": "Nazwa użytkownika",
+          "ko": "사용자 이름",
+          "ar": "اسم المستخدم"
         },
-        "options": {
-          "singular": true
+        "usernamePlaceholder": {
+          "en": "anonymous",
+          "nl": "anonymous",
+          "de": "anonymous",
+          "fr": "anonymous",
+          "it": "anonymous",
+          "es": "anonymous",
+          "sv": "anonymous",
+          "no": "anonymous",
+          "da": "anonymous",
+          "ru": "anonymous",
+          "pl": "anonymous",
+          "ko": "anonymous",
+          "ar": "anonymous"
+        },
+        "passwordLabel": {
+          "en": "Password",
+          "nl": "Wachtwoord",
+          "de": "Passwort",
+          "fr": "Mot de passe",
+          "it": "Password",
+          "es": "Contraseña",
+          "sv": "Lösenord",
+          "no": "Passord",
+          "da": "Adgangskode",
+          "ru": "Пароль",
+          "pl": "Hasło",
+          "ko": "비밀번호",
+          "ar": "كلمة المرور"
+        },
+        "passwordPlaceholder": {
+          "en": "",
+          "nl": "",
+          "de": "",
+          "fr": "",
+          "it": "",
+          "es": "",
+          "sv": "",
+          "no": "",
+          "da": "",
+          "ru": "",
+          "pl": "",
+          "ko": "",
+          "ar": ""
         }
       },
-      {
-        "id": "loading_credentials",
-        "template": "loading"
+      "navigation": {
+        "next": "root_directory"
+      }
+    },
+    {
+      "id": "connection"
+    },
+    {
+      "id": "root_directory"
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "repair": [
+    {
+      "id": "ftpclient"
+    }
+  ],
+  "settings": [
+    {
+      "id": "ip",
+      "type": "text",
+      "label": {
+        "en": "IP or hostname",
+        "nl": "IP-adres of hostnaam",
+        "de": "IP-Adresse oder Hostname",
+        "fr": "Adresse IP ou nom d’hôte",
+        "it": "IP o nome host",
+        "es": "IP o nombre de host",
+        "sv": "IP-adress eller värdnamn",
+        "no": "IP-adresse eller vertsnavn",
+        "da": "IP-adresse eller værtsnavn",
+        "ru": "IP-адрес или имя хоста",
+        "pl": "Adres IP lub nazwa hosta",
+        "ko": "IP 또는 호스트 이름",
+        "ar": "عنوان IP أو اسم المضيف"
       },
-      {
-        "id": "login_credentials",
-        "template": "login_credentials",
-        "options": {
-          "logo": "logo.png",
-          "usernameLabel": { "en": "Username" },
-          "usernamePlaceholder": { "en": "anonymous" },
-          "passwordLabel": { "en": "Password" },
-          "passwordPlaceholder": { "en": "" }
+      "value": "",
+      "hint": "192.168.1.17"
+    },
+    {
+      "id": "port",
+      "type": "number",
+      "label": {
+        "en": "Port",
+        "nl": "Poort",
+        "de": "Port",
+        "fr": "Port",
+        "it": "Porta",
+        "es": "Puerto",
+        "sv": "Port",
+        "no": "Port",
+        "da": "Port",
+        "ru": "Порт",
+        "pl": "Port",
+        "ko": "포트",
+        "ar": "المنفذ"
+      },
+      "value": 21,
+      "hint": "21"
+    },
+    {
+      "id": "username",
+      "type": "text",
+      "label": {
+        "en": "Username",
+        "nl": "Gebruikersnaam",
+        "de": "Benutzername",
+        "fr": "Nom d’utilisateur",
+        "it": "Nome utente",
+        "es": "Nombre de usuario",
+        "sv": "Användarnamn",
+        "no": "Brukernavn",
+        "da": "Brugernavn",
+        "ru": "Имя пользователя",
+        "pl": "Nazwa użytkownika",
+        "ko": "사용자 이름",
+        "ar": "اسم المستخدم"
+      },
+      "value": "",
+      "hint": "anonymous"
+    },
+    {
+      "id": "password",
+      "type": "password",
+      "label": {
+        "en": "Password",
+        "nl": "Wachtwoord",
+        "de": "Passwort",
+        "fr": "Mot de passe",
+        "it": "Password",
+        "es": "Contraseña",
+        "sv": "Lösenord",
+        "no": "Passord",
+        "da": "Adgangskode",
+        "ru": "Пароль",
+        "pl": "Hasło",
+        "ko": "비밀번호",
+        "ar": "كلمة المرور"
+      },
+      "value": ""
+    },
+    {
+      "id": "secure",
+      "type": "checkbox",
+      "label": {
+        "en": "Secure",
+        "nl": "Beveiligd",
+        "de": "Verschlüsselt",
+        "fr": "Sécurisé",
+        "it": "Sicuro",
+        "es": "Seguro",
+        "sv": "Säker",
+        "no": "Sikker",
+        "da": "Sikker",
+        "ru": "Защищённое соединение",
+        "pl": "Bezpieczne połączenie",
+        "ko": "보안 연결",
+        "ar": "اتصال آمن"
+      },
+      "value": false
+    },
+    {
+      "id": "allow_incorrect_certificate",
+      "type": "checkbox",
+      "label": {
+        "en": "Allow incorrect certificate",
+        "nl": "Ongeldig certificaat toestaan",
+        "de": "Ungültiges Zertifikat zulassen",
+        "fr": "Autoriser un certificat non valide",
+        "it": "Consenti certificati non validi",
+        "es": "Permitir certificado no válido",
+        "sv": "Tillåt ogiltigt certifikat",
+        "no": "Tillat ugyldig sertifikat",
+        "da": "Tillad ugyldigt certifikat",
+        "ru": "Разрешить недействительный сертификат",
+        "pl": "Zezwalaj na nieprawidłowy certyfikat",
+        "ko": "유효하지 않은 인증서 허용",
+        "ar": "السماح بشهادة غير صالحة"
+      },
+      "value": false
+    },
+    {
+      "id": "workdirectory",
+      "type": "text",
+      "label": {
+        "en": "Work (Default) Directory",
+        "nl": "Werkmap (standaard)",
+        "de": "Arbeitsordner (Standard)",
+        "fr": "Dossier de travail (par défaut)",
+        "it": "Cartella di lavoro (predefinita)",
+        "es": "Carpeta de trabajo (predeterminada)",
+        "sv": "Arbetsmapp (standard)",
+        "no": "Arbeidsmappe (standard)",
+        "da": "Arbejdsmappe (standard)",
+        "ru": "Рабочая папка (по умолчанию)",
+        "pl": "Folder roboczy (domyślny)",
+        "ko": "작업 폴더(기본값)",
+        "ar": "مجلد العمل (الافتراضي)"
+      },
+      "value": "",
+      "hint": {
+        "en": "This will be considered the Root Directory.",
+        "nl": "Deze map wordt als hoofdmap gebruikt.",
+        "de": "Dieser Ordner wird als Stammordner verwendet.",
+        "fr": "Ce dossier sera utilisé comme dossier racine.",
+        "it": "Questa cartella verrà usata come cartella radice.",
+        "es": "Esta carpeta se usará como carpeta raíz.",
+        "sv": "Den här mappen används som rotmapp.",
+        "no": "Denne mappen brukes som rotmappe.",
+        "da": "Denne mappe bruges som rodmappe.",
+        "ru": "Эта папка будет корневой.",
+        "pl": "Ten folder będzie folderem głównym.",
+        "ko": "이 폴더가 루트 폴더로 사용됩니다.",
+        "ar": "سيُستخدم هذا المجلد كمجلد جذر."
+      }
+    },
+    {
+      "id": "status_poll_minutes",
+      "type": "number",
+      "label": {
+        "en": "FTP status check interval (minutes)",
+        "nl": "FTP-statuscontrole-interval (minuten)",
+        "de": "FTP-Statusprüfintervall (Minuten)",
+        "fr": "Intervalle de vérification FTP (minutes)",
+        "it": "Intervallo di controllo FTP (minuti)",
+        "es": "Intervalo de comprobación de FTP (minutos)",
+        "sv": "Intervall för FTP-statuskontroll (minuter)",
+        "no": "Intervall for FTP-statuskontroll (minutter)",
+        "da": "Interval for FTP-statuskontrol (minutter)",
+        "ru": "Интервал проверки статуса FTP (минуты)",
+        "pl": "Odstęp między sprawdzeniami stanu FTP (minuty)",
+        "ko": "FTP 상태 확인 간격(분)",
+        "ar": "الفاصل الزمني للتحقق من حالة FTP (بالدقائق)"
+      },
+      "value": 5,
+      "min": 1,
+      "max": 1440,
+      "step": 1
+    },
+    {
+      "id": "downloadtime",
+      "type": "number",
+      "label": {
+        "en": "Download Time (Seconds)",
+        "nl": "Downloadtijd (seconden)",
+        "de": "Downloadzeit (Sekunden)",
+        "fr": "Durée de téléchargement (secondes)",
+        "it": "Tempo di download (secondi)",
+        "es": "Tiempo de descarga (segundos)",
+        "sv": "Nedladdningstid (sekunder)",
+        "no": "Nedlastingstid (sekunder)",
+        "da": "Downloadtid (sekunder)",
+        "ru": "Время скачивания (секунды)",
+        "pl": "Czas pobierania (sekundy)",
+        "ko": "다운로드 시간(초)",
+        "ar": "مدة التنزيل (بالثواني)"
+      },
+      "value": 60
+    },
+    {
+      "id": "urlforicons",
+      "type": "dropdown",
+      "label": {
+        "en": "URLs for icons and images in Homey",
+        "nl": "URL’s voor pictogrammen en afbeeldingen in Homey",
+        "de": "URLs für Symbole und Bilder in Homey",
+        "fr": "URL des icônes et images dans Homey",
+        "it": "URL per icone e immagini in Homey",
+        "es": "URL de iconos e imágenes en Homey",
+        "sv": "URL:er för ikoner och bilder i Homey",
+        "no": "URL-er for ikoner og bilder i Homey",
+        "da": "URL’er til ikoner og billeder i Homey",
+        "ru": "URL значков и изображений в Homey",
+        "pl": "Adresy URL ikon i obrazów w Homey",
+        "ko": "Homey 아이콘 및 이미지 URL",
+        "ar": "عناوين URL للأيقونات والصور في Homey"
+      },
+      "value": "localssl",
+      "values": [
+        {
+          "id": "local",
+          "label": {
+            "en": "Local",
+            "nl": "Lokaal",
+            "de": "Lokal",
+            "fr": "Local",
+            "it": "Locale",
+            "es": "Local",
+            "sv": "Lokal",
+            "no": "Lokal",
+            "da": "Lokal",
+            "ru": "Локально",
+            "pl": "Lokalny",
+            "ko": "로컬",
+            "ar": "محلي"
+          }
+        },
+        {
+          "id": "localssl",
+          "label": {
+            "en": "Local (SSL)",
+            "nl": "Lokaal (SSL)",
+            "de": "Lokal (SSL)",
+            "fr": "Local (SSL)",
+            "it": "Locale (SSL)",
+            "es": "Local (SSL)",
+            "sv": "Lokal (SSL)",
+            "no": "Lokal (SSL)",
+            "da": "Lokal (SSL)",
+            "ru": "Локально (SSL)",
+            "pl": "Lokalny (SSL)",
+            "ko": "로컬(SSL)",
+            "ar": "محلي (SSL)"
+          }
+        },
+        {
+          "id": "cloudssl",
+          "label": {
+            "en": "Cloud (SSL)",
+            "nl": "Cloud (SSL)",
+            "de": "Cloud (SSL)",
+            "fr": "Cloud (SSL)",
+            "it": "Cloud (SSL)",
+            "es": "Nube (SSL)",
+            "sv": "Moln (SSL)",
+            "no": "Sky (SSL)",
+            "da": "Cloud (SSL)",
+            "ru": "Облако (SSL)",
+            "pl": "Chmura (SSL)",
+            "ko": "클라우드(SSL)",
+            "ar": "سحابي (SSL)"
+          }
         }
+      ]
+    },
+    {
+      "id": "urlforfiles",
+      "type": "dropdown",
+      "label": {
+        "en": "URLs for downloading files",
+        "nl": "URL’s voor het downloaden van bestanden",
+        "de": "URLs zum Herunterladen von Dateien",
+        "fr": "URL pour télécharger les fichiers",
+        "it": "URL per scaricare i file",
+        "es": "URL para descargar archivos",
+        "sv": "URL:er för nedladdning av filer",
+        "no": "URL-er for nedlasting av filer",
+        "da": "URL’er til download af filer",
+        "ru": "URL для скачивания файлов",
+        "pl": "Adresy URL do pobierania plików",
+        "ko": "파일 다운로드 URL",
+        "ar": "عناوين URL لتنزيل الملفات"
       },
-      {
-        "id": "add_devices",
-        "template": "add_devices"
-      }
-    ],
-    "repair": [
-      {
-        "id": "ftpclient"
-      }
-    ],
-    "settings": [
-      {
-        "id": "ip",
-        "type": "text",
-        "label": {
-          "en": "IP or hostname"
+      "value": "localssl",
+      "values": [
+        {
+          "id": "local",
+          "label": {
+            "en": "Local",
+            "nl": "Lokaal",
+            "de": "Lokal",
+            "fr": "Local",
+            "it": "Locale",
+            "es": "Local",
+            "sv": "Lokal",
+            "no": "Lokal",
+            "da": "Lokal",
+            "ru": "Локально",
+            "pl": "Lokalny",
+            "ko": "로컬",
+            "ar": "محلي"
+          }
         },
-        "value": "",
-        "hint": "192.168.1.17"
+        {
+          "id": "localssl",
+          "label": {
+            "en": "Local (SSL)",
+            "nl": "Lokaal (SSL)",
+            "de": "Lokal (SSL)",
+            "fr": "Local (SSL)",
+            "it": "Locale (SSL)",
+            "es": "Local (SSL)",
+            "sv": "Lokal (SSL)",
+            "no": "Lokal (SSL)",
+            "da": "Lokal (SSL)",
+            "ru": "Локально (SSL)",
+            "pl": "Lokalny (SSL)",
+            "ko": "로컬(SSL)",
+            "ar": "محلي (SSL)"
+          }
+        },
+        {
+          "id": "cloudssl",
+          "label": {
+            "en": "Cloud (SSL)",
+            "nl": "Cloud (SSL)",
+            "de": "Cloud (SSL)",
+            "fr": "Cloud (SSL)",
+            "it": "Cloud (SSL)",
+            "es": "Nube (SSL)",
+            "sv": "Moln (SSL)",
+            "no": "Sky (SSL)",
+            "da": "Cloud (SSL)",
+            "ru": "Облако (SSL)",
+            "pl": "Chmura (SSL)",
+            "ko": "클라우드(SSL)",
+            "ar": "سحابي (SSL)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "urlforurls",
+      "type": "dropdown",
+      "label": {
+        "en": "URLs for file links",
+        "nl": "URL’s voor bestandslinks",
+        "de": "URLs für Dateilinks",
+        "fr": "URL des liens de fichiers",
+        "it": "URL per i collegamenti ai file",
+        "es": "URL para enlaces de archivos",
+        "sv": "URL:er för fillänkar",
+        "no": "URL-er for filkoblinger",
+        "da": "URL’er til fillinks",
+        "ru": "URL ссылок на файлы",
+        "pl": "Adresy URL odnośników do plików",
+        "ko": "파일 링크 URL",
+        "ar": "عناوين URL لروابط الملفات"
       },
-      {
-        "id": "port",
-        "type": "number",
-        "label": {
-          "en": "Port"
+      "value": "localssl",
+      "values": [
+        {
+          "id": "local",
+          "label": {
+            "en": "Local",
+            "nl": "Lokaal",
+            "de": "Lokal",
+            "fr": "Local",
+            "it": "Locale",
+            "es": "Local",
+            "sv": "Lokal",
+            "no": "Lokal",
+            "da": "Lokal",
+            "ru": "Локально",
+            "pl": "Lokalny",
+            "ko": "로컬",
+            "ar": "محلي"
+          }
         },
-        "value": 21,
-        "hint": "21"
-      },
-      {
-        "id": "username",
-        "type": "text",
-        "label": {
-          "en": "Username"
+        {
+          "id": "localssl",
+          "label": {
+            "en": "Local (SSL)",
+            "nl": "Lokaal (SSL)",
+            "de": "Lokal (SSL)",
+            "fr": "Local (SSL)",
+            "it": "Locale (SSL)",
+            "es": "Local (SSL)",
+            "sv": "Lokal (SSL)",
+            "no": "Lokal (SSL)",
+            "da": "Lokal (SSL)",
+            "ru": "Локально (SSL)",
+            "pl": "Lokalny (SSL)",
+            "ko": "로컬(SSL)",
+            "ar": "محلي (SSL)"
+          }
         },
-        "value": "",        
-        "hint": "anonymous"
-      },
-      {
-        "id": "password",
-        "type": "password",
-        "label": {
-          "en": "Password"
-        },
-        "value": ""
-      },
-      {
-        "id": "secure",
-        "type": "checkbox",
-        "label": {
-          "en": "Secure"
-        },
-        "value": false
-      },
-      {
-        "id": "allow_incorrect_certificate",
-        "type": "checkbox",
-        "label": {
-          "en": "Allow incorrect certificate"
-        },
-        "value": false
-      },
-      {
-        "id": "workdirectory",
-        "type": "text",
-        "label": {
-          "en": "Work (Default) Directory"
-        },
-        "value": "",
-        "hint": "This will be considered the Root Directory."
-      },
-      {
-        "id": "downloadtime",
-        "type": "number",
-        "label": {
-          "en": "Download Time (Seconds)"
-        },
-        "value": 60
-      },
-      {
-        "id": "urlforicons",
-        "type": "dropdown",
-        "label": {
-          "en": "Url's used for icons and images used by the Homey App and WebApp."
-        },
-        "value": "local",
-        "values": [
-          { "id": "local", "label": { "en": "Local" } },
-          { "id": "localssl", "label": { "en": "Local (SSL)" } },
-          { "id": "cloudssl", "label": { "en": "Cloud (SSL)" } }
-        ]
-      },
-      {
-        "id": "urlforfiles",
-        "type": "dropdown",
-        "label": {
-          "en": "Url's used for downloading files"
-        },
-        "value": "localssl",
-        "values": [
-          { "id": "local", "label": { "en": "Local" } },
-          { "id": "localssl", "label": { "en": "Local (SSL)" } },
-          { "id": "cloudssl", "label": { "en": "Cloud (SSL)" } }
-        ]
-      },      
-      {
-        "id": "urlforurls",
-        "type": "dropdown",
-        "label": {
-          "en": "Url's used for the Url's for the files"
-        },
-        "value": "localssl",
-        "values": [
-          { "id": "local", "label": { "en": "Local" } },
-          { "id": "localssl", "label": { "en": "Local (SSL)" } },
-          { "id": "cloudssl", "label": { "en": "Cloud (SSL)" } }
-        ]
-      }
-    ]
-  }
+        {
+          "id": "cloudssl",
+          "label": {
+            "en": "Cloud (SSL)",
+            "nl": "Cloud (SSL)",
+            "de": "Cloud (SSL)",
+            "fr": "Cloud (SSL)",
+            "it": "Cloud (SSL)",
+            "es": "Nube (SSL)",
+            "sv": "Moln (SSL)",
+            "no": "Sky (SSL)",
+            "da": "Cloud (SSL)",
+            "ru": "Облако (SSL)",
+            "pl": "Chmura (SSL)",
+            "ko": "클라우드(SSL)",
+            "ar": "سحابي (SSL)"
+          }
+        }
+      ]
+    }
+  ]
+}

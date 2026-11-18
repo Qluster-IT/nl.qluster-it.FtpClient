@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Annuleren",
+    "rename": "Hernoemen",
+    "delete": "Verwijderen",
+    "download": "Downloaden",
+    "uploadFiles": "Bestanden uploaden",
+    "uploadInto": "Uploaden naar __directory__",
+    "addFolder": "Nieuwe map",
+    "renameFolder": "Map hernoemen",
+    "renameFile": "Bestand hernoemen",
+    "deleteFolder": "Map verwijderen?",
+    "deleteFile": "Bestand verwijderen?",
+    "deleteFolderPrompt": "Wil je \"__name__\" en alle inhoud verwijderen?",
+    "deleteFilePrompt": "Wil je \"__name__\" verwijderen?",
+    "folderName": "Voer de mapnaam in:",
+    "fileName": "Voer de bestandsnaam in:",
+    "moveFolder": "Map verplaatsen?",
+    "moveFile": "Bestand verplaatsen?",
+    "movePrompt": "Wil je \"__name__\" verplaatsen naar \"__directory__\"?",
+    "listView": "Lijstweergave",
+    "gridView": "Rasterweergave",
+    "refresh": "Vernieuwen",
+    "parentFolder": "Bovenliggende map",
+    "bllRequired": "Installeer de Better Logic Library-app om de FTP-browser te gebruiken.",
+    "uploadFailed": "Het bestand kon niet worden gelezen voor het uploaden.",
+    "move": "Verplaatsen"
+  },
+  "errors": {
+    "fileRequired": "Selecteer een bestand.",
+    "imageRequired": "Selecteer een afbeelding of voer een pad in.",
+    "pathRequired": "Stel een map en/of pad in.",
+    "folderRequired": "Selecteer een map.",
+    "urlRequired": "Voer een URL in.",
+    "outsideRoot": "Het pad moet binnen de ingestelde hoofdmap blijven.",
+    "rootProtected": "Kies een bestand of submap binnen de ingestelde hoofdmap."
+  },
+  "pair": {
+    "custom": "Aangepaste FTP Client",
+    "rootDirectory": "Hoofdmap",
+    "rootHint": "De bestandsbrowser en alle bestandsacties in Flows blijven binnen deze map. Laat leeg voor de hoofdmap van de FTP-server.",
+    "connectionTitle": "FTP-server",
+    "next": "Doorgaan",
+    "invalidConnection": "Voer een hostnaam en een poort tussen 1 en 65535 in.",
+    "loginRequired": "Maak eerst verbinding met de FTP-server.",
+    "host": "IP-adres of hostnaam",
+    "port": "Poort"
+  },
+  "flow": {
+    "root": "Hoofdmap"
+  },
+  "monitor": {
+    "upload": "Uploaden",
+    "download": "Downloaden",
+    "connectionFailed": "De controle van de FTP-verbinding is mislukt.",
+    "transferFailed": "De bestandsoverdracht is mislukt."
+  }
+}

@@ -1,0 +1,37 @@
+<form class="homey-form" id="connection-form">
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="host" data-i18n="pair.host"></label>
+    <input class="homey-form-input" id="host" type="text" required autocapitalize="off" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="port" data-i18n="pair.port"></label>
+    <input class="homey-form-input" id="port" type="number" min="1" max="65535" step="1" value="21" required>
+  </div>
+  <button class="homey-button-primary-full hy-nostyle" type="submit" data-i18n="pair.next"></button>
+</form>
+<script>
+  Homey.setTitle(Homey.__('pair.connectionTitle'));
+  Homey.setNavigationClose();
+  const form = document.getElementById('connection-form');
+  const button = form.querySelector('button');
+  Homey.emit('getConnectionSettings').then(settings => {
+    document.getElementById('host').value = settings.ip;
+    document.getElementById('port').value = settings.port;
+  }).catch(error => Homey.alert(error.message || error, 'error'));
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (button.disabled || !form.reportValidity()) return;
+    button.disabled = true;
+    try {
+      await Homey.emit('setConnectionSettings', {
+        ip: document.getElementById('host').value,
+        port: Number(document.getElementById('port').value)
+      });
+      await Homey.showView('login_credentials');
+    } catch (error) {
+      await Homey.alert(error.message || error, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

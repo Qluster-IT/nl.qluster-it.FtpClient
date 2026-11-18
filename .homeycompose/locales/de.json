@@ -1,0 +1,57 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "rename": "Umbenennen",
+    "delete": "Löschen",
+    "download": "Herunterladen",
+    "uploadFiles": "Dateien hochladen",
+    "uploadInto": "Hochladen nach __directory__",
+    "addFolder": "Neuer Ordner",
+    "renameFolder": "Ordner umbenennen",
+    "renameFile": "Datei umbenennen",
+    "deleteFolder": "Ordner löschen?",
+    "deleteFile": "Datei löschen?",
+    "deleteFolderPrompt": "„__name__“ und den gesamten Inhalt löschen?",
+    "deleteFilePrompt": "„__name__“ löschen?",
+    "folderName": "Ordnernamen eingeben:",
+    "fileName": "Dateinamen eingeben:",
+    "moveFolder": "Ordner verschieben?",
+    "moveFile": "Datei verschieben?",
+    "movePrompt": "„__name__“ nach „__directory__“ verschieben?",
+    "listView": "Listenansicht",
+    "gridView": "Rasteransicht",
+    "refresh": "Aktualisieren",
+    "parentFolder": "Übergeordneter Ordner",
+    "bllRequired": "Installiere die App Better Logic Library, um den FTP-Browser zu verwenden.",
+    "uploadFailed": "Die Datei konnte nicht zum Hochladen gelesen werden.",
+    "move": "Verschieben"
+  },
+  "errors": {
+    "fileRequired": "Eine Datei muss ausgewählt werden.",
+    "imageRequired": "Wähle ein Bild aus oder gib einen Pfad ein.",
+    "pathRequired": "Gib einen Ordner und/oder einen Pfad an.",
+    "folderRequired": "Ein Ordner muss ausgewählt werden.",
+    "urlRequired": "Gib eine URL ein.",
+    "outsideRoot": "Der Pfad muss innerhalb des festgelegten Stammverzeichnisses bleiben.",
+    "rootProtected": "Wähle eine Datei oder einen Unterordner innerhalb des festgelegten Stammverzeichnisses."
+  },
+  "pair": {
+    "custom": "Benutzerdefinierter FTP Client",
+    "rootDirectory": "Stammverzeichnis",
+    "rootHint": "Der Dateibrowser und alle Dateiaktionen in Flows bleiben in diesem Verzeichnis. Leer lassen, um das Stammverzeichnis des FTP-Servers zu verwenden.",
+    "connectionTitle": "FTP-Server",
+    "next": "Weiter",
+    "invalidConnection": "Gib einen Hostnamen und einen Port zwischen 1 und 65535 ein.",
+    "loginRequired": "Verbinde dich zuerst mit dem FTP-Server.",
+    "host": "IP-Adresse oder Hostname",
+    "port": "Port"
+  },
+  "monitor": {
+    "upload": "Hochladen",
+    "download": "Herunterladen",
+    "connectionFailed": "Die Prüfung der FTP-Verbindung ist fehlgeschlagen.",
+    "transferFailed": "Die Dateiübertragung ist fehlgeschlagen."
+  }
+}

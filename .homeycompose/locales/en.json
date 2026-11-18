@@ -1,0 +1,57 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "rename": "Rename",
+    "delete": "Delete",
+    "download": "Download",
+    "uploadFiles": "Upload files",
+    "uploadInto": "Upload to __directory__",
+    "addFolder": "New folder",
+    "renameFolder": "Rename folder",
+    "renameFile": "Rename file",
+    "deleteFolder": "Delete folder?",
+    "deleteFile": "Delete file?",
+    "deleteFolderPrompt": "Delete \"__name__\" and all its contents?",
+    "deleteFilePrompt": "Delete \"__name__\"?",
+    "folderName": "Enter the folder name:",
+    "fileName": "Enter the file name:",
+    "moveFolder": "Move folder?",
+    "moveFile": "Move file?",
+    "movePrompt": "Move \"__name__\" to \"__directory__\"?",
+    "listView": "List view",
+    "gridView": "Grid view",
+    "refresh": "Refresh",
+    "parentFolder": "Parent folder",
+    "bllRequired": "Install the Better Logic Library app to use the FTP browser.",
+    "uploadFailed": "The file could not be read for upload.",
+    "move": "Move"
+  },
+  "errors": {
+    "fileRequired": "A file must be selected.",
+    "imageRequired": "Select an image or enter a path.",
+    "pathRequired": "Set a folder and/or a path.",
+    "folderRequired": "A folder must be selected.",
+    "urlRequired": "Enter a URL.",
+    "outsideRoot": "The path must stay inside the configured root directory.",
+    "rootProtected": "Choose a file or subfolder inside the configured root directory."
+  },
+  "pair": {
+    "custom": "Custom FTP Client",
+    "rootDirectory": "Root directory",
+    "rootHint": "All browsing and Flow file operations stay inside this directory. Leave empty for the FTP server root.",
+    "connectionTitle": "FTP server",
+    "next": "Continue",
+    "invalidConnection": "Enter a hostname and a port between 1 and 65535.",
+    "loginRequired": "Connect to the FTP server first.",
+    "host": "IP or hostname",
+    "port": "Port"
+  },
+  "monitor": {
+    "upload": "Upload",
+    "download": "Download",
+    "connectionFailed": "The FTP connection check failed.",
+    "transferFailed": "The file transfer failed."
+  }
+}

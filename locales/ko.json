@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "확인",
+    "cancel": "취소",
+    "rename": "이름 변경",
+    "delete": "삭제",
+    "download": "다운로드",
+    "uploadFiles": "파일 업로드",
+    "uploadInto": "__directory__에 업로드",
+    "addFolder": "새 폴더",
+    "renameFolder": "폴더 이름 변경",
+    "renameFile": "파일 이름 변경",
+    "deleteFolder": "폴더를 삭제할까요?",
+    "deleteFile": "파일을 삭제할까요?",
+    "deleteFolderPrompt": "「__name__」 및 모든 내용을 삭제할까요?",
+    "deleteFilePrompt": "「__name__」을(를) 삭제할까요?",
+    "folderName": "폴더 이름을 입력하세요:",
+    "fileName": "파일 이름을 입력하세요:",
+    "moveFolder": "폴더를 이동할까요?",
+    "moveFile": "파일을 이동할까요?",
+    "movePrompt": "「__name__」을(를) 「__directory__」(으)로 이동할까요?",
+    "listView": "목록 보기",
+    "gridView": "격자 보기",
+    "refresh": "새로고침",
+    "parentFolder": "상위 폴더",
+    "bllRequired": "FTP 탐색기를 사용하려면 Better Logic Library 앱을 설치하세요.",
+    "uploadFailed": "업로드할 파일을 읽을 수 없습니다.",
+    "move": "이동"
+  },
+  "errors": {
+    "fileRequired": "파일을 선택하세요.",
+    "imageRequired": "이미지를 선택하거나 경로를 입력하세요.",
+    "pathRequired": "폴더 또는 경로를 지정하세요.",
+    "folderRequired": "폴더를 선택하세요.",
+    "urlRequired": "URL을 입력하세요.",
+    "outsideRoot": "경로는 설정된 루트 폴더 안에 있어야 합니다.",
+    "rootProtected": "설정된 루트 폴더 안의 파일이나 하위 폴더를 선택하세요."
+  },
+  "pair": {
+    "custom": "사용자 지정 FTP Client",
+    "rootDirectory": "루트 폴더",
+    "rootHint": "파일 탐색과 Flow의 모든 파일 작업은 이 폴더 안에서만 수행됩니다. FTP 서버의 루트를 사용하려면 비워 두세요.",
+    "connectionTitle": "FTP 서버",
+    "next": "계속",
+    "invalidConnection": "호스트 이름과 1~65535 사이의 포트를 입력하세요.",
+    "loginRequired": "먼저 FTP 서버에 연결하세요.",
+    "host": "IP 또는 호스트 이름",
+    "port": "포트"
+  },
+  "flow": {
+    "root": "루트 폴더"
+  },
+  "monitor": {
+    "upload": "업로드",
+    "download": "다운로드",
+    "connectionFailed": "FTP 연결 확인에 실패했습니다.",
+    "transferFailed": "파일 전송에 실패했습니다."
+  }
+}

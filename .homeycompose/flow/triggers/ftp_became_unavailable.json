@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "FTP became unavailable",
+    "nl": "FTP is niet meer beschikbaar",
+    "de": "FTP ist nicht mehr verfügbar",
+    "fr": "Le FTP est devenu indisponible",
+    "it": "FTP è diventato non disponibile",
+    "es": "FTP dejó de estar disponible",
+    "sv": "FTP blev otillgängligt",
+    "no": "FTP ble utilgjengelig",
+    "da": "FTP blev utilgængelig",
+    "ru": "FTP стал недоступен",
+    "pl": "FTP stał się niedostępny",
+    "ko": "FTP를 사용할 수 없게 됨",
+    "ar": "أصبح FTP غير متاح"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ]
+}

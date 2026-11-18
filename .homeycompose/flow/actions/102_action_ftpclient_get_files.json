@@ -1,33 +1,80 @@
 {
-    "id": "action_ftpclient_get_files",
-    "title": {
-      "en": "Get files (JSON)",
-      "nl": "Ontvang bestanden (JSON)"
-    },
-    "titleFormatted": {
-      "en": "Get files from [[directory]] (JSON)",
-      "nl": "Ontvang bestanden uit [[directory]] (JSON)"
-    },
-    "args": [
+  "id": "action_ftpclient_get_files",
+  "title": {
+    "en": "Get files (JSON)",
+    "nl": "Bestanden ophalen (JSON)",
+    "de": "Dateien abrufen (JSON)",
+    "fr": "Obtenir les fichiers (JSON)",
+    "it": "Ottieni file (JSON)",
+    "es": "Obtener archivos (JSON)",
+    "sv": "Hämta filer (JSON)",
+    "no": "Hent filer (JSON)",
+    "da": "Hent filer (JSON)",
+    "ru": "Получить файлы (JSON)",
+    "pl": "Pobierz pliki (JSON)",
+    "ko": "파일 가져오기(JSON)",
+    "ar": "الحصول على الملفات (JSON)"
+  },
+  "titleFormatted": {
+    "en": "Get files from [[directory]] (JSON)",
+    "nl": "Haal bestanden op uit [[directory]] (JSON)",
+    "de": "Dateien aus [[directory]] abrufen (JSON)",
+    "fr": "Obtenir les fichiers de [[directory]] (JSON)",
+    "it": "Ottieni file da [[directory]] (JSON)",
+    "es": "Obtener archivos de [[directory]] (JSON)",
+    "sv": "Hämta filer från [[directory]] (JSON)",
+    "no": "Hent filer fra [[directory]] (JSON)",
+    "da": "Hent filer fra [[directory]] (JSON)",
+    "ru": "Получить файлы из [[directory]] (JSON)",
+    "pl": "Pobierz pliki z [[directory]] (JSON)",
+    "ko": "[[directory]]에서 파일 가져오기(JSON)",
+    "ar": "الحصول على الملفات من [[directory]] (JSON)"
+  },
+  "args": [
     {
-        "name": "device",
-        "type": "device",
-        "filter": "driver_id=ftpconnection"
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
     },
-      {
-        "name": "directory",
-        "type": "autocomplete",
-        "placeholder": "Directory"
+    {
+      "name": "directory",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Folder",
+        "nl": "Map",
+        "de": "Ordner",
+        "fr": "Dossier",
+        "it": "Cartella",
+        "es": "Carpeta",
+        "sv": "Mapp",
+        "no": "Mappe",
+        "da": "Mappe",
+        "ru": "Папка",
+        "pl": "Folder",
+        "ko": "폴더",
+        "ar": "مجلد"
       }
-    ],
-    "tokens":[
-      {
-        "name":"files",
-        "type":"string",
-        "title":{
-          "en":"Files (JSON)",
-          "nl":"Bestanden (JSON)"
-        }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "files",
+      "type": "string",
+      "title": {
+        "en": "Files (JSON)",
+        "nl": "Bestanden (JSON)",
+        "de": "Dateien (JSON)",
+        "fr": "Fichiers (JSON)",
+        "it": "File (JSON)",
+        "es": "Archivos (JSON)",
+        "sv": "Filer (JSON)",
+        "no": "Filer (JSON)",
+        "da": "Filer (JSON)",
+        "ru": "Файлы (JSON)",
+        "pl": "Pliki (JSON)",
+        "ko": "파일(JSON)",
+        "ar": "الملفات (JSON)"
       }
-    ]
-  }
+    }
+  ]
+}

@@ -1,3 +1,12 @@
+:root {
+    --ftp-brand: #2b738c;
+    --ftp-brand-hover: #205a6e;
+    --ftp-brand-soft: #edf5f8;
+    --ftp-ink: #20333d;
+    --ftp-muted: #61727c;
+    --ftp-border: #d7e2e7;
+}
+
 html {
     padding-right:10px;
 }
@@ -50,6 +59,17 @@ a {
     min-height: 30px;
     font-size: 26px;
     padding: 0px 5px;
+}
+
+.ftp-file-icon {
+    display: inline-block;
+    text-align: center;
+}
+
+.ftp-file-badge {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
 }
 
 .block {
@@ -460,13 +480,54 @@ select {
 .ftp-directory-children {
     cursor:default;
     white-space: normal;
-    text-align: left;
+    text-align: start;
 }
 
 
 
 .list.ftp-directory-root > .ftp-directory {
     padding-left:0px!important;
+}
+
+.list.ftp-directory-root {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ftp-directory-root {
+    touch-action: pan-y;
+}
+
+.ftp-drag-enabled {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+.ftp-drag-ghost {
+    position: fixed !important;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.75;
+    background: white;
+}
+
+.list .ftp-directory.selected > .ftp-directory-header,
+.list .ftp-file.selected > .ftp-file-header {
+    outline: 2px solid var(--ftp-brand);
+    outline-offset: -1px;
+    background-color: var(--ftp-brand-soft);
+}
+
+.ftp-drop-hover {
+    outline: 2px solid var(--ftp-brand);
+    outline-offset: -2px;
 }
 
 .list .ftp-directory, .list .ftp-directory .ftp-file  {
@@ -514,7 +575,7 @@ select {
 
 .list .ftp-directory-children {
     white-space: normal;
-    overflow-y:auto;
+    overflow: visible;
 }
 
 .list .ftp-directory>.ftp-directory-children>* {
@@ -556,7 +617,9 @@ select {
 }
 
 .th-small .ftp-directory.selected, .th-small .ftp-file.selected, .th-small .ftp-directory-children.selected {
-    border-color:black;
+    border-color: var(--ftp-brand);
+    border-radius: 10px;
+    background-color: var(--ftp-brand-soft);
 }
 
 .th-small .ftp-directory .ui-droppable, .th-small .ftp-file .ui-droppable, .th-small .ftp-directory-children .ui-droppable {
@@ -618,16 +681,27 @@ select {
     width:100%;
     height: calc(100% - 50px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.th-small .ftp-directory-children.non-active {
+    overflow: visible;
 }
 
 
 .ftp-context-menu {
     z-index:20;
     background-color:white;
-    padding:5px;
-    border:1px solid black;
+    color: var(--ftp-ink);
+    padding: 6px;
+    border: 1px solid var(--ftp-border);
+    border-radius: 14px;
+    box-shadow: 0 12px 36px rgba(20, 45, 59, .18);
     position: fixed;
-
+    min-width: 210px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
 }
 /* .ftp-directory-context-menu .items {
     padding:5px;
@@ -635,17 +709,21 @@ select {
 } */
 .ftp-context-menu .item {
     display: block;
-    padding:5px;
+    padding: 11px 12px;
+    border-radius: 9px;
     cursor:pointer;
-    font-size: 16pt;
+    font-size: 15px;
+    line-height: 24px;
 }
 .ftp-context-menu .item .fa-icon {
     width:36px;
     text-align: center;
     padding:0;
+    color: var(--ftp-brand);
+    font-size: 19px;
 }
 .ftp-context-menu .item:hover {
-    background-color: #cecece;
+    background-color: var(--ftp-brand-soft);
 }
 
 
@@ -655,33 +733,198 @@ select {
 
 .window {
     position: fixed;
-    display: block;
-    z-index:10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index:1000;
     left:0;
     top:0;
     right:0;
     bottom:0;
-    background-color: white;
+    background-color: rgba(15, 35, 46, .38);
     padding: 20px;
     cursor:default;
-    
-
-    
+    overflow-y: auto;
+    white-space: normal;
+    text-align: start;
+    font: 400 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ftp-ink);
 }
 
-.window .buttons>:nth-child(1):nth-last-child(1) {
-    width:100%;
+.ftp-dialog {
+    width: 100%;
+    max-width: 420px;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 26px;
+    background: white;
+    border: 1px solid var(--ftp-border);
+    border-top: 4px solid var(--ftp-brand);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(15, 35, 46, .24);
 }
 
-.window .buttons>:nth-child(1):nth-last-child(2) {
-    width:49%;
-    position:absolute;
-    left:0;
+.ftp-dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    background: var(--ftp-brand-soft);
+    color: var(--ftp-brand);
+    font-size: 22px;
 }
-.window .buttons>:nth-child(2):nth-last-child(1) {
-    width:49%;
-    position:absolute;
-    right:0;
+
+.ftp-dialog-title {
+    margin: 0 0 10px;
+    color: var(--ftp-ink);
+    font-size: 21px;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+.ftp-dialog-message {
+    margin: 0;
+    color: var(--ftp-muted);
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.ftp-dialog-content input, .ftp-dialog-upload {
+    margin-top: 22px;
+}
+
+.ftp-dialog input[type="text"] {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px;
+    color: var(--ftp-ink);
+    background: #f8fafb;
+    border: 1px solid var(--ftp-border);
+    border-radius: 10px;
+    font: inherit;
+}
+
+.ftp-dialog-upload {
+    padding: 16px;
+    background: var(--ftp-brand-soft);
+    border: 1px dashed #9cbecb;
+    border-radius: 12px;
+}
+
+.ftp-dialog input[type="file"] {
+    width: 100%;
+    color: var(--ftp-muted);
+    font: inherit;
+    font-size: 14px;
+}
+
+.ftp-dialog input[type="file"]::file-selector-button {
+    margin-inline-end: 10px;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--ftp-brand);
+    color: white;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.ftp-dialog-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+.ftp-dialog-buttons button {
+    flex: 1;
+    min-width: 0;
+    min-height: 46px;
+    padding: 11px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: normal;
+}
+
+.ftp-dialog-buttons .ftp-button-primary {
+    color: white;
+    background: var(--ftp-brand);
+}
+
+.ftp-dialog-buttons .ftp-button-primary:hover {
+    background: var(--ftp-brand-hover);
+}
+
+.ftp-dialog-buttons .ftp-button-secondary {
+    color: var(--ftp-ink);
+    background: white;
+    border-color: var(--ftp-border);
+}
+
+.ftp-dialog-buttons .ftp-button-secondary:hover {
+    background: #f4f7f9;
+}
+
+.ftp-dialog-danger {
+    border-top-color: #b5323d;
+}
+
+.ftp-dialog-danger .ftp-dialog-icon {
+    color: #b5323d;
+    background: #fceff0;
+}
+
+.ftp-dialog-danger .ftp-button-primary {
+    background: #b5323d;
+}
+
+.ftp-dialog-danger .ftp-button-primary:hover {
+    background: #94232e;
+}
+
+.ftp-dialog input:focus-visible, .ftp-dialog button:focus-visible, .ftp-view-switch button:focus-visible {
+    outline: 3px solid var(--ftp-brand);
+    outline-offset: 3px;
+}
+
+.ftp-view-switch {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.ftp-view-switch button {
+    width: 42px;
+    height: 34px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--ftp-muted);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.ftp-view-switch button.is-active, .ftp-view-switch button:hover {
+    color: var(--ftp-brand);
+    background: var(--ftp-brand-soft);
+}
+
+.floating-buttons-left, .floating-buttons-right {
+    color: var(--ftp-brand);
+    border-radius: 8px;
+}
+
+@media (max-width: 360px), (max-height: 480px) {
+    .window { padding: 12px; }
+    .ftp-dialog { padding: 20px; border-radius: 16px; }
 }
 
 

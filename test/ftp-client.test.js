@@ -130,3 +130,51 @@ test('failed login closes and discards the client instead of returning an unusab
   assert.ok(await client.getClient());
   assert.equal(created, 2);
 });
+
+test('all FTP path arguments stay rooted, including downloads, uploads and both sides of renames', async () => {
+  for (const root of ['/media/My files', 'media/My files']) {
+    const client = new FtpClient();
+    client.init({ homey: { error() {}, __: key => key }, workdirectory: root + '/' });
+    const calls = [];
+    const ftp = { cd: async () => {} };
+    for (const action of ['list', 'ensureDir', 'remove', 'removeDir', 'rename', 'uploadFrom', 'downloadTo']) {
+      ftp[action] = async (...args) => { calls.push([action, ...args]); };
+    }
+    client.getClient = async () => ftp;
+    await client.getList();
+    await client.exec({ action: 'list' }, '/child');
+    await client.exec({ action: 'ensureDir' }, root + '/child');
+    await client.exec({ action: 'rename' }, 'child/old', '/child/new');
+    await client.exec({ action: 'uploadFrom' }, 'stream', 'child/new');
+    await client.downloadTo('stream', root + '/child/new');
+    assert.deepEqual(calls.map(call => call.slice(0, 3)), [
+      ['list', root, undefined], ['list', root + '/child', undefined],
+      ['ensureDir', root + '/child', undefined], ['rename', root + '/child/old', root + '/child/new'],
+      ['uploadFrom', 'stream', root + '/child/new'], ['downloadTo', 'stream', root + '/child/new']
+    ]);
+    const before = calls.length;
+    for (const outside of ['../outside', root + '/../outside', 'child/../../outside']) {
+      await assert.rejects(client.exec({ action: 'list' }, outside), /outsideRoot/);
+    }
+    for (const action of ['remove', 'removeDir', 'rename']) {
+      await assert.rejects(client.exec({ action }, root, 'other'), /rootProtected/);
+    }
+    await assert.rejects(client.exec({ action: 'rename' }, 'child', root), /rootProtected/);
+    assert.equal(calls.length, before);
+  }
+});
+
+test('FTP retries use the same rooted path and never continue when resetting the server directory fails', async () => {
+  const client = new FtpClient();
+  client.init({ homey: { error() {} }, workdirectory: 'media/root' });
+  const dirs = [], paths = [];
+  client.getClient = async () => ({
+    cd: async path => dirs.push(path),
+    list: async path => { paths.push(path); if (paths.length === 1) throw new Error('retry'); return []; }
+  });
+  await client.exec({ action: 'list' }, 'child');
+  assert.deepEqual(dirs, ['/', '/']);
+  assert.deepEqual(paths, ['media/root/child', 'media/root/child']);
+  client.getClient = async () => ({ cd: async () => { throw new Error('550 Root unavailable'); }, list: () => assert.fail('must not list from an unknown directory') });
+  await assert.rejects(client.exec({ action: 'list' }), /Root unavailable/);
+});

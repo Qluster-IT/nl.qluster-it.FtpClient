@@ -1,0 +1,60 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "rename": "Renombrar",
+    "delete": "Eliminar",
+    "download": "Descargar",
+    "uploadFiles": "Subir archivos",
+    "uploadInto": "Subir a __directory__",
+    "addFolder": "Nueva carpeta",
+    "renameFolder": "Renombrar carpeta",
+    "renameFile": "Renombrar archivo",
+    "deleteFolder": "¿Eliminar carpeta?",
+    "deleteFile": "¿Eliminar archivo?",
+    "deleteFolderPrompt": "¿Eliminar \"__name__\" y todo su contenido?",
+    "deleteFilePrompt": "¿Eliminar \"__name__\"?",
+    "folderName": "Introduce el nombre de la carpeta:",
+    "fileName": "Introduce el nombre del archivo:",
+    "moveFolder": "¿Mover carpeta?",
+    "moveFile": "¿Mover archivo?",
+    "movePrompt": "¿Mover \"__name__\" a \"__directory__\"?",
+    "listView": "Vista de lista",
+    "gridView": "Vista de cuadrícula",
+    "refresh": "Actualizar",
+    "parentFolder": "Carpeta superior",
+    "bllRequired": "Instala la app Better Logic Library para usar el explorador FTP.",
+    "uploadFailed": "No se pudo leer el archivo para subirlo.",
+    "move": "Mover"
+  },
+  "errors": {
+    "fileRequired": "Selecciona un archivo.",
+    "imageRequired": "Selecciona una imagen o introduce una ruta.",
+    "pathRequired": "Indica una carpeta y/o una ruta.",
+    "folderRequired": "Selecciona una carpeta.",
+    "urlRequired": "Introduce una URL.",
+    "outsideRoot": "La ruta debe permanecer dentro de la carpeta raíz configurada.",
+    "rootProtected": "Elige un archivo o una subcarpeta dentro de la carpeta raíz configurada."
+  },
+  "pair": {
+    "custom": "FTP Client personalizado",
+    "rootDirectory": "Carpeta raíz",
+    "rootHint": "La navegación y todas las operaciones con archivos en los Flows permanecen en esta carpeta. Deja vacío para usar la raíz del servidor FTP.",
+    "connectionTitle": "Servidor FTP",
+    "next": "Continuar",
+    "invalidConnection": "Introduce un nombre de host y un puerto entre 1 y 65535.",
+    "loginRequired": "Conéctate primero al servidor FTP.",
+    "host": "IP o nombre de host",
+    "port": "Puerto"
+  },
+  "flow": {
+    "root": "Carpeta raíz"
+  },
+  "monitor": {
+    "upload": "Subida",
+    "download": "Descarga",
+    "connectionFailed": "La comprobación de la conexión FTP falló.",
+    "transferFailed": "La transferencia del archivo falló."
+  }
+}

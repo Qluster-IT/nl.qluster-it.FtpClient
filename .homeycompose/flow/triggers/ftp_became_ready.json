@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "FTP became ready",
+    "nl": "FTP is gereed geworden",
+    "de": "FTP ist jetzt bereit",
+    "fr": "Le FTP est devenu prêt",
+    "it": "FTP è diventato disponibile",
+    "es": "FTP está listo de nuevo",
+    "sv": "FTP blev redo",
+    "no": "FTP ble klar",
+    "da": "FTP blev klar",
+    "ru": "FTP стал доступен",
+    "pl": "FTP jest już gotowy",
+    "ko": "FTP가 준비 상태로 바뀜",
+    "ar": "أصبح FTP جاهزًا"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ]
+}

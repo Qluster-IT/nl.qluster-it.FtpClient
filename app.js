@@ -18,6 +18,7 @@ class MyApp extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
+    this.apiReady = false;
     this.log('MyApp has been initialized');
 
     if (process.env.DEBUG === '1' || false) {
@@ -47,7 +48,7 @@ class MyApp extends Homey.App {
     action_app_get_imagetokenfromurl.registerRunListener(async (args) => {
         try {
             if (!args.url) 
-                throw new Error('An URL must be given.');
+                throw new Error(this.homey.__('errors.urlRequired'));
                 
             args.url = await BL.decode(args.url); 
             
@@ -77,8 +78,8 @@ class MyApp extends Homey.App {
         }
 
     });
-
-
+    this.apiReady = true;
+    await this.homey.api.realtime('api-ready', { ready: true }).catch(error => this.error('Failed to publish API readiness', error));
   }
 
 }

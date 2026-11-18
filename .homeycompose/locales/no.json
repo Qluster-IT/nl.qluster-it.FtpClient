@@ -1,0 +1,57 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "OK",
+    "cancel": "Avbryt",
+    "rename": "Gi nytt navn",
+    "delete": "Slett",
+    "download": "Last ned",
+    "uploadFiles": "Last opp filer",
+    "uploadInto": "Last opp til __directory__",
+    "addFolder": "Ny mappe",
+    "renameFolder": "Gi mappen nytt navn",
+    "renameFile": "Gi filen nytt navn",
+    "deleteFolder": "Slette mappen?",
+    "deleteFile": "Slette filen?",
+    "deleteFolderPrompt": "Slette «__name__» og alt innholdet?",
+    "deleteFilePrompt": "Slette «__name__»?",
+    "folderName": "Skriv inn mappenavnet:",
+    "fileName": "Skriv inn filnavnet:",
+    "moveFolder": "Flytte mappen?",
+    "moveFile": "Flytte filen?",
+    "movePrompt": "Flytte «__name__» til «__directory__»?",
+    "listView": "Listevisning",
+    "gridView": "Rutenettvisning",
+    "refresh": "Oppdater",
+    "parentFolder": "Overordnet mappe",
+    "bllRequired": "Installer appen Better Logic Library for å bruke FTP-utforskeren.",
+    "uploadFailed": "Filen kunne ikke leses for opplasting.",
+    "move": "Flytt"
+  },
+  "errors": {
+    "fileRequired": "Velg en fil.",
+    "imageRequired": "Velg et bilde eller angi en sti.",
+    "pathRequired": "Angi en mappe og/eller en sti.",
+    "folderRequired": "Velg en mappe.",
+    "urlRequired": "Angi en URL.",
+    "outsideRoot": "Banen må være innenfor den angitte rotmappen.",
+    "rootProtected": "Velg en fil eller undermappe innenfor den angitte rotmappen."
+  },
+  "pair": {
+    "custom": "Egendefinert FTP Client",
+    "rootDirectory": "Rotmappe",
+    "rootHint": "Filutforskeren og alle filhandlinger i Flows holder seg i denne mappen. La stå tomt for FTP-serverens rotmappe.",
+    "connectionTitle": "FTP-server",
+    "next": "Fortsett",
+    "invalidConnection": "Skriv inn et vertsnavn og en port mellom 1 og 65535.",
+    "loginRequired": "Koble til FTP-serveren først.",
+    "host": "IP-adresse eller vertsnavn",
+    "port": "Port"
+  },
+  "monitor": {
+    "upload": "Opplasting",
+    "download": "Nedlasting",
+    "connectionFailed": "Kontrollen av FTP-tilkoblingen mislyktes.",
+    "transferFailed": "Filoverføringen mislyktes."
+  }
+}

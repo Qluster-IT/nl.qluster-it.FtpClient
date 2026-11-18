@@ -1,0 +1,78 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "FTP status",
+    "nl": "FTP-status",
+    "de": "FTP-Status",
+    "fr": "État FTP",
+    "it": "Stato FTP",
+    "es": "Estado de FTP",
+    "sv": "FTP-status",
+    "no": "FTP-status",
+    "da": "FTP-status",
+    "ru": "Статус FTP",
+    "pl": "Stan FTP",
+    "ko": "FTP 상태",
+    "ar": "حالة FTP"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/capabilities/ftp-status.svg",
+  "values": [
+    {
+      "id": "checking",
+      "title": {
+        "en": "Checking",
+        "nl": "Controleren",
+        "de": "Wird geprüft",
+        "fr": "Vérification",
+        "it": "Verifica in corso",
+        "es": "Comprobando",
+        "sv": "Kontrollerar",
+        "no": "Kontrollerer",
+        "da": "Kontrollerer",
+        "ru": "Проверка",
+        "pl": "Sprawdzanie",
+        "ko": "확인 중",
+        "ar": "جارٍ التحقق"
+      }
+    },
+    {
+      "id": "ready",
+      "title": {
+        "en": "Ready",
+        "nl": "Gereed",
+        "de": "Bereit",
+        "fr": "Prêt",
+        "it": "Pronto",
+        "es": "Listo",
+        "sv": "Redo",
+        "no": "Klar",
+        "da": "Klar",
+        "ru": "Готов",
+        "pl": "Gotowy",
+        "ko": "준비됨",
+        "ar": "جاهز"
+      }
+    },
+    {
+      "id": "unavailable",
+      "title": {
+        "en": "Unavailable",
+        "nl": "Niet beschikbaar",
+        "de": "Nicht verfügbar",
+        "fr": "Indisponible",
+        "it": "Non disponibile",
+        "es": "No disponible",
+        "sv": "Otillgänglig",
+        "no": "Utilgjengelig",
+        "da": "Ikke tilgængelig",
+        "ru": "Недоступен",
+        "pl": "Niedostępny",
+        "ko": "사용 불가",
+        "ar": "غير متاح"
+      }
+    }
+  ]
+}

@@ -7,6 +7,7 @@ const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
 const { BL, Defer } = require('betterlogiclibrary');
 const Icons = require('../../lib/icons');
+const { getRootPath, resolvePath } = require('../../lib/ftp-paths');
 
 
 const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, stat, rmdir, fstat, rm } = require('fs');
@@ -64,6 +65,16 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     async onInit() {
         app = this.homey.app;
         this.log('FtpClientDriver onInit');
+        this.homey.flow.getActionCard('ftp_check_connection').registerRunListener(async ({ device }) => {
+            if (!await device.checkConnection()) throw new Error(this.homey.__('monitor.connectionFailed'));
+            return true;
+        });
+        this.homey.flow.getActionCard('ftp_clear_transfer_error').registerRunListener(async ({ device }) => {
+            await device.clearTransferError();
+            return true;
+        });
+        this.homey.flow.getConditionCard('ftp_is_ready').registerRunListener(({ device }) => device.isFtpReady());
+        this.homey.flow.getConditionCard('ftp_transfer_error_active').registerRunListener(({ device }) => device.hasTransferError());
 
         this.fileServer = new FileServer();
         this.fileServer.init(this.homey);
@@ -124,7 +135,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         action_ftpconnection_get_url.registerRunListener(async (args) => {
             try {
                 if (!args.file) return false;
-                if (args && args.file && args.file.isFile !== 'true' && args.file.isFile !== true) throw new Error('A file must be selected.');
+                if (args && args.file && args.file.isFile !== 'true' && args.file.isFile !== true) throw new Error(this.homey.__('errors.fileRequired'));
                 const defer = new Defer();
 
                 const link = await BL.getDownloadUrl({ contentType: '*/*', filename:args.file.filename });
@@ -159,7 +170,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         action_ftpclient_get_imagetoken.registerRunListener(async (args) => {
             try {
                 if ((!args.image && !args.path) || (args && args.image && args.image.isFile !== 'true' && args.image.isFile !== true && (!args.path || !args.path.length)))
-                    throw new Error('An image must be selected or a path given.');
+                    throw new Error(this.homey.__('errors.imageRequired'));
 
                 args.path = await BL.decode(args.path);
 
@@ -206,7 +217,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         action_ftpclient_save_imagetoken.registerRunListener(async (args) => {
             try {
                 if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length)))
-                    throw new Error('An directory and/or path must be set.');
+                    throw new Error(this.homey.__('errors.pathRequired'));
 
                 //let time = Date.now();
                 args.path = await BL.decode(args.path);
@@ -217,7 +228,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     if (args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/') ? '/' : '') + path : '');
                     else path = args.directory.id;
                 }
-                await this.saveFile({ device: args.device, path, stream: await args.droptoken.getStream() });
+                await this.saveFile({ device: args.device, path, getStream: () => args.droptoken.getStream() });
                 return true;
                 // let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
                 // files = BL._.map(files, x=>x.id);
@@ -241,7 +252,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         action_ftpclient_save_file_base64.registerRunListener(async (args) => {
             try {
                 if ((!args.directory && !args.path) || (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true && (!args.path || !args.path.length)))
-                    throw new Error('An directory and/or path must be set.');
+                    throw new Error(this.homey.__('errors.pathRequired'));
 
                 args.path = await BL.decode(args.path);
 
@@ -273,10 +284,10 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         const action_ftpclient_get_files = this.homey.flow.getActionCard('action_ftpclient_get_files');
         action_ftpclient_get_files.registerRunListener(async (args) => {
             try {
-                if (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true) throw new Error('A directory must be selected.');
+                if (args && args.directory && args.directory.isDirectory !== 'true' && args.directory.isDirectory !== true) throw new Error(this.homey.__('errors.folderRequired'));
 
                 let files = await this.getFiles({ file: args.directory, device: args.device, includeDiretories: false });
-                files = BL._.map(files, x => x.id);
+                files = BL._.map(files, x => x.name);
                 // let fileInfo = await this.getFileUrl({file:args.image, device:args.device, type:'url', createToken:true});
 
                 return { files: JSON.stringify(files) };
@@ -297,14 +308,21 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     async getFiles({ type, file, query, device, includeDiretories = true, path } = { includeDiretories: true }) {
         path = path || (file ? (file.isDirectory === 'true' || file.isDirectory === true ? file.id : file.path) : query) || '';
+        const root = getRootPath(device.settings.workdirectory);
+        path = resolvePath(root, path, this.homey.__ && this.homey.__.bind(this.homey));
+        const displayPath = remotePath => {
+            const relative = (root ? remotePath.slice(root.length) : remotePath).replace(/^\/+/, '');
+            return relative;
+        };
         let pathsAbove = path.split('/');
         pathsAbove.pop();
         let pathAbove = pathsAbove.join('/');
-        const iconPath = '/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/';
-        let startUrl =
-            device.settings.urlforicons === 'local' ? `http://${this.homey.app.ip}${iconPath}` :
-                device.settings.urlforicons === 'cloudssl' ? `https://${this.homey.app.cloudId}.connect.athom.com${iconPath}` :
-                    `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com${iconPath}`;
+        const iconPath = '/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/';
+        const startUrl = device.settings.urlforicons === 'local'
+            ? `http://${this.homey.app.ip}${iconPath}`
+            : device.settings.urlforicons === 'cloudssl'
+                ? `https://${this.homey.app.cloudId}.connect.athom.com${iconPath}`
+                : `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com${iconPath}`;
 
         let r = await device.ftpClient.exec({ action: 'list' }, path);
 
@@ -322,15 +340,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 p = (path && path.length ? path + '/' : '') + p;
                 id = p;
             }
-            return { id: id, filename: filename, name: id, path: p, description: path, isDirectory: x.isDirectory, isFile: x.isFile };
+            return { id: id, filename: filename, name: displayPath(id) || '/', path: p, description: displayPath(path), isDirectory: x.isDirectory, isFile: x.isFile };
         });
         r = BL._.orderBy(r, x => (x.isDirectory ? '0.' : '1.') + x.name);
         if (type) r = BL._.filter(r, x => (x.isDirectory && includeDiretories) || Icons.getFileType(x).includes(type));
 
-        if (includeDiretories && path && path.length) r.unshift({ id: pathAbove, name: pathAbove, description: '..', isDirectory: true, isFile: false });
+        if (includeDiretories && path && path.length && path !== root) r.unshift({ id: pathAbove, name: displayPath(pathAbove) || '/', description: '..', isDirectory: true, isFile: false });
         BL._.each(r, (x) => {
-            //x.icon = ''; svg
-            //x.image = `http://${this.homey.app.ip}/app/nl.qluster-it.FtpClient/drivers/ftpconnection/assets/icons/ext/24x24/${Icons.getIconsFromFile(x)}`;
             x.image = startUrl + Icons.getIconsFromFile(x);
         });
 
@@ -343,7 +359,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         let id = randomBytes(12).toString('hex');
 
         let device = {
-            name: 'Custom FTP Client ',
+            name: this.homey.__('pair.custom'),
             data: {
                 id: 'FtpClient' + id
             },
@@ -402,85 +418,81 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
     }
 
-    async onPair(session, arg1) {
-        let devices;//= await this.onPairListDevices();
-        var device;
-
-        session.setHandler('list_devices', async (data) => {
-            return (devices = await this.onPairListDevices());
-        });
-
-        session.setHandler('list_devices_selection', async (selectedDevices) => {
-            device = selectedDevices[0];
-            //device.icon = '/icon-default.svg';
-        });
-
-        session.setHandler("showView", async (data) => {
-            console.log("showiew: ");
-            console.log(data);
-            if (data === 'loading_credentials') {
-                if (device.custom) session.showView('add_devices');
-                else if (device.settings && device.settings) { //}.ip === this.homey.app.ip) {
-                    const ftpClient = new FtpClient();
-                    try {
-                        ftpClient.init({
-                            homey: this.homey, ip: device.settings.ip, port: device.settings.port
-                        });
-                        //let isConnected = await ftpClient.getLogin();//{ip: this.homey.app.ip, port: 5081 });
-                        let isConnected = await ftpClient.exec({ action: 'list', oneTry: true });//{ip: this.homey.app.ip, port: 5081 });
-                        this.isConnected = true;
-                        session.showView('add_devices');
-                        return true;
-                    } catch (error) {
-                        session.showView('login_credentials');
-                        return true;
-                    } finally {
-                        ftpClient.close();
-                    }
+    async checkPairConnection(settings) {
+        const ftpClient = new FtpClient();
+        try {
+            for (const secure of [true, false]) {
+                try {
+                    const connection = { ...settings, secure, allow_incorrect_certificate: false };
+                    ftpClient.init({ homey: this.homey, ...connection });
+                    await ftpClient.exec({ action: 'list', oneTry: true });
+                    return connection;
+                } catch (error) {
+                    this.error(secure ? 'Secure FTP pairing failed' : 'Plain FTP pairing failed', error);
+                    if (!secure) throw error;
                 }
-                else session.showView('login_credentials');
+            }
+        } finally {
+            ftpClient.close();
+        }
+    }
+
+    async onPair(session) {
+        let device;
+        let connected = false;
+        session.setHandler('list_devices', () => this.onPairListDevices());
+        session.setHandler('list_devices_selection', async selectedDevices => {
+            device = selectedDevices[0];
+            connected = false;
+        });
+        session.setHandler('getConnectionSettings', async () => ({
+            ip: device.settings && device.settings.ip || '',
+            port: device.settings && device.settings.port || 21
+        }));
+        session.setHandler('setConnectionSettings', async ({ ip, port }) => {
+            if (typeof ip !== 'string' || !ip.trim() || !Number.isInteger(port) || port < 1 || port > 65535) {
+                throw new Error(this.homey.__('pair.invalidConnection'));
+            }
+            device.settings = { ...device.settings, ip: ip.trim(), port };
+            connected = false;
+        });
+        session.setHandler('showView', async view => {
+            if (view !== 'loading_credentials') return;
+            if (device.custom) return session.showView('connection');
+            try {
+                device.settings = await this.checkPairConnection({
+                    ...device.settings, username: device.settings.username || 'anonymous'
+                });
+                connected = true;
+                return session.showView('root_directory');
+            } catch (error) {
+                return session.showView('login_credentials');
             }
         });
-
-        session.setHandler("login", async (data) => {
-            //username = data.username;
-            //password = data.password;
-
-
-
-            let ftpClient = new FtpClient();
-            ftpClient.init({ homey: this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password });
+        session.setHandler('login', async ({ username, password }) => {
+            connected = false;
             try {
-                try {
-
-                    let isConnected = await ftpClient.exec({ action: 'list', oneTry: true });
-                } catch (error) {
-                    this.error('login unsecure error', error);
-                    // Pairing has no certificate option, so this only checks the credentials; the device setting decides about certificates afterwards.
-                    ftpClient.init({ homey: this.homey, ip: device.settings.ip, port: device.settings.port, username: data.username, password: data.password, secure: true, allow_incorrect_certificate: true });
-                    await ftpClient.exec({ action: 'list', oneTry: true });
-                    data.secure = true;
-
-                }
-                this.isConnected = true;
-                this.username = data.username;
-                this.password = data.password;
-                this.secure = data.secure;
-                this.allow_incorrect_certificate = data.allow_incorrect_certificate;
+                device.settings = await this.checkPairConnection({ ...device.settings, username, password });
+                connected = true;
                 return true;
             } catch (error) {
-                this.error('login secure error', error);
+                return false;
+            }
+        });
+        session.setHandler('getRootDirectory', async () => device.settings.workdirectory || '');
+        session.setHandler('setRootDirectory', async workdirectory => {
+            if (!connected) throw new Error(this.homey.__('pair.loginRequired'));
+            const root = getRootPath(workdirectory, this.homey.__.bind(this.homey));
+            const ftpClient = new FtpClient();
+            try {
+                ftpClient.init({ homey: this.homey, ...device.settings, workdirectory: root });
+                await ftpClient.exec({ action: 'list', oneTry: true }, root);
+                device.settings.workdirectory = root;
+                return { name: device.name, data: device.data, store: device.store, settings: device.settings };
             } finally {
                 ftpClient.close();
             }
-            return false;
-
         });
-
-        session.setHandler('add_device', async (device) => {
-            console.log('on device added', device);
-        });
-
     }
 
     /**
@@ -491,8 +503,13 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     async onRepair(session, device) {
         let id = device.getData().id || device.id;
 
+        session.setHandler('getRootPath', async () => {
+            return getRootPath(device.getSettings().workdirectory, this.homey.__ && this.homey.__.bind(this.homey));
+        });
+
         session.setHandler('getContent', async ({ path } = { path: '' }) => {
             try {
+                path = resolvePath(device.getSettings().workdirectory, path, this.homey.__ && this.homey.__.bind(this.homey));
                 let list = (await device.ftpClient.exec({ action: 'list' }, path));
                 let r = list.map(x => { return { id: (path && path.length > 0 ? path + '/' : '') + x.name, name: x.name, isDirectory: x.isDirectory, isFile: x.isFile, size: x.size, rawModifiedAt: x.rawModifiedAt, children: [], path: path, fullPath: (path && path.length > 0 ? path + '/' : '') + x.name }; });//x.isDirectory = x.isDirectory; x.isFile = x.isFile; return x;});
                 return r;
@@ -509,6 +526,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 return r;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
         session.setHandler('deleteDirectory', async ({ directory }) => {
@@ -526,6 +544,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             } catch (error) {
                 this.error(error1);
                 this.error(error);
+                throw error;
             }
         });
         session.setHandler('renameDirectory', async ({ directory }) => {
@@ -535,6 +554,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 return r;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
         session.setHandler('addDirectory', async ({ directory, name }) => {
@@ -544,6 +564,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 return r;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
 
@@ -551,11 +572,12 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
         session.setHandler('deleteFile', async ({ file }) => {
             try {
-                let r = await device.ftpClient.exec({ action: 'remove' }, file.id, true);
+                let r = await device.ftpClient.exec({ action: 'remove' }, file.id);
                 //await device.ftpClient.client.cd('/');
                 return true;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
         session.setHandler('renameFile', async ({ file }) => {
@@ -565,6 +587,7 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                 return r;
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
 
@@ -585,44 +608,61 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                         const file = files[i];
                         let path = directory.id;// (directory.path && directory.path !== '' ? directory.path + '/' : '') + directory.name;
                         const buf = Buffer.from(file.base64, 'base64');
-                        let stream = Readable.from(buf);
-
-                        let r = device.ftpClient.exec({ action: 'uploadFrom' }, stream, (path && path.length ? path + '/' : '') + file.name);
-                        await r;
+                        const destination = (path && path.length ? path + '/' : '') + file.name;
+                        await this.runTransfer(device, 'upload', destination, () => this.uploadBuffer(device, destination, buf));
                     }
                     return {};
                 };
                 return { id };
             } catch (error) {
                 this.error(error);
+                throw error;
             }
         });
 
     }
 
-    async saveFile({ path, device, stream, buffer }) {
-        let parentPath = path.split('/'); parentPath.pop(); parentPath = parentPath.join('/');
+    async runTransfer(device, operation, path, transfer) {
         try {
-            await device.ftpClient.exec({ action: 'ensureDir' }, parentPath);
+            return await transfer();
         } catch (error) {
-
-        }
-        const buf = buffer || await stream2buffer(stream);
-        let newStream = Readable.from(buf);
-
-        return await device.ftpClient.exec({ action: 'uploadFrom' }, newStream, path);
-    }
-    async getFile({ file, device }) {
-        try {
-            const writer = createBufferWriter();
-            await device.ftpClient.downloadTo(writer.stream, file.id);
-            await device.ftpClient.refresh();
-            return { buffer: writer.toBuffer() };
-
-        } catch (error) {
-            this.error(error);
+            try {
+                await device.reportTransferError(operation, path, error);
+            } catch (reportError) {
+                this.error('FTP transfer failure notification failed', reportError);
+            }
             throw error;
         }
+    }
+
+    async saveFile({ path, device, getStream, buffer }) {
+        return this.runTransfer(device, 'upload', path, async () => {
+            const destination = resolvePath(device.settings.workdirectory, path, this.homey.__ && this.homey.__.bind(this.homey));
+            const parentPath = destination.slice(0, Math.max(0, destination.lastIndexOf('/')));
+            const contents = buffer || await stream2buffer(await getStream());
+            await device.ftpClient.exec({ action: 'ensureDir' }, parentPath);
+            return this.uploadBuffer(device, destination, contents);
+        });
+    }
+
+    uploadBuffer(device, destination, buffer) {
+        return device.ftpClient.exec({
+            action: 'uploadFrom', createTransferStream: () => Readable.from(buffer)
+        }, undefined, destination);
+    }
+
+    async getFile({ file, device }) {
+        return this.runTransfer(device, 'download', file.id, async () => {
+            let writer;
+            await device.ftpClient.exec({
+                action: 'downloadTo',
+                createTransferStream: () => {
+                    writer = createBufferWriter();
+                    return writer.stream;
+                }
+            }, undefined, file.id);
+            return { buffer: writer.toBuffer() };
+        });
     }
 
     async getFileUrl({ file, device, type, createToken }) {
@@ -642,12 +682,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
 
             //let filesandfolders1 = await readdirAsync(`/userdata/downloads/`);
 
-            const writer = createBufferWriter();
             let name = file.filename || file.name;
-
-            await device.ftpClient.downloadTo(writer.stream, file.id);
-            await device.ftpClient.refresh();
-            let buf = writer.toBuffer();
+            const { buffer: buf } = await this.getFile({ file, device });
             //buf.
 
             //base64 = buf.toString('base64');                
@@ -741,9 +777,6 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             }
             if (useUrl === 'localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
             else if (useUrl === 'cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
-            buf = null;
-            //global.gc();
-
             const fileObject = this.fileDownloads[id];
             fileObject.timeout = setTimeout(async () => {
                 if (this.fileDownloads[id] === fileObject) delete this.fileDownloads[id];

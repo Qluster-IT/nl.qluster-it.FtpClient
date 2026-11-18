@@ -1,43 +1,48 @@
 
 <div class="ftp-directory" ng-dblclick=" $event.stopPropagation();">
     <div class="floating-buttons-left" ng-if="!directory.root && view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
-        <span class="fa fa-icon fa-level-up-alt" ng-click="setCurrentDirectory(parentDirectory);" data-drop="true" jqyoui-droppable="{onDrop:'dropItemUp'}" ></span>
+        <span class="fa fa-icon fa-level-up-alt" title="{{__('repair.parentFolder')}}" ng-click="setCurrentDirectory(parentDirectory);" ftp-drop-target="parentDirectory"></span>
     </div>
     <div class="floating-buttons-right" ng-if="view.display!='list' && vars.currentDirectory==directory" ng-click="$event.stopPropagation();" >
-        <span class="fa fa-icon fa-sync-alt" ng-click="getChildren(directory, true);"></span>
+        <span class="fa fa-icon fa-sync-alt" title="{{__('repair.refresh')}}" ng-click="getChildren(directory, true);"></span>
     </div>
-    <span class="ftp-directory-header" ng-dblclick="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
+    <span class="ftp-directory-header" ng-dblclick="getChildren(directory); !directory.root ? directory.show=!directory.show : null; setCurrentDirectory(directory);$event.stopPropagation(); "
         ftp-directory-context-menu-click="hideMenus();vars.selected=directory; $event.stopPropagation(); "
-        data-drop="true" jqyoui-droppable="{onDrop:'dropItem'}" data-jqyoui-options="{tolerance: 'pointer', revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}"
-        jqyoui-draggable  data-drag="true" ng-show="directory.path==vars.path || view.display=='list'"
+        ftp-drop-target="directory" ftp-draggable="directory" ftp-drag-parent="parentDirectory"
+        ng-show="directory.path==vars.path || view.display=='list'"
         >
         <span ng-if="!directory.root && view.display!='list'" class="fa fa-icon fa-folder"></span>
         <span ng-if="!directory.root && view.display=='list'" class="fa fa-icon " ng-class="{'fa-folder':!directory.show, 'fa-folder-open':directory.show}"
-            ng-click="getChildren(directory); directory.path.length || directory.name.length ? directory.show=!directory.show : null; setCurrentDirectory(directory); $event.stopPropagation(); "        
+            ng-click="getChildren(directory); !directory.root ? directory.show=!directory.show : null; setCurrentDirectory(directory); $event.stopPropagation(); "
         ></span>
         <span class="name"><div>{{directory.name}}</div></span>
         <span class="ftp-buttons">
-            <span tooltip="Delete directory" ng-if="!directory.root" class="fa fa-icon fa-trash-alt" ng-click="directory.delete = true; $event.stopPropagation();">
-                <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory)" on-cancel="directory.delete=false;" ng-if="directory.delete"></window-confirm>
+            <span tooltip="{{__('repair.deleteFolder')}}" ng-if="!directory.root" class="fa fa-icon fa-trash-alt" ng-click="directory.delete = true; $event.stopPropagation();">
+                <window-confirm action="delete" title="{{__('repair.deleteFolder')}}" message="{{__('repair.deleteFolderPrompt', {name:directory.name})}}" on-ok="deleteDirectory(directory)" on-cancel="directory.delete=false;" ng-if="directory.delete"></window-confirm>
             </span>
-            <span tooltip="Rename directory" ng-if="!directory.root" class="fa fa-icon fa-i-cursor" ng-click="directory.rename = true;directory.renameName = directory.name; $event.stopPropagation();">
-                <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory)" on-cancel="directory.rename=false;" ng-if="directory.rename">                    
-                    <input type="text" ng-model="directory.renameName">
+            <span tooltip="{{__('repair.renameFolder')}}" ng-if="!directory.root" class="fa fa-icon fa-i-cursor" ng-click="directory.rename = true;directory.renameName = directory.name; $event.stopPropagation();">
+                <window-confirm action="rename" title="{{__('repair.renameFolder')}}" message="{{__('repair.folderName')}}" on-ok="renameDirectory(directory)" on-cancel="directory.rename=false;" ng-if="directory.rename">
+                    <input type="text" ng-model="directory.renameName" aria-label="{{__('repair.folderName')}}">
                 </window-confirm>
             </span>
-            <span tooltip="Add directory" class="fa fa-icon fa-folder-plus" ng-click="directory.add = true; $event.stopPropagation();">
-                <window-confirm title="Add directory" message="Enter a name for the directory:" on-ok="addDirectory(directory)" on-cancel="directory.add=false;" ng-if="directory.add">
-                    <input type="text" ng-model="directory.addName">
+            <span tooltip="{{__('repair.addFolder')}}" class="fa fa-icon fa-folder-plus" ng-click="directory.add = true; $event.stopPropagation();">
+                <window-confirm action="create" title="{{__('repair.addFolder')}}" message="{{__('repair.folderName')}}" on-ok="addDirectory(directory)" on-cancel="directory.add=false;" ng-if="directory.add">
+                    <input type="text" ng-model="directory.addName" aria-label="{{__('repair.folderName')}}">
                 </window-confirm>
             </span>
-            <span tooltip="Add file(s)" class="fa fa-icon fa-file-import" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
+            <span tooltip="{{__('repair.uploadFiles')}}" class="fa fa-icon fa-file-import" ng-click="directory.uploading = !!directory; $event.stopPropagation();">
                 <ftp-file-upload directory="directory" ng-if="directory.uploading" on-cancel="directory.uploading=false;"></ftp-file-upload>
             </span>
         </span>
     </span>
     <div class="ftp-directory-children" ng-class="{'selected':vars.selected==directory, 'non-active':directory!=vars.currentDirectory}" ng-if="(directory.shown = (view.display=='list' && directory.show && directory.children.length)) || (view.display!='list' && (directory==vars.currentDirectory || isInPath(directory)))"
-        ftp-directory-context-menu-click="hideMenus(); vars.selected=directory; $event.stopPropagation(); ">
-        <ftp-directory ng-class="{'selected':vars.selected==dir}" directory="dir" parent-directory="directory" ng-repeat="dir in directory.children | filter:{isDirectory:true}"  ng-click="vars.selected=dir; hideMenus(); $event.stopPropagation(); "></ftp-directory>
-        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" directory="directory" ng-repeat="file in directory.children | filter:{isFile:true}"  ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
+        ftp-directory-context-menu-click="hideMenus(); vars.selected=directory; $event.stopPropagation(); "
+        ftp-drop-target="directory" ng-click="vars.selected=null; hideMenus(); $event.stopPropagation();">
+        <ftp-directory ng-class="{'selected':vars.selected==dir}" directory="dir" parent-directory="directory" ng-repeat="dir in directory.children | filter:{isDirectory:true} track by dir.fullPath" ng-click="vars.selected=dir; hideMenus(); $event.stopPropagation(); "></ftp-directory>
+        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" directory="directory" ng-repeat="file in directory.children | filter:{isFile:true} track by file.fullPath" ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
     </div>
+    <window-confirm action="move" ng-if="directory.root && vars.pendingMove"
+        title="{{__(vars.pendingMove.item.isDirectory ? 'repair.moveFolder' : 'repair.moveFile')}}"
+        message="{{__('repair.movePrompt', {name:vars.pendingMove.item.name, directory:vars.displayPath(vars.pendingMove.targetDirectory.fullPath || '')})}}"
+        on-ok="confirmMove()" on-cancel="vars.pendingMove=null;"></window-confirm>
 </div>

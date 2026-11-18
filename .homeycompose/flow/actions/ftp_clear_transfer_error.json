@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Clear transfer error",
+    "nl": "Wis de overdrachtsfout",
+    "de": "Übertragungsfehler zurücksetzen",
+    "fr": "Effacer l’erreur de transfert",
+    "it": "Cancella l’errore di trasferimento",
+    "es": "Borrar el error de transferencia",
+    "sv": "Rensa överföringsfelet",
+    "no": "Fjern overføringsfeilen",
+    "da": "Ryd overførselsfejlen",
+    "ru": "Сбросить ошибку передачи",
+    "pl": "Skasuj błąd przesyłania",
+    "ko": "전송 오류 지우기",
+    "ar": "امسح خطأ النقل"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ]
+}

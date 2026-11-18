@@ -1,0 +1,22 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Transfer error",
+    "nl": "Overdrachtsfout",
+    "de": "Übertragungsfehler",
+    "fr": "Erreur de transfert",
+    "it": "Errore di trasferimento",
+    "es": "Error de transferencia",
+    "sv": "Överföringsfel",
+    "no": "Overføringsfeil",
+    "da": "Overførselsfejl",
+    "ru": "Ошибка передачи",
+    "pl": "Błąd przesyłania",
+    "ko": "전송 오류",
+    "ar": "خطأ في النقل"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/capabilities/transfer-error.svg"
+}

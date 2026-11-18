@@ -1,0 +1,33 @@
+<form class="homey-form" id="root-form">
+  <p class="homey-body" data-i18n="pair.rootHint"></p>
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="root" data-i18n="pair.rootDirectory"></label>
+    <input class="homey-form-input" id="root" type="text" autocapitalize="off" autocomplete="off" spellcheck="false">
+  </div>
+  <button class="homey-button-primary-full hy-nostyle" type="submit" data-i18n="pair.next"></button>
+</form>
+<script>
+  Homey.setTitle(Homey.__('pair.rootDirectory'));
+  Homey.setNavigationClose();
+  const form = document.getElementById('root-form');
+  const button = form.querySelector('button');
+  Homey.emit('getRootDirectory').then(root => {
+    document.getElementById('root').value = root;
+  }).catch(error => Homey.alert(error.message || error, 'error'));
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (button.disabled) return;
+    button.disabled = true;
+    Homey.showLoadingOverlay();
+    try {
+      const device = await Homey.emit('setRootDirectory', document.getElementById('root').value);
+      await Homey.setViewStoreValue('add_devices', 'devices', [device]);
+      await Homey.showView('add_devices');
+    } catch (error) {
+      await Homey.alert(error.message || error, 'error');
+    } finally {
+      Homey.hideLoadingOverlay();
+      button.disabled = false;
+    }
+  });
+</script>

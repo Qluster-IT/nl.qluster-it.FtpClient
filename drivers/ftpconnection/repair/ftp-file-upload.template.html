@@ -1,10 +1,13 @@
-<div class="window">
-    <div class="field title">Upload files</div>
-    <div class="field message">into {{directory.path + '/' + directory.name}}</div>
-    <div class="field margin-top">
-        <input type="file" id="files" name="files[]" multiple file-on-change="uploadFiles"/>
-    </div>
-    <div class="field margin-top buttons">
-        <button ng-click="cancel($event)">Cancel</button>
+<div class="window" role="dialog" aria-modal="true" aria-label="{{__('repair.uploadFiles')}}" tabindex="-1" ftp-dialog="cancel($event)" ng-click="$event.stopPropagation();">
+    <div class="ftp-dialog">
+        <div class="ftp-dialog-icon" aria-hidden="true"><span class="fa fa-file-import"></span></div>
+        <h2 class="ftp-dialog-title">{{__('repair.uploadFiles')}}</h2>
+        <p class="ftp-dialog-message">{{__('repair.uploadInto', {directory:directory.fullPath || '/'})}}</p>
+        <div class="ftp-dialog-upload">
+            <input type="file" id="files" name="files[]" multiple file-on-change="uploadFiles" aria-label="{{__('repair.uploadFiles')}}"/>
+        </div>
+        <div class="ftp-dialog-buttons">
+            <button type="button" class="hy-nostyle ftp-button-secondary" ng-click="cancel($event)">{{__('repair.cancel')}}</button>
+        </div>
     </div>
 </div>

@@ -1,41 +1,99 @@
 {
-    "id": "action_ftpconnection_get_url",
-    "title": {
-      "en": "Get file URL",
-      "nl": "Ontvang bestand url"
-    },
-    "titleFormatted": {
-      "en": "Get URL for [[file]]",
-      "nl": "Ontvang Url voor [[file]]"
-    },
-    "args": [
+  "id": "action_ftpconnection_get_url",
+  "title": {
+    "en": "Get file URL",
+    "nl": "Bestands-URL ophalen",
+    "de": "Datei-URL abrufen",
+    "fr": "Obtenir l’URL du fichier",
+    "it": "Ottieni URL del file",
+    "es": "Obtener URL del archivo",
+    "sv": "Hämta fil-URL",
+    "no": "Hent fil-URL",
+    "da": "Hent fil-URL",
+    "ru": "Получить URL файла",
+    "pl": "Pobierz URL pliku",
+    "ko": "파일 URL 가져오기",
+    "ar": "الحصول على عنوان URL للملف"
+  },
+  "titleFormatted": {
+    "en": "Get URL for [[file]]",
+    "nl": "Haal de URL op voor [[file]]",
+    "de": "URL für [[file]] abrufen",
+    "fr": "Obtenir l’URL de [[file]]",
+    "it": "Ottieni URL per [[file]]",
+    "es": "Obtener URL de [[file]]",
+    "sv": "Hämta URL för [[file]]",
+    "no": "Hent URL for [[file]]",
+    "da": "Hent URL til [[file]]",
+    "ru": "Получить URL для [[file]]",
+    "pl": "Pobierz URL dla [[file]]",
+    "ko": "[[file]]의 URL 가져오기",
+    "ar": "الحصول على عنوان URL لـ [[file]]"
+  },
+  "args": [
     {
-        "name": "device",
-        "type": "device",
-        "filter": "driver_id=ftpconnection"
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
     },
-      {
-        "name": "file",
-        "type": "autocomplete",
-        "placeholder": "File"
+    {
+      "name": "file",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "File",
+        "nl": "Bestand",
+        "de": "Datei",
+        "fr": "Fichier",
+        "it": "File",
+        "es": "Archivo",
+        "sv": "Fil",
+        "no": "Fil",
+        "da": "Fil",
+        "ru": "Файл",
+        "pl": "Plik",
+        "ko": "파일",
+        "ar": "ملف"
       }
-    ],
-    "tokens":[
-      {
-        "name":"url",
-        "type":"string",
-        "title":{
-          "en":"URL",
-          "nl":"Url"
-        }
-      },
-      {
-        "name":"cloudUrl",
-        "type":"string",
-        "title":{
-          "en":"Cloud URL",
-          "nl":"Cloud Url"
-        }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "url",
+      "type": "string",
+      "title": {
+        "en": "URL",
+        "nl": "URL",
+        "de": "URL",
+        "fr": "URL",
+        "it": "URL",
+        "es": "URL",
+        "sv": "URL",
+        "no": "URL",
+        "da": "URL",
+        "ru": "URL",
+        "pl": "URL",
+        "ko": "URL",
+        "ar": "URL"
       }
-    ]
-  }
+    },
+    {
+      "name": "cloudUrl",
+      "type": "string",
+      "title": {
+        "en": "Cloud URL",
+        "nl": "Cloud-URL",
+        "de": "Cloud-URL",
+        "fr": "URL cloud",
+        "it": "URL cloud",
+        "es": "URL de la nube",
+        "sv": "Moln-URL",
+        "no": "Sky-URL",
+        "da": "Cloud-URL",
+        "ru": "Облачный URL",
+        "pl": "URL w chmurze",
+        "ko": "클라우드 URL",
+        "ar": "عنوان URL سحابي"
+      }
+    }
+  ]
+}

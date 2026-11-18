@@ -1,0 +1,57 @@
+{
+  "repair": {
+    "direction": "ltr",
+    "ok": "ОК",
+    "cancel": "Отмена",
+    "rename": "Переименовать",
+    "delete": "Удалить",
+    "download": "Скачать",
+    "uploadFiles": "Загрузить файлы",
+    "uploadInto": "Загрузить в __directory__",
+    "addFolder": "Новая папка",
+    "renameFolder": "Переименовать папку",
+    "renameFile": "Переименовать файл",
+    "deleteFolder": "Удалить папку?",
+    "deleteFile": "Удалить файл?",
+    "deleteFolderPrompt": "Удалить «__name__» и всё содержимое?",
+    "deleteFilePrompt": "Удалить «__name__»?",
+    "folderName": "Введите имя папки:",
+    "fileName": "Введите имя файла:",
+    "moveFolder": "Переместить папку?",
+    "moveFile": "Переместить файл?",
+    "movePrompt": "Переместить «__name__» в «__directory__»?",
+    "listView": "Список",
+    "gridView": "Сетка",
+    "refresh": "Обновить",
+    "parentFolder": "Родительская папка",
+    "bllRequired": "Установите приложение Better Logic Library для просмотра FTP.",
+    "uploadFailed": "Не удалось прочитать файл для загрузки.",
+    "move": "Переместить"
+  },
+  "errors": {
+    "fileRequired": "Выберите файл.",
+    "imageRequired": "Выберите изображение или укажите путь.",
+    "pathRequired": "Укажите папку и/или путь.",
+    "folderRequired": "Выберите папку.",
+    "urlRequired": "Введите URL.",
+    "outsideRoot": "Путь должен оставаться внутри настроенной корневой папки.",
+    "rootProtected": "Выберите файл или подпапку внутри настроенной корневой папки."
+  },
+  "pair": {
+    "custom": "Пользовательский FTP Client",
+    "rootDirectory": "Корневая папка",
+    "rootHint": "Просмотр файлов и все файловые операции в Flow ограничены этой папкой. Оставьте поле пустым для корня FTP-сервера.",
+    "connectionTitle": "FTP-сервер",
+    "next": "Продолжить",
+    "invalidConnection": "Введите имя хоста и порт от 1 до 65535.",
+    "loginRequired": "Сначала подключитесь к FTP-серверу.",
+    "host": "IP-адрес или имя хоста",
+    "port": "Порт"
+  },
+  "monitor": {
+    "upload": "Отправка",
+    "download": "Загрузка",
+    "connectionFailed": "Не удалось проверить подключение к FTP.",
+    "transferFailed": "Не удалось передать файл."
+  }
+}

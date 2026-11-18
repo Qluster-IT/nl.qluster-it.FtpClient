@@ -1,0 +1,57 @@
+{
+  "repair": {
+    "direction": "rtl",
+    "ok": "موافق",
+    "cancel": "إلغاء",
+    "rename": "إعادة تسمية",
+    "delete": "حذف",
+    "download": "تنزيل",
+    "uploadFiles": "رفع ملفات",
+    "uploadInto": "رفع إلى __directory__",
+    "addFolder": "مجلد جديد",
+    "renameFolder": "إعادة تسمية المجلد",
+    "renameFile": "إعادة تسمية الملف",
+    "deleteFolder": "حذف المجلد؟",
+    "deleteFile": "حذف الملف؟",
+    "deleteFolderPrompt": "هل تريد حذف \"__name__\" وجميع محتوياته؟",
+    "deleteFilePrompt": "هل تريد حذف \"__name__\"؟",
+    "folderName": "أدخل اسم المجلد:",
+    "fileName": "أدخل اسم الملف:",
+    "moveFolder": "نقل المجلد؟",
+    "moveFile": "نقل الملف؟",
+    "movePrompt": "هل تريد نقل \"__name__\" إلى \"__directory__\"؟",
+    "listView": "عرض القائمة",
+    "gridView": "عرض الشبكة",
+    "refresh": "تحديث",
+    "parentFolder": "المجلد الأصل",
+    "bllRequired": "ثبّت تطبيق Better Logic Library لاستخدام متصفح FTP.",
+    "uploadFailed": "تعذرت قراءة الملف لرفعه.",
+    "move": "نقل"
+  },
+  "errors": {
+    "fileRequired": "يجب اختيار ملف.",
+    "imageRequired": "اختر صورة أو أدخل مسارًا.",
+    "pathRequired": "حدّد مجلدًا و/أو مسارًا.",
+    "folderRequired": "يجب اختيار مجلد.",
+    "urlRequired": "أدخل عنوان URL.",
+    "outsideRoot": "يجب أن يبقى المسار داخل المجلد الجذر المحدد.",
+    "rootProtected": "اختر ملفًا أو مجلدًا فرعيًا داخل المجلد الجذر المحدد."
+  },
+  "pair": {
+    "custom": "FTP Client مخصص",
+    "rootDirectory": "المجلد الجذر",
+    "rootHint": "يبقى تصفح الملفات وجميع عمليات الملفات في Flows داخل هذا المجلد. اتركه فارغًا لاستخدام جذر خادم FTP.",
+    "connectionTitle": "خادم FTP",
+    "next": "متابعة",
+    "invalidConnection": "أدخل اسم مضيف ومنفذًا بين 1 و65535.",
+    "loginRequired": "اتصل بخادم FTP أولًا.",
+    "host": "عنوان IP أو اسم المضيف",
+    "port": "المنفذ"
+  },
+  "monitor": {
+    "upload": "رفع",
+    "download": "تنزيل",
+    "connectionFailed": "فشل التحقق من اتصال FTP.",
+    "transferFailed": "فشل نقل الملف."
+  }
+}

@@ -1,9 +1,12 @@
-<div class="window" ng-click=" $event.stopPropagation();">
-    <div class="field">{{title}}</div>
-    <div class="field">{{message}}</div>
-    <div class="field" ng-transclude></div>
-    <div class="field margin-top buttons">
-        <button ng-click="ok($event);">Ok</button>
-        <button ng-click="cancel($event);">Cancel</button>
+<div class="window" role="dialog" aria-modal="true" aria-label="{{title}}" tabindex="-1" ftp-dialog="cancel($event)" ng-click="$event.stopPropagation();">
+    <div class="ftp-dialog" ng-class="{'ftp-dialog-danger': action==='delete'}">
+        <div class="ftp-dialog-icon" aria-hidden="true"><span class="fa {{actionIcon}}"></span></div>
+        <h2 class="ftp-dialog-title">{{title}}</h2>
+        <p class="ftp-dialog-message">{{message}}</p>
+        <div class="ftp-dialog-content" ng-transclude></div>
+        <div class="ftp-dialog-buttons">
+            <button type="button" class="hy-nostyle ftp-button-secondary" ng-click="cancel($event);">{{__('repair.cancel')}}</button>
+            <button type="button" class="hy-nostyle ftp-button-primary" ng-click="ok($event);">{{__(confirmKey)}}</button>
+        </div>
     </div>
 </div>

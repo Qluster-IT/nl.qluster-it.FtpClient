@@ -1,51 +1,131 @@
 {
-    "id": "action_ftpclient_get_imagetoken",
-    "title": {
-      "en": "Get an Image Token",
-      "nl": "Ontvang een afbeeldingstoken"
-    },
-    "titleFormatted": {
-      "en": "Get an Image Token for [[image]] / [[path]]",
-      "nl": "Ontvang een Afbeelding Token voor [[image]] / [[path]]"
-    },
-    "args": [
+  "id": "action_ftpclient_get_imagetoken",
+  "title": {
+    "en": "Get an Image Token",
+    "nl": "Afbeeldingstoken ophalen",
+    "de": "Bild-Token abrufen",
+    "fr": "Obtenir un jeton d’image",
+    "it": "Ottieni un token immagine",
+    "es": "Obtener un token de imagen",
+    "sv": "Hämta en bildtoken",
+    "no": "Hent et bildetoken",
+    "da": "Hent et billedtoken",
+    "ru": "Получить токен изображения",
+    "pl": "Pobierz token obrazu",
+    "ko": "이미지 토큰 가져오기",
+    "ar": "الحصول على رمز صورة"
+  },
+  "titleFormatted": {
+    "en": "Get an Image Token for [[image]] / [[path]]",
+    "nl": "Haal een afbeeldingstoken op voor [[image]] / [[path]]",
+    "de": "Bild-Token für [[image]] / [[path]] abrufen",
+    "fr": "Obtenir un jeton d’image pour [[image]] / [[path]]",
+    "it": "Ottieni un token immagine per [[image]] / [[path]]",
+    "es": "Obtener un token de imagen para [[image]] / [[path]]",
+    "sv": "Hämta en bildtoken för [[image]] / [[path]]",
+    "no": "Hent et bildetoken for [[image]] / [[path]]",
+    "da": "Hent et billedtoken til [[image]] / [[path]]",
+    "ru": "Получить токен изображения для [[image]] / [[path]]",
+    "pl": "Pobierz token obrazu dla [[image]] / [[path]]",
+    "ko": "[[image]] / [[path]]의 이미지 토큰 가져오기",
+    "ar": "الحصول على رمز صورة لـ [[image]] / [[path]]"
+  },
+  "args": [
     {
-        "name": "device",
-        "type": "device",
-        "filter": "driver_id=ftpconnection"
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
     },
     {
       "name": "image",
       "type": "autocomplete",
-      "required":false,
-      "placeholder": "Image",
-      "title":{
-        "en":"Select an image or Directory",
-        "nl":"Selecteer een afbeelding of map"
+      "required": false,
+      "placeholder": {
+        "en": "Image",
+        "nl": "Afbeelding",
+        "de": "Bild",
+        "fr": "Image",
+        "it": "Immagine",
+        "es": "Imagen",
+        "sv": "Bild",
+        "no": "Bilde",
+        "da": "Billede",
+        "ru": "Изображение",
+        "pl": "Obraz",
+        "ko": "이미지",
+        "ar": "صورة"
+      },
+      "title": {
+        "en": "Select an image or folder",
+        "nl": "Selecteer een afbeelding of map",
+        "de": "Bild oder Ordner auswählen",
+        "fr": "Sélectionnez une image ou un dossier",
+        "it": "Seleziona un’immagine o una cartella",
+        "es": "Selecciona una imagen o carpeta",
+        "sv": "Välj en bild eller mapp",
+        "no": "Velg et bilde eller en mappe",
+        "da": "Vælg et billede eller en mappe",
+        "ru": "Выберите изображение или папку",
+        "pl": "Wybierz obraz lub folder",
+        "ko": "이미지 또는 폴더 선택",
+        "ar": "اختر صورة أو مجلدًا"
       }
-    },    
+    },
     {
       "name": "path",
       "type": "text",
-      "required":false,
-      "placeholder":{
-        "en":"(Path+) Filename (* BLL supported)",
-        "nl":"(Pad+) bestandsnaam (* BLL ondersteund)"
+      "required": false,
+      "placeholder": {
+        "en": "(Path +) Filename (* BLL supported)",
+        "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+        "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+        "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+        "it": "(Percorso +) nome file (* BLL supportato)",
+        "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+        "sv": "(Sökväg +) filnamn (* BLL stöds)",
+        "no": "(Sti +) filnavn (* BLL støttes)",
+        "da": "(Sti +) filnavn (* BLL understøttes)",
+        "ru": "(Путь +) имя файла (* поддержка BLL)",
+        "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+        "ko": "(경로 +) 파일 이름(* BLL 지원)",
+        "ar": "(المسار +) اسم الملف (* يدعم BLL)"
       },
-      "title":{
-        "en":"Filename",
-        "nl":"Bestandsnaam"
+      "title": {
+        "en": "Filename",
+        "nl": "Bestandsnaam",
+        "de": "Dateiname",
+        "fr": "Nom du fichier",
+        "it": "Nome file",
+        "es": "Nombre del archivo",
+        "sv": "Filnamn",
+        "no": "Filnavn",
+        "da": "Filnavn",
+        "ru": "Имя файла",
+        "pl": "Nazwa pliku",
+        "ko": "파일 이름",
+        "ar": "اسم الملف"
       }
     }
-    ],
-    "tokens":[
-      {
-        "name":"image",
-        "type":"image",
-        "title":{
-          "en":"Image",
-          "nl":"Afbeelding"
-        }
+  ],
+  "tokens": [
+    {
+      "name": "image",
+      "type": "image",
+      "title": {
+        "en": "Image",
+        "nl": "Afbeelding",
+        "de": "Bild",
+        "fr": "Image",
+        "it": "Immagine",
+        "es": "Imagen",
+        "sv": "Bild",
+        "no": "Bilde",
+        "da": "Billede",
+        "ru": "Изображение",
+        "pl": "Obraz",
+        "ko": "이미지",
+        "ar": "صورة"
       }
-    ]
-  }
+    }
+  ]
+}

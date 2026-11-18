@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Transfer error is active",
+    "nl": "De overdrachtsfout is actief",
+    "de": "Übertragungsfehler ist aktiv",
+    "fr": "L’erreur de transfert est active",
+    "it": "L’errore di trasferimento è attivo",
+    "es": "El error de transferencia está activo",
+    "sv": "Överföringsfelet är aktivt",
+    "no": "Overføringsfeilen er aktiv",
+    "da": "Overførselsfejlen er aktiv",
+    "ru": "Ошибка передачи активна",
+    "pl": "Błąd przesyłania jest aktywny",
+    "ko": "전송 오류가 활성화됨",
+    "ar": "خطأ النقل نشط"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
+    }
+  ]
+}

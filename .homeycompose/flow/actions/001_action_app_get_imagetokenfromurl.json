@@ -1,49 +1,126 @@
 {
-    "id": "action_app_get_imagetokenfromurl",
-    "title": {
-      "en": "Get an Image Token from URL",
-      "nl": "Ontvang een afbeeldingstoken van Url"
-    },
-    "titleFormatted": {
-      "en": "Get an Image Token for [[url]], available for [[availableduration]] seconds",
-      "nl": "Ontvang een Afbeelding Token voor [[url]], beschikbaar voor [[availableduration]] seconden"
-    },
-    "args": [ 
+  "id": "action_app_get_imagetokenfromurl",
+  "title": {
+    "en": "Get an Image Token from URL",
+    "nl": "Haal een afbeeldingstoken op via URL",
+    "de": "Bild-Token aus URL abrufen",
+    "fr": "Obtenir un jeton d’image depuis une URL",
+    "it": "Ottieni un token immagine da URL",
+    "es": "Obtener un token de imagen de una URL",
+    "sv": "Hämta en bildtoken från URL",
+    "no": "Hent et bildetoken fra URL",
+    "da": "Hent et billedtoken fra URL",
+    "ru": "Получить токен изображения по URL",
+    "pl": "Pobierz token obrazu z URL",
+    "ko": "URL에서 이미지 토큰 가져오기",
+    "ar": "الحصول على رمز صورة من عنوان URL"
+  },
+  "titleFormatted": {
+    "en": "Get an Image Token for [[url]], available for [[availableduration]] seconds",
+    "nl": "Haal een afbeeldingstoken op voor [[url]], beschikbaar gedurende [[availableduration]] seconden",
+    "de": "Bild-Token für [[url]] abrufen, verfügbar für [[availableduration]] Sekunden",
+    "fr": "Obtenir un jeton d’image pour [[url]], disponible pendant [[availableduration]] secondes",
+    "it": "Ottieni un token immagine per [[url]], disponibile per [[availableduration]] secondi",
+    "es": "Obtener un token de imagen para [[url]], disponible durante [[availableduration]] segundos",
+    "sv": "Hämta en bildtoken för [[url]], tillgänglig i [[availableduration]] sekunder",
+    "no": "Hent et bildetoken for [[url]], tilgjengelig i [[availableduration]] sekunder",
+    "da": "Hent et billedtoken til [[url]], tilgængeligt i [[availableduration]] sekunder",
+    "ru": "Получить токен изображения для [[url]], доступный [[availableduration]] секунд",
+    "pl": "Pobierz token obrazu dla [[url]], dostępny przez [[availableduration]] sekund",
+    "ko": "[[url]]의 이미지 토큰 가져오기, [[availableduration]]초 동안 사용 가능",
+    "ar": "الحصول على رمز صورة لـ [[url]]، متاح لمدة [[availableduration]] ثانية"
+  },
+  "args": [
     {
       "name": "url",
       "type": "text",
-      "placeholder":{
-        "en":"URL (* BLL supported)",
-        "nl":"Url (* BLL ondersteund)"
+      "placeholder": {
+        "en": "URL (* BLL supported)",
+        "nl": "URL (* BLL ondersteund)",
+        "de": "URL (* BLL unterstützt)",
+        "fr": "URL (* BLL pris en charge)",
+        "it": "URL (* BLL supportato)",
+        "es": "URL (* compatible con BLL)",
+        "sv": "URL (* BLL stöds)",
+        "no": "URL (* BLL støttes)",
+        "da": "URL (* BLL understøttes)",
+        "ru": "URL (* поддержка BLL)",
+        "pl": "URL (* obsługa BLL)",
+        "ko": "URL(* BLL 지원)",
+        "ar": "عنوان URL (* يدعم BLL)"
       },
-      "title":{
-        "en":"URL",
-        "nl":"Url"
+      "title": {
+        "en": "URL",
+        "nl": "URL",
+        "de": "URL",
+        "fr": "URL",
+        "it": "URL",
+        "es": "URL",
+        "sv": "URL",
+        "no": "URL",
+        "da": "URL",
+        "ru": "URL",
+        "pl": "URL",
+        "ko": "URL",
+        "ar": "URL"
       }
     },
     {
       "name": "availableduration",
       "type": "number",
       "placeholder": {
-        "en":"0 = untill app restart",
-        "nl":"0 = tot app herstart"
+        "en": "0 = until app restart",
+        "nl": "0 = tot herstart van de app",
+        "de": "0 = bis zum App-Neustart",
+        "fr": "0 = jusqu’au redémarrage de l’app",
+        "it": "0 = fino al riavvio dell’app",
+        "es": "0 = hasta reiniciar la app",
+        "sv": "0 = tills appen startas om",
+        "no": "0 = til appen startes på nytt",
+        "da": "0 = indtil appen genstartes",
+        "ru": "0 = до перезапуска приложения",
+        "pl": "0 = do ponownego uruchomienia aplikacji",
+        "ko": "0 = 앱을 다시 시작할 때까지",
+        "ar": "0 = حتى إعادة تشغيل التطبيق"
       },
-      "title":{
-        "en":"Number of",
-        "nl":"Aantal"
+      "title": {
+        "en": "Number of seconds",
+        "nl": "Aantal seconden",
+        "de": "Anzahl Sekunden",
+        "fr": "Nombre de secondes",
+        "it": "Numero di secondi",
+        "es": "Número de segundos",
+        "sv": "Antal sekunder",
+        "no": "Antall sekunder",
+        "da": "Antal sekunder",
+        "ru": "Количество секунд",
+        "pl": "Liczba sekund",
+        "ko": "시간(초)",
+        "ar": "عدد الثواني"
       },
-      "min":0,
-      "value":60
+      "min": 0,
+      "value": 60
     }
-    ],
-    "tokens":[
-      {
-        "name":"image",
-        "type":"image",
-        "title":{
-          "en":"Image",
-          "nl":"Afbeelding"
-        }
+  ],
+  "tokens": [
+    {
+      "name": "image",
+      "type": "image",
+      "title": {
+        "en": "Image",
+        "nl": "Afbeelding",
+        "de": "Bild",
+        "fr": "Image",
+        "it": "Immagine",
+        "es": "Imagen",
+        "sv": "Bild",
+        "no": "Bilde",
+        "da": "Billede",
+        "ru": "Изображение",
+        "pl": "Obraz",
+        "ko": "이미지",
+        "ar": "صورة"
       }
-    ]
-  }
+    }
+  ]
+}

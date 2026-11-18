@@ -1,38 +1,98 @@
 {
-    "id": "action_ftpclient_save_imagetoken",
-    "droptoken":["image"],
-    "title": {
-      "en": "Save Image Token",
-      "nl": "Sla een afbeeldingstoken op"
-    },
-    "titleFormatted": {
-      "en": "Save [[droptoken]] to [[directory]] / [[path]]",
-      "nl": "Sla [[droptoken]] op als [[directory]] / [[path]]"
-    },
-    "args": [
+  "id": "action_ftpclient_save_imagetoken",
+  "droptoken": [
+    "image"
+  ],
+  "title": {
+    "en": "Save Image Token",
+    "nl": "Afbeeldingstoken opslaan",
+    "de": "Bild-Token speichern",
+    "fr": "Enregistrer un jeton d’image",
+    "it": "Salva token immagine",
+    "es": "Guardar token de imagen",
+    "sv": "Spara bildtoken",
+    "no": "Lagre bildetoken",
+    "da": "Gem billedtoken",
+    "ru": "Сохранить токен изображения",
+    "pl": "Zapisz token obrazu",
+    "ko": "이미지 토큰 저장",
+    "ar": "حفظ رمز الصورة"
+  },
+  "titleFormatted": {
+    "en": "Save [[droptoken]] to [[directory]] / [[path]]",
+    "nl": "Sla [[droptoken]] op in [[directory]] / [[path]]",
+    "de": "[[droptoken]] in [[directory]] / [[path]] speichern",
+    "fr": "Enregistrer [[droptoken]] dans [[directory]] / [[path]]",
+    "it": "Salva [[droptoken]] in [[directory]] / [[path]]",
+    "es": "Guardar [[droptoken]] en [[directory]] / [[path]]",
+    "sv": "Spara [[droptoken]] i [[directory]] / [[path]]",
+    "no": "Lagre [[droptoken]] i [[directory]] / [[path]]",
+    "da": "Gem [[droptoken]] i [[directory]] / [[path]]",
+    "ru": "Сохранить [[droptoken]] в [[directory]] / [[path]]",
+    "pl": "Zapisz [[droptoken]] w [[directory]] / [[path]]",
+    "ko": "[[droptoken]]을(를) [[directory]] / [[path]]에 저장",
+    "ar": "حفظ [[droptoken]] في [[directory]] / [[path]]"
+  },
+  "args": [
     {
-        "name": "device",
-        "type": "device",
-        "filter": "driver_id=ftpconnection"
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=ftpconnection"
     },
     {
       "name": "directory",
       "type": "autocomplete",
-      "required":false,
-      "placeholder": "directory"
-    },    
+      "required": false,
+      "placeholder": {
+        "en": "Folder",
+        "nl": "Map",
+        "de": "Ordner",
+        "fr": "Dossier",
+        "it": "Cartella",
+        "es": "Carpeta",
+        "sv": "Mapp",
+        "no": "Mappe",
+        "da": "Mappe",
+        "ru": "Папка",
+        "pl": "Folder",
+        "ko": "폴더",
+        "ar": "مجلد"
+      }
+    },
     {
       "name": "path",
       "type": "text",
-      "required":false,
-      "placeholder":{
-        "en":"(Path+) Filename (* BLL supported)",
-        "nl":"(Pad+) bestandsnaam (* BLL ondersteund)"
+      "required": false,
+      "placeholder": {
+        "en": "(Path +) Filename (* BLL supported)",
+        "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+        "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+        "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+        "it": "(Percorso +) nome file (* BLL supportato)",
+        "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+        "sv": "(Sökväg +) filnamn (* BLL stöds)",
+        "no": "(Sti +) filnavn (* BLL støttes)",
+        "da": "(Sti +) filnavn (* BLL understøttes)",
+        "ru": "(Путь +) имя файла (* поддержка BLL)",
+        "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+        "ko": "(경로 +) 파일 이름(* BLL 지원)",
+        "ar": "(المسار +) اسم الملف (* يدعم BLL)"
       },
-      "title":{
-        "en":"Filename",
-        "nl":"Bestandsnaam"
+      "title": {
+        "en": "Filename",
+        "nl": "Bestandsnaam",
+        "de": "Dateiname",
+        "fr": "Nom du fichier",
+        "it": "Nome file",
+        "es": "Nombre del archivo",
+        "sv": "Filnamn",
+        "no": "Filnavn",
+        "da": "Filnavn",
+        "ru": "Имя файла",
+        "pl": "Nazwa pliku",
+        "ko": "파일 이름",
+        "ar": "اسم الملف"
       }
     }
-    ]
-  }
+  ]
+}

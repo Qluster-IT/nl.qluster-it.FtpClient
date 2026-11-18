@@ -2,28 +2,28 @@
     <div class="item" ng-click="directory.uploading = !!directory;">
         <span class="fa fa-icon fa-file-import">
         </span>
-        <span>Upload file(s)</span>
+        <span>{{__('repair.uploadFiles')}}</span>
         <ftp-file-upload directory="directory" ng-if="directory.uploading" on-ok="menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.uploading=false;menu.ftpDirectoryContextMenu.show=false;"></ftp-file-upload>
     </div>
     <div class="item" ng-click="directory.add = true;">
         <span class="fa fa-icon fa-folder-plus">
         </span>
-        <span>New</span>
-        <window-confirm title="Add directory" message="Enter a name for the directory:" on-ok="addDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.add=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.add">
-            <input type="text" ng-model="directory.addName">
+        <span>{{__('repair.addFolder')}}</span>
+        <window-confirm action="create" title="{{__('repair.addFolder')}}" message="{{__('repair.folderName')}}" on-ok="addDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.add=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.add">
+            <input type="text" ng-model="directory.addName" aria-label="{{__('repair.folderName')}}">
         </window-confirm>
     </div>
     <div class="item" ng-if="!directory.root"  ng-click="directory.rename = true;directory.renameName = directory.name; ">
         <span class="fa fa-icon fa-i-cursor"></span>
-        <span>Rename</span>
-        <window-confirm title="Rename directory" message="Enter the directory name:" on-ok="renameDirectory(directory, parentDirectory); menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.rename=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.rename">                    
-            <input type="text" ng-model="directory.renameName">
+        <span>{{__('repair.rename')}}</span>
+        <window-confirm action="rename" title="{{__('repair.renameFolder')}}" message="{{__('repair.folderName')}}" on-ok="renameDirectory(directory, parentDirectory); menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.rename=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.rename">
+            <input type="text" ng-model="directory.renameName" aria-label="{{__('repair.folderName')}}">
         </window-confirm>
     </div>
     <div class="item" ng-if="!directory.root" ng-click="directory.delete = true; ">
         <span class="fa fa-icon fa-trash-alt" >
         </span>
-        <span>Delete</span>
-        <window-confirm title="Delete directory?" message="Do you want to delete '{{directory.name}}' and it's content?" on-ok="deleteDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.delete=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.delete"></window-confirm>
+        <span>{{__('repair.delete')}}</span>
+        <window-confirm action="delete" title="{{__('repair.deleteFolder')}}" message="{{__('repair.deleteFolderPrompt', {name:directory.name})}}" on-ok="deleteDirectory(directory, parentDirectory);menu.ftpDirectoryContextMenu.show=false;" on-cancel="directory.delete=false;menu.ftpDirectoryContextMenu.show=false;" ng-if="directory.delete"></window-confirm>
     </div>    
 </div>

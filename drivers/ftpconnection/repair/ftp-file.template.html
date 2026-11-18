@@ -1,19 +1,25 @@
-<div class="ftp-file" data-drag="true" jqyoui-draggable  data-jqyoui-options="{revert: 'invalid', helper:'clone', appendTo:'.ftp-directory-root'}">
+<div class="ftp-file" ftp-draggable="file" ftp-drag-parent="directory">
     <span class="ftp-file-header" ftp-file-context-menu-click="hideMenus(); vars.selected=file; $event.stopPropagation(); "  tooltip="{{file.name}}"
         ng-dblclick="downloadFile(file);$event.stopPropagation();" >
-        <span class="far fa-icon {{getFileIcon(file)}}"></span>
+        <span class="fa-icon ftp-file-icon" aria-hidden="true">
+            <svg ng-if="getFileIcon(file).label" class="ftp-file-badge" viewBox="0 0 24 24" focusable="false">
+                <path fill="currentColor" d="M5 1h9l6 6v3h-2V8h-5V3H5v7H3V3a2 2 0 0 1 2-2Zm10 3v2h2l-2-2ZM3 20h2v1h13v-1h2v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Z"/>
+                <text x="12" y="17.5" text-anchor="middle" fill="currentColor" font-size="7.5" font-weight="800">{{getFileIcon(file).label}}</text>
+            </svg>
+            <i ng-if="getFileIcon(file).glyph" class="fa {{getFileIcon(file).glyph}}"></i>
+        </span>
         <span class="name"><div>{{file.name}}</div></span>
         <span class="ftp-buttons">
             <span ng-if="!file.root" >
-                <span tooltip="Delete file" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();"></span>
-                <window-confirm title="Delete file?" message="Do you want to delete '{{file.name}}'?" on-ok="deleteFile(file, directory)" on-cancel="file.delete=false;" ng-show="file.delete"></window-confirm>
+                <span tooltip="{{__('repair.deleteFile')}}" class="fa fa-icon fa-trash-alt" ng-click="file.delete = true; $event.stopPropagation();"></span>
+                <window-confirm action="delete" title="{{__('repair.deleteFile')}}" message="{{__('repair.deleteFilePrompt', {name:file.name})}}" on-ok="deleteFile(file, directory)" on-cancel="file.delete=false;" ng-if="file.delete"></window-confirm>
             </span>
-            <span tooltip="Rename file" ng-if="!file.root" class="fa fa-icon fa-i-cursor" ng-click="file.rename = true;file.renameName = file.name; $event.stopPropagation();">
-                <window-confirm title="Rename file" message="Enter the file name:" on-ok="renameFile(file, directory)" on-cancel="file.rename=false;" ng-show="file.rename">                    
-                    <input type="text" ng-model="file.renameName">
+            <span tooltip="{{__('repair.renameFile')}}" ng-if="!file.root" class="fa fa-icon fa-i-cursor" ng-click="file.rename = true;file.renameName = file.name; $event.stopPropagation();">
+                <window-confirm action="rename" title="{{__('repair.renameFile')}}" message="{{__('repair.fileName')}}" on-ok="renameFile(file, directory)" on-cancel="file.rename=false;" ng-if="file.rename">
+                    <input type="text" ng-model="file.renameName" aria-label="{{__('repair.fileName')}}">
                 </window-confirm>
             </span>
-            <span tooltip="Download file" ng-if="!file.root" class="fa fa-icon fa-file-download" ng-click="downloadFile(file);$event.stopPropagation();"></span>
+            <span tooltip="{{__('repair.download')}}" ng-if="!file.root" class="fa fa-icon fa-file-download" ng-click="downloadFile(file);$event.stopPropagation();"></span>
         </span>
     </span>
 </div>
