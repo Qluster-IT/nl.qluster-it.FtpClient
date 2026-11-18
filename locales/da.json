@@ -26,7 +26,9 @@
     "parentFolder": "Overordnet mappe",
     "bllRequired": "Installer appen Better Logic Library for at bruge FTP-browseren.",
     "uploadFailed": "Filen kunne ikke læses til upload.",
-    "move": "Flyt"
+    "move": "Flyt",
+    "searchFolder": "Søg i denne mappe",
+    "noSearchMatches": "Ingen matchende filer eller mapper."
   },
   "errors": {
     "fileRequired": "Vælg en fil.",
@@ -35,7 +37,8 @@
     "folderRequired": "Vælg en mappe.",
     "urlRequired": "Angiv en URL.",
     "outsideRoot": "Stien skal forblive inden for den angivne rodmappe.",
-    "rootProtected": "Vælg en fil eller undermappe inden for den angivne rodmappe."
+    "rootProtected": "Vælg en fil eller undermappe inden for den angivne rodmappe.",
+    "downloadCacheFull": "Den midlertidige lagerplads til downloads er fuld. Vent, til eksisterende links udløber, eller vælg en mindre fil."
   },
   "pair": {
     "custom": "Brugerdefineret FTP Client",

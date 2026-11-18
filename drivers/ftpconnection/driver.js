@@ -1,8 +1,13 @@
 ﻿"use strict";
 const { randomBytes } = require('crypto');
 const Homey = require('homey');
-const { Stream, Readable, Writable } = require('stream');
+const { Readable } = require('stream');
+const { createReadStream } = require('fs');
+const { tmpdir } = require('os');
 const FileServer = require('../../lib/file-server');
+const DownloadCache = require('../../lib/download-cache');
+const UploadSpool = require('../../lib/upload-spool');
+const openSyslogExport = require('../../lib/syslog-export');
 const FtpClient = require('../../lib/ftp-client');
 const FtpClientDevice = require('./device');
 const { BL, Defer } = require('betterlogiclibrary');
@@ -10,60 +15,35 @@ const Icons = require('../../lib/icons');
 const { getRootPath, resolvePath } = require('../../lib/ftp-paths');
 
 
-const { readFile, writeFile, unlink, rename, exists, mkdir, copyFile, readdir, stat, rmdir, fstat, rm } = require('fs');
-const { promisify } = require('util');
-const fs = require('fs');
 const path = require('path');
-const { stream2buffer, createBufferWriter } = require('../../lib/proto');
+const { createBufferWriter } = require('../../lib/proto');
 
-const readFileAsync = promisify(readFile);
-const writeFileAsync = promisify(writeFile);
-const copyFileAsync = promisify(copyFile);
-const unlinkAsync = promisify(unlink);
-const renameAsync = promisify(rename);
-const existsAsync = promisify(exists);
-const mkdirAsync = promisify(mkdir);
-const readdirAsync = promisify(readdir);
-const statAsync = promisify(stat);
-const rmdirAsync = promisify(rmdir);
-const rmAsync = promisify(rm);
-
-
-let app;
-
-
-// var pkg = require('../../package.json');
-// var Greenlock = require('greenlock');
-
-const emptyDirectory = async function (path) {
-    if (await existsAsync(path)) {
-        const files = await readdirAsync(path);
-
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                const filename = files[i];
-                if ((await statAsync(path + "/" + filename)).isDirectory()) {
-                    await rmAsync(path + "/" + filename, { force: true, recursive: true });
-                    await emptyDirectory(path + "/" + filename);
-                } else {
-                    await unlinkAsync(path + "/" + filename);
-                }
-            }
-        } else {
-            console.log("No files found in the directory.");
+function base64Stream(value) {
+    return Readable.from((function* () {
+        // Four-character boundaries preserve Base64 groups; whitespace is ignored as before.
+        let carry = '';
+        for (let offset = 0; offset < value.length; offset += 64 * 1024) {
+            const part = carry + value.slice(offset, offset + 64 * 1024).replace(/[^A-Za-z0-9+/_=-]/g, '');
+            const padding = part.indexOf('=');
+            const end = padding === -1 ? part.length - part.length % 4 : padding;
+            if (end) yield Buffer.from(part.slice(0, end), 'base64');
+            if (padding !== -1) return;
+            carry = part.slice(end);
         }
-    } else {
-        console.log("Directory path not found.");
-    }
-};
+        if (carry) yield Buffer.from(carry, 'base64');
+    })(), { objectMode: false });
+}
 
 module.exports = class FtpClientDriver extends Homey.Driver {
 
     async onUninit() {
         if(this.fileServer) this.fileServer.close();
+        const files = this.fileDownloads;
+        this.fileDownloads = Object.create(null);
+        await Promise.all(Object.values(files || {}).map(entry => this.removeDownload(entry)));
+        if (this.uploadSpool) await this.uploadSpool.close();
     }
     async onInit() {
-        app = this.homey.app;
         this.log('FtpClientDriver onInit');
         this.homey.flow.getActionCard('ftp_check_connection').registerRunListener(async ({ device }) => {
             if (!await device.checkConnection()) throw new Error(this.homey.__('monitor.connectionFailed'));
@@ -84,8 +64,15 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         // let filesandfoldersdonwloads = await readdirAsync('./..');
 
 
-        if (!(await existsAsync(`/userdata/downloads/`))) await mkdirAsync(`/userdata/downloads/`);
-        await emptyDirectory(`/userdata/downloads/`);
+        this.downloadCache = new DownloadCache({
+            localRoot: path.join(tmpdir(), 'nl.qluster-it.FtpClient-downloads'),
+            sslRoot: '/userdata/downloads'
+        });
+        this.downloadReady = this.downloadCache.init();
+        await this.downloadReady;
+        this.uploadSpool = new UploadSpool(path.join(tmpdir(), 'nl.qluster-it.FtpClient-uploads'),
+            error => this.error('Temporary upload cleanup failed', error));
+        await this.uploadSpool.init();
 
         // let filesandfolders = await readdirAsync('/userdata/');
 
@@ -261,7 +248,8 @@ module.exports = class FtpClientDriver extends Homey.Driver {
                     if (args.directory.isDirectory) path = args.directory.id + (path && path.length ? (!path.startsWith('/') ? '/' : '') + path : '');
                     else path = args.directory.id;
                 }
-                await this.saveFile({ device: args.device, path, buffer: Buffer.from(args.file, 'base64') });
+                if (typeof args.file !== 'string') throw new TypeError(this.homey.__('repair.uploadFailed'));
+                await this.saveFile({ device: args.device, path, getStream: () => base64Stream(args.file) });
                 return true;
                 // let files = await this.getFiles({file:args.directory, device:args.device, includeDiretories:false });
                 // files = BL._.map(files, x=>x.id);
@@ -280,6 +268,21 @@ module.exports = class FtpClientDriver extends Homey.Driver {
             } catch (error) { this.error('action_ftpclient_save_file_base64.directory.registerAutocompleteListener.error :', error); throw error; }
         });
 
+        const action_ftpclient_save_syslog_export = this.homey.flow.getActionCard('action_ftpclient_save_syslog_export');
+        action_ftpclient_save_syslog_export.registerRunListener(async ({ device, format, directory, path }) => {
+            const filename = await BL.decode(path);
+            if (typeof filename !== 'string' || ['', '.', '..'].includes(filename.split('/').pop().trim())) {
+                throw new Error(this.homey.__('errors.pathRequired'));
+            }
+            if (directory && (typeof directory.id !== 'string' || ![true, 'true'].includes(directory.isDirectory))) {
+                throw new Error(this.homey.__('errors.folderRequired'));
+            }
+            const destination = directory?.id ? `${directory.id}/${filename.replace(/^\/+/, '')}` : filename;
+            await this.saveFile({ device, path: destination, prepare: () => openSyslogExport(this.homey, format) });
+            return true;
+        });
+        action_ftpclient_save_syslog_export.getArgument('directory').registerAutocompleteListener((query, args) =>
+            this.getFiles({ file: args.directory, query, device: args.device, type: 'folder' }));
 
         const action_ftpclient_get_files = this.homey.flow.getActionCard('action_ftpclient_get_files');
         action_ftpclient_get_files.registerRunListener(async (args) => {
@@ -596,28 +599,19 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         });
 
 
-        session.setHandler('uploadFiles', async () => {
-            try {
-                const id = randomBytes(12).toString('hex');
-                if (!this.fileUploads) this.fileUploads = {};
-                this.fileUploads[id] = { device };
-                this.fileUploads[id].upload = async ({ directory, files } = {}) => {
-                    //this.log(directory);
-                    //this.log(files);
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        let path = directory.id;// (directory.path && directory.path !== '' ? directory.path + '/' : '') + directory.name;
-                        const buf = Buffer.from(file.base64, 'base64');
-                        const destination = (path && path.length ? path + '/' : '') + file.name;
-                        await this.runTransfer(device, 'upload', destination, () => this.uploadBuffer(device, destination, buf));
-                    }
-                    return {};
-                };
-                return { id };
-            } catch (error) {
-                this.error(error);
-                throw error;
+        session.setHandler('uploadFiles', async ({ directory, name, size }) => {
+            const workdirectory = device.getSettings().workdirectory;
+            const translate = this.homey.__.bind(this.homey);
+            if (typeof name !== 'string' || !name || /[/\\\0\r\n]/.test(name) || name === '.' || name === '..') {
+                throw new Error(translate('repair.uploadFailed'));
             }
+            const folder = resolvePath(workdirectory, directory.id, translate);
+            const destination = folder ? `${folder.replace(/\/$/, '')}/${name}` : name;
+            return this.uploadSpool.start({
+                size, limitMessage: translate('repair.uploadFailed'),
+                upload: source => this.runTransfer(device, 'upload', destination, () =>
+                    this.uploadStream(device, destination, () => createReadStream(source)))
+            });
         });
 
     }
@@ -635,19 +629,22 @@ module.exports = class FtpClientDriver extends Homey.Driver {
         }
     }
 
-    async saveFile({ path, device, getStream, buffer }) {
+    async saveFile({ path, device, getStream, prepare }) {
         return this.runTransfer(device, 'upload', path, async () => {
             const destination = resolvePath(device.settings.workdirectory, path, this.homey.__ && this.homey.__.bind(this.homey));
             const parentPath = destination.slice(0, Math.max(0, destination.lastIndexOf('/')));
-            const contents = buffer || await stream2buffer(await getStream());
+            const source = prepare ? await prepare() : getStream;
             await device.ftpClient.exec({ action: 'ensureDir' }, parentPath);
-            return this.uploadBuffer(device, destination, contents);
+            return this.uploadStream(device, destination, source);
         });
     }
 
-    uploadBuffer(device, destination, buffer) {
+    uploadStream(device, destination, getStream) {
         return device.ftpClient.exec({
-            action: 'uploadFrom', createTransferStream: () => Readable.from(buffer)
+            action: 'uploadFrom',
+            createTransferStream: () => Readable.from((async function* () {
+                yield* await getStream();
+            })(), { objectMode: false })
         }, undefined, destination);
     }
 
@@ -666,132 +663,58 @@ module.exports = class FtpClientDriver extends Homey.Driver {
     }
 
     async getFileUrl({ file, device, type, createToken }) {
+        await this.downloadReady;
+        const name = file.filename || file.name;
+        const mode = (type === 'url' ? device.settings.urlforurls : device.settings.urlforfiles) || 'local';
+        const ssl = mode === 'localssl' || mode === 'cloudssl';
+        const key = randomBytes(24).toString('hex');
+        const filename = encodeURIComponent(name);
+        const extension = path.posix.extname(name).match(/^\.[a-z0-9]{1,16}$/i)?.[0] || '';
+        const storedName = type === 'url' ? randomBytes(8).toString('hex') + extension
+            : filename && filename !== '.' && filename !== '..' ? filename : 'download';
+        const id = ssl ? `downloads/${key}/${storedName}` : key;
+        const localHost = this.homey.app.ip;
+        const httpsHost = mode === 'cloudssl' ? `${this.homey.app.cloudId}.connect.athom.com`
+            : `${localHost.replaceAll('.', '-')}.homey.homeylocal.com`;
+        const url = ssl ? `https://${httpsHost}/app/nl.qluster-it.FtpClient/userdata/downloads/${key}/${encodeURIComponent(storedName)}`
+            : `http://${localHost}:47335/file/${id}`;
+        const entry = await this.runTransfer(device, 'download', file.id, () => this.downloadCache.download({
+            id: key, name: storedName, ssl,
+            limitMessage: this.homey.__('errors.downloadCacheFull'),
+            transfer: createTransferStream => device.ftpClient.exec({ action: 'downloadTo', createTransferStream }, undefined, file.id)
+        }));
         try {
-            // let filesandfolders = await readdirAsync('/userdata/');
-            // for (let i = 0; i < filesandfolders.length; i++) {
-            //     const faf = filesandfolders[i];
-            //     let stats = await statAsync(path.join('/userdata/',faf));
-            //     try {
-            //         if(stats.isDirectory()) await rmAsync(path.join('/userdata/',faf), {force:true, recursive:true});
-            //         else await unlinkAsync(path.join('/userdata/',faf));
-
-            //     } catch (error) {
-            //         this.error(error);                    
-            //     }
-            // }
-
-            //let filesandfolders1 = await readdirAsync(`/userdata/downloads/`);
-
-            let name = file.filename || file.name;
-            const { buffer: buf } = await this.getFile({ file, device });
-            //buf.
-
-            //base64 = buf.toString('base64');                
-            //buf = null;
-            //}
-            //global.gc();
-
-            let randomId = randomBytes(24).toString('hex');
-            let id = device.id + file.id;// randomBytes(12).toString('hex');
-            id = encodeURIComponent(id);
-            let url = 'http://' + this.homey.app.ip + ":47335/file/" + id;
-            let useUrl;
-            let path;
-
-            if (type == 'url') useUrl = device.settings.urlforurls;
-            else if (type == 'download') useUrl = device.settings.urlforfiles;
-
-            if (useUrl === 'cloudssl' || useUrl === 'localssl') {
-                //id = 'downloads/'+ randomId + '/' + name.replaceAll(' ', '_');// '%20'); //dont encode this id.
-                if (type === 'url') {
-                    id = 'downloads/' + randomId + '/' + randomBytes(8).toString('hex') + '.' + BL._.last(name.split('.')); //encodeURIComponent(encodeURIComponent(name));
-                    url = `app/nl.qluster-it.FtpClient/userdata/` + id;
-                }
-
-                if (type === 'download') {
-                    id = 'downloads/' + randomId + '/' + encodeURIComponent(name);
-                    url = `app/nl.qluster-it.FtpClient/userdata/` + 'downloads/' + randomId + '/' + encodeURIComponent(encodeURIComponent(name));
-                }
-
-                //id = 'downloads/'+ randomId + '/' + encodeURIComponent(encodeURIComponent(name));
-
-                this.log('new id', id);
+            if (createToken) {
+                entry.image = await this.homey.images.createImage();
+                await entry.image.setPath(entry.path);
             }
-
-            //args.device.settings.urlforicons
-
-            if (!this.fileDownloads) this.fileDownloads = {};
-
-            let deleteFile = async (fileObject) => {
-                clearTimeout(fileObject.timeout);
-                delete fileObject.timeout;
-                if (fileObject.randomId) {
-                    this.log('deleting file');
-                    if ((await existsAsync(`/userdata/downloads/${fileObject.randomId}`))) await rmAsync(`/userdata/downloads/${fileObject.randomId}`, { force: true, recursive: true });
-                }
-                // if(fileObject.token)  {
-                //     this.log('deleting token');
-                //     await this.homey.flow.unregisterToken(fileObject.token);
-                // }
-                if (fileObject.image) {
-                    this.log('deleting image');
-                    await this.homey.images.unregisterImage(fileObject.image);
-                }
-
-
-            };
-
-            if (this.fileDownloads[id] && this.fileDownloads[id].timeout) {
-                await deleteFile(this.fileDownloads[id]);
-
-            }
-
-            this.fileDownloads[id] = { name: name, id };
-
-            let token, image;
-            if (useUrl === 'cloudssl' || useUrl === 'localssl' || createToken) {
-                this.fileDownloads[id].randomId = randomId;
-                if (!(await existsAsync(`/userdata/downloads/${randomId}/`))) await mkdirAsync(`/userdata/downloads/${randomId}/`, { recursive: true });
-                path = `/userdata/${id}`;
-                await writeFileAsync(path, buf);
-
-                this.log('writefile', path);
-                if (createToken) {
-                    this.fileDownloads[id].image = await this.homey.images.createImage();
-                    this.fileDownloads[id].image.setPath(path);
-                    // this.fileDownloads[id].token = await this.homey.flow.createToken(randomBytes(12).toString('hex'), {
-                    //     type: "image",
-                    //     title: file.name,
-                    //   });                  
-                    //   await this.fileDownloads[id].token.setValue(this.fileDownloads[id].image);
-                }
-
-                // let filesandfolders = await readdirAsync(`/userdata/downloads/${randomId}/`);
-
-            }
-
-            if (useUrl === 'local') {
-                //this.fileDownloads[id].base64 = buf.toString('base64');
-                this.fileDownloads[id].buffer = buf;
-                //if(createToken) throw new Error('To get image tokens');
-            }
-            if (useUrl === 'localssl') url = `https://${this.homey.app.ip.replaceAll('.', '-')}.homey.homeylocal.com/` + url;
-            else if (useUrl === 'cloudssl') url = `https://${this.homey.app.cloudId}.connect.athom.com/` + url;
-            const fileObject = this.fileDownloads[id];
-            fileObject.timeout = setTimeout(async () => {
-                if (this.fileDownloads[id] === fileObject) delete this.fileDownloads[id];
-                try {
-                    await deleteFile(fileObject);
-                } catch (error) {
-                    this.error('Expired download could not be removed', error);
-                }
-            }, device.settings.downloadtime * 1000);
-
-            return { id, url, path, image: fileObject.image }; //base64 //, token:this.fileDownloads[id].token
-
         } catch (error) {
-            this.error(error);
+            await this.removeDownload(entry);
             throw error;
+        }
+        this.fileDownloads ??= Object.create(null);
+        entry.local = !ssl;
+        this.fileDownloads[id] = entry;
+        entry.timeout = setTimeout(() => {
+            delete this.fileDownloads[id];
+            return this.removeDownload(entry);
+        }, device.settings.downloadtime * 1000);
+        return { id, url, path: ssl || createToken ? entry.path : undefined, image: entry.image };
+    }
+
+    async removeDownload(entry) {
+        clearTimeout(entry.timeout);
+        if (entry.image) {
+            try {
+                await this.homey.images.unregisterImage(entry.image);
+            } catch (error) {
+                this.error('Could not unregister download image', error);
+            }
+        }
+        try {
+            await this.downloadCache.remove(entry);
+        } catch (error) {
+            this.error('Could not remove temporary download', error);
         }
     }
 };

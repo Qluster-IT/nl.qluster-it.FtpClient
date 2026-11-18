@@ -4,10 +4,14 @@
         <h2 class="ftp-dialog-title">{{__('repair.uploadFiles')}}</h2>
         <p class="ftp-dialog-message">{{__('repair.uploadInto', {directory:directory.fullPath || '/'})}}</p>
         <div class="ftp-dialog-upload">
-            <input type="file" id="files" name="files[]" multiple file-on-change="uploadFiles" aria-label="{{__('repair.uploadFiles')}}"/>
+            <input type="file" id="files" name="files[]" multiple file-on-change="uploadFiles" ng-disabled="uploadProgress" aria-label="{{__('repair.uploadFiles')}}"/>
+            <div ng-if="uploadProgress">
+                <span ng-bind="uploadProgress.name"></span>
+                <progress ng-attr-value="{{uploadProgress.value}}" ng-attr-max="{{uploadProgress.total}}" aria-label="{{__('repair.uploadFiles')}}"></progress>
+            </div>
         </div>
         <div class="ftp-dialog-buttons">
-            <button type="button" class="hy-nostyle ftp-button-secondary" ng-click="cancel($event)">{{__('repair.cancel')}}</button>
+            <button type="button" class="hy-nostyle ftp-button-secondary" ng-click="cancel($event)" ng-disabled="uploadProgress">{{__('repair.cancel')}}</button>
         </div>
     </div>
 </div>

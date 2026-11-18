@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Buscar en esta carpeta",
+    "noSearchMatches": "No hay archivos ni carpetas que coincidan.",
     "direction": "ltr",
     "ok": "Aceptar",
     "cancel": "Cancelar",
@@ -29,6 +31,7 @@
     "move": "Mover"
   },
   "errors": {
+    "downloadCacheFull": "El almacenamiento temporal de descargas está lleno. Espera a que caduquen los enlaces existentes o elige un archivo más pequeño.",
     "fileRequired": "Selecciona un archivo.",
     "imageRequired": "Selecciona una imagen o introduce una ruta.",
     "pathRequired": "Indica una carpeta y/o una ruta.",

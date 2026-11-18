@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Search this folder",
+    "noSearchMatches": "No matching files or folders.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Cancel",
@@ -29,6 +31,7 @@
     "move": "Move"
   },
   "errors": {
+    "downloadCacheFull": "Temporary download storage is full. Wait for existing links to expire, or choose a smaller file.",
     "fileRequired": "A file must be selected.",
     "imageRequired": "Select an image or enter a path.",
     "pathRequired": "Set a folder and/or a path.",

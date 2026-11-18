@@ -38,8 +38,9 @@
     <div class="ftp-directory-children" ng-class="{'selected':vars.selected==directory, 'non-active':directory!=vars.currentDirectory}" ng-if="(directory.shown = (view.display=='list' && directory.show && directory.children.length)) || (view.display!='list' && (directory==vars.currentDirectory || isInPath(directory)))"
         ftp-directory-context-menu-click="hideMenus(); vars.selected=directory; $event.stopPropagation(); "
         ftp-drop-target="directory" ng-click="vars.selected=null; hideMenus(); $event.stopPropagation();">
-        <ftp-directory ng-class="{'selected':vars.selected==dir}" directory="dir" parent-directory="directory" ng-repeat="dir in directory.children | filter:{isDirectory:true} track by dir.fullPath" ng-click="vars.selected=dir; hideMenus(); $event.stopPropagation(); "></ftp-directory>
-        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" directory="directory" ng-repeat="file in directory.children | filter:{isFile:true} track by file.fullPath" ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
+        <p class="ftp-no-matches" role="status" ng-if="vars.searchResults.directory === directory && !vars.searchResults.folders.length && !vars.searchResults.files.length">{{__('repair.noSearchMatches')}}</p>
+        <ftp-directory ng-class="{'selected':vars.selected==dir}" directory="dir" parent-directory="directory" ng-repeat="dir in (vars.searchResults.directory === directory ? vars.searchResults.folders : directory.folders) track by dir.fullPath" ng-click="vars.selected=dir; hideMenus(); $event.stopPropagation(); "></ftp-directory>
+        <ftp-file ng-class="{'selected':vars.selected==file}" file="file" directory="directory" ng-repeat="file in (vars.searchResults.directory === directory ? vars.searchResults.files : directory.files) track by file.fullPath" ng-click="vars.selected=file; hideMenus(); $event.stopPropagation(); "></ftp-file>
     </div>
     <window-confirm action="move" ng-if="directory.root && vars.pendingMove"
         title="{{__(vars.pendingMove.item.isDirectory ? 'repair.moveFolder' : 'repair.moveFile')}}"

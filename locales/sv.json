@@ -26,7 +26,9 @@
     "parentFolder": "Överordnad mapp",
     "bllRequired": "Installera appen Better Logic Library för att använda FTP-utforskaren.",
     "uploadFailed": "Filen kunde inte läsas för uppladdning.",
-    "move": "Flytta"
+    "move": "Flytta",
+    "searchFolder": "Sök i den här mappen",
+    "noSearchMatches": "Inga matchande filer eller mappar."
   },
   "errors": {
     "fileRequired": "Välj en fil.",
@@ -35,7 +37,8 @@
     "folderRequired": "Välj en mapp.",
     "urlRequired": "Ange en URL.",
     "outsideRoot": "Sökvägen måste stanna inom den inställda rotmappen.",
-    "rootProtected": "Välj en fil eller undermapp inom den inställda rotmappen."
+    "rootProtected": "Välj en fil eller undermapp inom den inställda rotmappen.",
+    "downloadCacheFull": "Det tillfälliga nedladdningsutrymmet är fullt. Vänta tills befintliga länkar upphör att gälla eller välj en mindre fil."
   },
   "pair": {
     "custom": "Anpassad FTP Client",

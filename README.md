@@ -13,6 +13,14 @@ Folder refreshes preserve expanded subfolders. Failed changes and uploads show
 an error so they can be retried. Renaming or deleting the folder currently being
 browsed returns to its parent.
 
+Use **Search this folder** to filter files and folders by name without another
+FTP request. Search does not include subfolders and resets when you navigate.
+
+Repair downloads use temporary storage on Homey instead of keeping entire
+files in the app's memory. Links expire after the device's **Download Time**.
+The shared temporary download cache is limited to 256 MiB; if it is full,
+wait for existing links to expire or choose a smaller file.
+
 This works great with f.i. a FTP Server running on a Synology.
 
 It contains a flowcard to retrieve a (http) url to access the files: So you can use this to play a file on Sonos f.i..
@@ -54,6 +62,24 @@ SVGs. Other known types use category icons. Picker icons
 use the device's selected connection mode, defaulting to
 **Local (SSL)** for new devices. Plain **Local** uses HTTP, which HTTPS browsers
 may block as mixed content.
+
+### Uploads and large log exports
+
+Repair uploads one file at a time and shows progress. Files are staged in
+private temporary storage on Homey, with a shared 256 MiB budget for pending
+Repair uploads.
+
+Existing **Save file from base64** and image-save Flows still work. Homey must
+deliver the entire Base64 token before FTP Client can decode it, so that card
+cannot bypass Homey's Flow payload limits.
+
+For large logs, use **Save a Simple (Sys) Log export** instead. Choose CSV,
+Excel (.xlsx), or JSON. Optionally select an FTP folder and enter the filename
+(for example, select `exports` and enter `homey-log.xlsx`, or leave the picker
+empty and enter `exports/homey-log.xlsx`). The card streams the completed export from the same
+Homey without passing the file through a Flow token. Simple (Sys) Log and
+Better Logic Library must be running; export preparation still depends on those
+apps and available storage.
 
 ### Connection status and transfer alerts
 

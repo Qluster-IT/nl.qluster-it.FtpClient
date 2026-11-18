@@ -154,7 +154,8 @@
     "url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
   },
   "permissions": [
-    "homey:app:net.i-dev.betterlogic"
+    "homey:app:net.i-dev.betterlogic",
+    "homey:app:nl.nielsdeklerk.log"
   ],
   "images": {
     "small": "/assets/images/small.png",
@@ -189,11 +190,6 @@
     ]
   },
   "api": {
-    "uploadFiles": {
-      "method": "POST",
-      "path": "/uploadFiles",
-      "public": true
-    },
     "uploadFilePartials": {
       "method": "POST",
       "path": "/uploadFilePartials",
@@ -871,7 +867,6 @@
           {
             "name": "file",
             "type": "text",
-            "required": false,
             "placeholder": {
               "en": "File (base64)",
               "nl": "Bestand (base64)",
@@ -911,7 +906,6 @@
           {
             "name": "path",
             "type": "text",
-            "required": false,
             "placeholder": {
               "en": "(Path +) Filename (* BLL supported)",
               "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
@@ -1009,7 +1003,6 @@
           {
             "name": "path",
             "type": "text",
-            "required": false,
             "placeholder": {
               "en": "(Path +) Filename (* BLL supported)",
               "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
@@ -1023,6 +1016,160 @@
               "ru": "(Путь +) имя файла (* поддержка BLL)",
               "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
               "ko": "(경로 +) 파일 이름(* BLL 지원)",
+              "ar": "(المسار +) اسم الملف (* يدعم BLL)"
+            },
+            "title": {
+              "en": "Filename",
+              "nl": "Bestandsnaam",
+              "de": "Dateiname",
+              "fr": "Nom du fichier",
+              "it": "Nome file",
+              "es": "Nombre del archivo",
+              "sv": "Filnamn",
+              "no": "Filnavn",
+              "da": "Filnavn",
+              "ru": "Имя файла",
+              "pl": "Nazwa pliku",
+              "ko": "파일 이름",
+              "ar": "اسم الملف"
+            }
+          }
+        ]
+      },
+      {
+        "id": "action_ftpclient_save_syslog_export",
+        "title": {
+          "en": "Save a Simple (Sys) Log export",
+          "nl": "Een export van Simple (Sys) Log opslaan",
+          "de": "Einen Export aus Simple (Sys) Log speichern",
+          "fr": "Enregistrer un export de Simple (Sys) Log",
+          "it": "Salva un'esportazione di Simple (Sys) Log",
+          "es": "Guardar una exportación de Simple (Sys) Log",
+          "sv": "Spara en export från Simple (Sys) Log",
+          "no": "Lagre en eksport fra Simple (Sys) Log",
+          "da": "Gem en eksport fra Simple (Sys) Log",
+          "ru": "Сохранить экспорт Simple (Sys) Log",
+          "pl": "Zapisz eksport z Simple (Sys) Log",
+          "ko": "Simple (Sys) Log 내보내기 저장",
+          "ar": "حفظ تصدير من Simple (Sys) Log"
+        },
+        "titleFormatted": {
+          "en": "Save a [[format]] export from Simple (Sys) Log to [[directory]] / [[path]]",
+          "nl": "Sla een [[format]]-export van Simple (Sys) Log op in [[directory]] / [[path]]",
+          "de": "Einen [[format]]-Export aus Simple (Sys) Log unter [[directory]] / [[path]] speichern",
+          "fr": "Enregistrer un export [[format]] de Simple (Sys) Log dans [[directory]] / [[path]]",
+          "it": "Salva un'esportazione [[format]] di Simple (Sys) Log in [[directory]] / [[path]]",
+          "es": "Guardar una exportación [[format]] de Simple (Sys) Log en [[directory]] / [[path]]",
+          "sv": "Spara en [[format]]-export från Simple (Sys) Log till [[directory]] / [[path]]",
+          "no": "Lagre en [[format]]-eksport fra Simple (Sys) Log til [[directory]] / [[path]]",
+          "da": "Gem en [[format]]-eksport fra Simple (Sys) Log i [[directory]] / [[path]]",
+          "ru": "Сохранить экспорт [[format]] из Simple (Sys) Log в [[directory]] / [[path]]",
+          "pl": "Zapisz eksport [[format]] z Simple (Sys) Log w [[directory]] / [[path]]",
+          "ko": "Simple (Sys) Log의 [[format]] 내보내기를 [[directory]] / [[path]]에 저장",
+          "ar": "حفظ تصدير [[format]] من Simple (Sys) Log في [[directory]] / [[path]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=ftpconnection"
+          },
+          {
+            "name": "format",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "csv",
+                "title": {
+                  "en": "CSV",
+                  "nl": "CSV",
+                  "de": "CSV",
+                  "fr": "CSV",
+                  "it": "CSV",
+                  "es": "CSV",
+                  "sv": "CSV",
+                  "no": "CSV",
+                  "da": "CSV",
+                  "ru": "CSV",
+                  "pl": "CSV",
+                  "ko": "CSV",
+                  "ar": "CSV"
+                }
+              },
+              {
+                "id": "xlsx",
+                "title": {
+                  "en": "Excel (.xlsx)",
+                  "nl": "Excel (.xlsx)",
+                  "de": "Excel (.xlsx)",
+                  "fr": "Excel (.xlsx)",
+                  "it": "Excel (.xlsx)",
+                  "es": "Excel (.xlsx)",
+                  "sv": "Excel (.xlsx)",
+                  "no": "Excel (.xlsx)",
+                  "da": "Excel (.xlsx)",
+                  "ru": "Excel (.xlsx)",
+                  "pl": "Excel (.xlsx)",
+                  "ko": "Excel (.xlsx)",
+                  "ar": "Excel (.xlsx)"
+                }
+              },
+              {
+                "id": "json",
+                "title": {
+                  "en": "JSON",
+                  "nl": "JSON",
+                  "de": "JSON",
+                  "fr": "JSON",
+                  "it": "JSON",
+                  "es": "JSON",
+                  "sv": "JSON",
+                  "no": "JSON",
+                  "da": "JSON",
+                  "ru": "JSON",
+                  "pl": "JSON",
+                  "ko": "JSON",
+                  "ar": "JSON"
+                }
+              }
+            ]
+          },
+          {
+            "name": "directory",
+            "type": "autocomplete",
+            "required": false,
+            "placeholder": {
+              "en": "Folder",
+              "nl": "Map",
+              "de": "Ordner",
+              "fr": "Dossier",
+              "it": "Cartella",
+              "es": "Carpeta",
+              "sv": "Mapp",
+              "no": "Mappe",
+              "da": "Mappe",
+              "ru": "Папка",
+              "pl": "Folder",
+              "ko": "폴더",
+              "ar": "مجلد"
+            }
+          },
+          {
+            "name": "path",
+            "type": "text",
+            "placeholder": {
+              "en": "(Path +) Filename (* BLL supported)",
+              "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",
+              "de": "(Pfad +) Dateiname (* BLL unterstützt)",
+              "fr": "(Chemin +) nom du fichier (* BLL pris en charge)",
+              "it": "(Percorso +) nome file (* BLL supportato)",
+              "es": "(Ruta +) nombre del archivo (* compatible con BLL)",
+              "sv": "(Sökväg +) filnamn (* BLL stöds)",
+              "no": "(Sti +) filnavn (* BLL støttes)",
+              "da": "(Sti +) filnavn (* BLL understøttes)",
+              "ru": "(Путь +) имя файла (* поддержка BLL)",
+              "pl": "(Ścieżka +) nazwa pliku (* obsługa BLL)",
+              "ko": "(경로 +) 파일 이름 (* BLL 지원)",
               "ar": "(المسار +) اسم الملف (* يدعم BLL)"
             },
             "title": {

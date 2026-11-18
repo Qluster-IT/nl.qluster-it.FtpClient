@@ -26,7 +26,9 @@
     "parentFolder": "Parent folder",
     "bllRequired": "Install the Better Logic Library app to use the FTP browser.",
     "uploadFailed": "The file could not be read for upload.",
-    "move": "Move"
+    "move": "Move",
+    "searchFolder": "Search this folder",
+    "noSearchMatches": "No matching files or folders."
   },
   "errors": {
     "fileRequired": "A file must be selected.",
@@ -35,7 +37,8 @@
     "folderRequired": "A folder must be selected.",
     "urlRequired": "Enter a URL.",
     "outsideRoot": "The path must stay inside the configured root directory.",
-    "rootProtected": "Choose a file or subfolder inside the configured root directory."
+    "rootProtected": "Choose a file or subfolder inside the configured root directory.",
+    "downloadCacheFull": "Temporary download storage is full. Wait for existing links to expire, or choose a smaller file."
   },
   "pair": {
     "custom": "Custom FTP Client",

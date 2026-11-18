@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Szukaj w tym folderze",
+    "noSearchMatches": "Brak pasujących plików lub folderów.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Anuluj",
@@ -29,6 +31,7 @@
     "move": "Przenieś"
   },
   "errors": {
+    "downloadCacheFull": "Tymczasowe miejsce na pobieranie jest pełne. Poczekaj, aż istniejące linki wygasną, lub wybierz mniejszy plik.",
     "fileRequired": "Wybierz plik.",
     "imageRequired": "Wybierz obraz lub podaj ścieżkę.",
     "pathRequired": "Podaj folder i/lub ścieżkę.",

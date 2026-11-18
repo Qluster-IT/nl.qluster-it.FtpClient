@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Søk i denne mappen",
+    "noSearchMatches": "Ingen samsvarende filer eller mapper.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Avbryt",
@@ -29,6 +31,7 @@
     "move": "Flytt"
   },
   "errors": {
+    "downloadCacheFull": "Den midlertidige nedlastingslagringen er full. Vent til eksisterende lenker utløper, eller velg en mindre fil.",
     "fileRequired": "Velg en fil.",
     "imageRequired": "Velg et bilde eller angi en sti.",
     "pathRequired": "Angi en mappe og/eller en sti.",

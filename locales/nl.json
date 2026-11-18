@@ -26,7 +26,9 @@
     "parentFolder": "Bovenliggende map",
     "bllRequired": "Installeer de Better Logic Library-app om de FTP-browser te gebruiken.",
     "uploadFailed": "Het bestand kon niet worden gelezen voor het uploaden.",
-    "move": "Verplaatsen"
+    "move": "Verplaatsen",
+    "searchFolder": "Zoek in deze map",
+    "noSearchMatches": "Geen overeenkomende bestanden of mappen."
   },
   "errors": {
     "fileRequired": "Selecteer een bestand.",
@@ -35,7 +37,8 @@
     "folderRequired": "Selecteer een map.",
     "urlRequired": "Voer een URL in.",
     "outsideRoot": "Het pad moet binnen de ingestelde hoofdmap blijven.",
-    "rootProtected": "Kies een bestand of submap binnen de ingestelde hoofdmap."
+    "rootProtected": "Kies een bestand of submap binnen de ingestelde hoofdmap.",
+    "downloadCacheFull": "De tijdelijke downloadopslag is vol. Wacht tot bestaande links verlopen of kies een kleiner bestand."
   },
   "pair": {
     "custom": "Aangepaste FTP Client",

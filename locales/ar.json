@@ -26,7 +26,9 @@
     "parentFolder": "المجلد الأصل",
     "bllRequired": "ثبّت تطبيق Better Logic Library لاستخدام متصفح FTP.",
     "uploadFailed": "تعذرت قراءة الملف لرفعه.",
-    "move": "نقل"
+    "move": "نقل",
+    "searchFolder": "البحث في هذا المجلد",
+    "noSearchMatches": "لا توجد ملفات أو مجلدات مطابقة."
   },
   "errors": {
     "fileRequired": "يجب اختيار ملف.",
@@ -35,7 +37,8 @@
     "folderRequired": "يجب اختيار مجلد.",
     "urlRequired": "أدخل عنوان URL.",
     "outsideRoot": "يجب أن يبقى المسار داخل المجلد الجذر المحدد.",
-    "rootProtected": "اختر ملفًا أو مجلدًا فرعيًا داخل المجلد الجذر المحدد."
+    "rootProtected": "اختر ملفًا أو مجلدًا فرعيًا داخل المجلد الجذر المحدد.",
+    "downloadCacheFull": "مساحة التنزيل المؤقتة ممتلئة. انتظر حتى تنتهي صلاحية الروابط الحالية أو اختر ملفًا أصغر."
   },
   "pair": {
     "custom": "FTP Client مخصص",

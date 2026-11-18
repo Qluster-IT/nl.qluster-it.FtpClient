@@ -26,7 +26,9 @@
     "parentFolder": "Cartella superiore",
     "bllRequired": "Installa l’app Better Logic Library per usare il browser FTP.",
     "uploadFailed": "Impossibile leggere il file da caricare.",
-    "move": "Sposta"
+    "move": "Sposta",
+    "searchFolder": "Cerca in questa cartella",
+    "noSearchMatches": "Nessun file o cartella corrispondente."
   },
   "errors": {
     "fileRequired": "Seleziona un file.",
@@ -35,7 +37,8 @@
     "folderRequired": "Seleziona una cartella.",
     "urlRequired": "Inserisci un URL.",
     "outsideRoot": "Il percorso deve rimanere nella cartella radice configurata.",
-    "rootProtected": "Scegli un file o una sottocartella nella cartella radice configurata."
+    "rootProtected": "Scegli un file o una sottocartella nella cartella radice configurata.",
+    "downloadCacheFull": "Lo spazio temporaneo per i download è pieno. Attendi che i link esistenti scadano o scegli un file più piccolo."
   },
   "pair": {
     "custom": "FTP Client personalizzato",

@@ -26,7 +26,9 @@
     "parentFolder": "Folder nadrzędny",
     "bllRequired": "Zainstaluj aplikację Better Logic Library, aby korzystać z przeglądarki FTP.",
     "uploadFailed": "Nie udało się odczytać pliku do przesłania.",
-    "move": "Przenieś"
+    "move": "Przenieś",
+    "searchFolder": "Szukaj w tym folderze",
+    "noSearchMatches": "Brak pasujących plików lub folderów."
   },
   "errors": {
     "fileRequired": "Wybierz plik.",
@@ -35,7 +37,8 @@
     "folderRequired": "Wybierz folder.",
     "urlRequired": "Podaj URL.",
     "outsideRoot": "Ścieżka musi pozostać wewnątrz ustawionego folderu głównego.",
-    "rootProtected": "Wybierz plik lub podfolder wewnątrz ustawionego folderu głównego."
+    "rootProtected": "Wybierz plik lub podfolder wewnątrz ustawionego folderu głównego.",
+    "downloadCacheFull": "Tymczasowe miejsce na pobieranie jest pełne. Poczekaj, aż istniejące linki wygasną, lub wybierz mniejszy plik."
   },
   "pair": {
     "custom": "Niestandardowy FTP Client",

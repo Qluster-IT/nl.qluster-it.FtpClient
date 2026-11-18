@@ -26,7 +26,9 @@
     "parentFolder": "Carpeta superior",
     "bllRequired": "Instala la app Better Logic Library para usar el explorador FTP.",
     "uploadFailed": "No se pudo leer el archivo para subirlo.",
-    "move": "Mover"
+    "move": "Mover",
+    "searchFolder": "Buscar en esta carpeta",
+    "noSearchMatches": "No hay archivos ni carpetas que coincidan."
   },
   "errors": {
     "fileRequired": "Selecciona un archivo.",
@@ -35,7 +37,8 @@
     "folderRequired": "Selecciona una carpeta.",
     "urlRequired": "Introduce una URL.",
     "outsideRoot": "La ruta debe permanecer dentro de la carpeta raíz configurada.",
-    "rootProtected": "Elige un archivo o una subcarpeta dentro de la carpeta raíz configurada."
+    "rootProtected": "Elige un archivo o una subcarpeta dentro de la carpeta raíz configurada.",
+    "downloadCacheFull": "El almacenamiento temporal de descargas está lleno. Espera a que caduquen los enlaces existentes o elige un archivo más pequeño."
   },
   "pair": {
     "custom": "FTP Client personalizado",

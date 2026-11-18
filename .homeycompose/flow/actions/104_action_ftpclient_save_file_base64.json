@@ -79,7 +79,6 @@
     {
       "name": "path",
       "type": "text",
-      "required": false,
       "placeholder": {
         "en": "(Path +) Filename (* BLL supported)",
         "nl": "(Pad +) bestandsnaam (* BLL ondersteund)",

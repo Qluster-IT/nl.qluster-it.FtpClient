@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Søg i denne mappe",
+    "noSearchMatches": "Ingen matchende filer eller mapper.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Annuller",
@@ -29,6 +31,7 @@
     "move": "Flyt"
   },
   "errors": {
+    "downloadCacheFull": "Den midlertidige lagerplads til downloads er fuld. Vent, til eksisterende links udløber, eller vælg en mindre fil.",
     "fileRequired": "Vælg en fil.",
     "imageRequired": "Vælg et billede, eller angiv en sti.",
     "pathRequired": "Angiv en mappe og/eller en sti.",

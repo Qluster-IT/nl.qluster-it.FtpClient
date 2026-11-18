@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "In diesem Ordner suchen",
+    "noSearchMatches": "Keine passenden Dateien oder Ordner.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Abbrechen",
@@ -29,6 +31,7 @@
     "move": "Verschieben"
   },
   "errors": {
+    "downloadCacheFull": "Der temporäre Downloadspeicher ist voll. Warte, bis vorhandene Links ablaufen, oder wähle eine kleinere Datei.",
     "fileRequired": "Eine Datei muss ausgewählt werden.",
     "imageRequired": "Wähle ein Bild aus oder gib einen Pfad ein.",
     "pathRequired": "Gib einen Ordner und/oder einen Pfad an.",

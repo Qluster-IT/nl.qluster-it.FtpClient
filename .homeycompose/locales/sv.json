@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Sök i den här mappen",
+    "noSearchMatches": "Inga matchande filer eller mappar.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Avbryt",
@@ -29,6 +31,7 @@
     "move": "Flytta"
   },
   "errors": {
+    "downloadCacheFull": "Det tillfälliga nedladdningsutrymmet är fullt. Vänta tills befintliga länkar upphör att gälla eller välj en mindre fil.",
     "fileRequired": "Välj en fil.",
     "imageRequired": "Välj en bild eller ange en sökväg.",
     "pathRequired": "Ange en mapp och/eller en sökväg.",

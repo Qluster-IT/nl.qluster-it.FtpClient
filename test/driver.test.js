@@ -6,7 +6,7 @@ const Module = require('node:module');
 const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
-const { Writable } = require('node:stream');
+const { Readable, Writable } = require('node:stream');
 const translate = key => key;
 
 function loadModule(relative, stubs) {
@@ -19,12 +19,15 @@ function loadModule(relative, stubs) {
   return m.exports;
 }
 
-function loadDriver({ FtpClient = class {}, BL = {} } = {}) {
+function loadDriver({ FtpClient = class {}, BL = {}, openSyslogExport } = {}) {
   const real = require('betterlogiclibrary');
   const betterlogiclibrary = { ...real, BL: { _: { each: (list, fn) => list.forEach(fn) }, ...BL } };
   return loadModule('drivers/ftpconnection/driver.js', {
     homey: { Driver: class {} },
     '../../lib/file-server': class { init() {} },
+    '../../lib/download-cache': class { async init() {} },
+    '../../lib/upload-spool': class { async init() {} },
+    ...(openSyslogExport ? { '../../lib/syslog-export': openSyslogExport } : {}),
     '../../lib/ftp-client': FtpClient,
     './device': class {},
     betterlogiclibrary,
@@ -39,6 +42,7 @@ async function openRepairBrowser(workdirectory, exec, browser = {}) {
   const errors = [];
   driver.homey = { __: key => key };
   driver.error = error => errors.push(error);
+  driver.uploadSpool = { async start({ upload }) { return { id: 'test-upload', chunkBytes: 3, upload }; } };
   await driver.onRepair({ setHandler: (name, handler) => { handlers[name] = handler; } }, {
     getData: () => ({ id: 'device' }),
     getSettings: () => ({ workdirectory }),
@@ -110,8 +114,9 @@ test('repair starts in the configured root and keeps navigation and file operati
     await new Promise(resolve => setImmediate(resolve));
     await handlers.addDirectory({ directory, name: 'new' });
     await handlers.moveItem({ item: { id: child.id + '/song.mp3', name: 'song.mp3' }, targetDirectory: directory });
-    const { id } = await handlers.uploadFiles();
-    await driver.fileUploads[id].upload({ directory, files: [{ name: 'upload.txt', base64: 'aGk=' }] });
+    const { upload } = await handlers.uploadFiles({ directory, name: 'upload.txt', size: 2 });
+    await upload('unused-test-source');
+    await assert.rejects(handlers.uploadFiles({ directory, name: '../outside.txt', size: 2 }), /repair.uploadFailed/);
     assert.deepEqual(calls.slice(0, 5), [
       ['list', root], ['list', root + '/music'], ['list', root],
       ['ensureDir', root + '/new'], ['rename', root + '/music/song.mp3', root + '/song.mp3']
@@ -279,13 +284,41 @@ test('repair upload errors stop the upload and retain the dialog for retry', asy
   }
   const { directives, errors } = await openRepairBrowser('/media', async () => [], { FileReader });
   const upload = directives.ftpFileUpload({ post: async () => { throw new Error('Upload denied'); } }, () => () => {});
-  const scope = { directory: { id: '/media', uploading: true }, attrs: {}, $parent: { getChildren() { assert.fail('refresh on failure'); } } };
+  const scope = { directory: { id: '/media', uploading: true }, attrs: {}, $applyAsync: fn => fn?.(), $parent: { getChildren() { assert.fail('refresh on failure'); } } };
   upload.controller(scope);
-  const event = { target: { files: [{ name: 'a.txt' }], value: 'file' } };
+  const event = { target: { files: [{ name: 'a.txt', size: 2, slice() {} }], value: 'file' } };
   await scope.uploadFiles(event);
   assert.deepEqual(errors, ['Upload denied']);
   assert.equal(scope.directory.uploading, true);
   assert.equal(event.target.value, '');
+});
+
+test('Repair reads one bounded blob at a time and completes each file before starting the next', async () => {
+  const trace = [];
+  class FileReader {
+    readAsDataURL(blob) { this.result = 'data:;base64,' + blob.toString('base64'); this.onload(); }
+  }
+  const { directives, driver } = await openRepairBrowser('/media', async () => [], { FileReader, setTimeout: resolve => resolve() });
+  let nextId = 0;
+  driver.uploadSpool.start = async ({ size }) => {
+    trace.push(['start', size]);
+    return { id: ++nextId, chunkBytes: 3 };
+  };
+  const upload = directives.ftpFileUpload({ async post(url, { id, offset, base64, status }) {
+    if (status) { trace.push(['status', id]); return { data: { pending: false } }; }
+    trace.push([id, offset, Buffer.from(base64, 'base64').toString()]);
+    return { data: { pending: id === 1 && offset === 6 } };
+  } }, () => () => {});
+  const scope = { directory: { id: '/media' }, attrs: {}, $apply: fn => fn(), $applyAsync: fn => fn?.(), $parent: { getChildren() {} } };
+  upload.controller(scope);
+  const files = ['abcdefg', '', 'xy'].map((value, i) => ({
+    name: `${i}.txt`, size: value.length, slice: (start, end) => Buffer.from(value.slice(start, end))
+  }));
+  await scope.uploadFiles({ target: { files } });
+  assert.deepEqual(trace, [
+    ['start', 7], [1, 0, 'abc'], [1, 3, 'def'], [1, 6, 'g'], ['status', 1],
+    ['start', 0], [2, 0, ''], ['start', 2], [3, 0, 'xy']
+  ]);
 });
 
 test('API readiness is false until mandatory initialization has completed', async () => {
@@ -511,12 +544,12 @@ test('Flow file saves resolve text paths under the root and do not upload when f
     exec: async ({ action }, ...args) => { calls.push([action, ...args]); }
   } };
   for (const path of ['exports/log.csv', '/exports/log.csv', '/media/root/exports/log.csv']) {
-    await driver.saveFile({ device, path, buffer: Buffer.from('test') });
+    await driver.saveFile({ device, path, getStream: () => Readable.from(Buffer.from('test')) });
   }
   assert.deepEqual(calls.filter(([action]) => action === 'ensureDir'), Array(3).fill(['ensureDir', '/media/root/exports']));
   assert.deepEqual(calls.filter(([action]) => action === 'uploadFrom').map(call => call[2]), Array(3).fill('/media/root/exports/log.csv'));
   device.ftpClient.exec = async () => { throw new Error('550 Permission denied'); };
-  await assert.rejects(driver.saveFile({ device, path: 'exports/fail.csv', buffer: Buffer.from('test') }), /550/);
+  await assert.rejects(driver.saveFile({ device, path: 'exports/fail.csv', getStream: () => Readable.from(Buffer.from('test')) }), /550/);
 });
 
 test('repair selects distinct supported file icons and handles case, compound names and unknown types', async () => {
@@ -692,24 +725,107 @@ test('Flow picker images honor the selected connection and default to Local (SSL
   assert.equal(await iconHost(undefined), 'https://192-0-2-1.homey.homeylocal.com');
 });
 
-test('a local download URL releases its file contents when the download time ends', async t => {
+test('Repair search filters the current listing without another FTP request and resets on navigation', async () => {
+  let requests = 0;
+  const { scope, directoryScope } = await openRepairBrowser('/root', async () => {
+    requests++;
+    return [
+      { name: 'Reports', isDirectory: true },
+      { name: 'REPORT.csv', isFile: true },
+      { name: 'notes.txt', isFile: true }
+    ];
+  });
+  const { vars } = scope;
+  vars.selected = vars.content.files.find(file => file.name === 'notes.txt');
+  vars.searchQuery = ' report ';
+  vars.updateSearch();
+  assert.deepEqual(Array.from(vars.searchResults.files, file => file.name), ['REPORT.csv']);
+  assert.deepEqual(Array.from(vars.searchResults.folders, folder => folder.name), ['Reports']);
+  assert.equal(vars.selected, null);
+  vars.searchQuery = 'unlisted';
+  vars.updateSearch();
+  assert.equal(vars.searchResults.files.length + vars.searchResults.folders.length, 0);
+  assert.equal(requests, 1);
+  directoryScope.setCurrentDirectory(vars.content.folders[0]);
+  assert.equal(vars.searchQuery, '');
+  assert.equal(vars.searchResults, null);
+});
+
+test('Repair indexes a large refresh once and clears stale matches when the folder becomes empty', async () => {
+  let entries = [{ name: 'stale.txt', isFile: true }];
+  const { scope, directoryScope } = await openRepairBrowser('/root', async () => entries);
+  const { vars } = scope;
+  const setListing = vars.setListing;
+  let indexed = 0;
+  vars.setListing = (...args) => { indexed++; setListing(...args); };
+  vars.searchQuery = 'match';
+  entries = Array.from({ length: 1000 }, (_, i) => ({ name: `match-${i}.txt`, isFile: true }));
+  await directoryScope.getChildren(vars.content, true);
+  assert.equal(indexed, 1);
+  assert.equal(vars.searchResults.files.length, 1000);
+  entries = [];
+  await directoryScope.getChildren(vars.content, true);
+  assert.equal(indexed, 2);
+  assert.equal(vars.searchResults.files.length, 0);
+  assert.equal(vars.content.children.length, 0);
+});
+
+test('a local download URL streams a private file and removes it when the link expires', async t => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
+  const DownloadCache = require('../lib/download-cache');
+  const root = await fs.promises.mkdtemp(path.join(require('node:os').tmpdir(), 'ftpclient-test-'));
+  t.after(() => fs.promises.rm(root, { recursive: true, force: true }));
   const Driver = loadDriver();
   const driver = new Driver();
   driver.log = driver.error = () => {};
-  driver.homey = { app: { ip: '192.0.2.1' } };
+  driver.homey = { __: translate, app: { ip: '192.0.2.1' } };
+  driver.downloadCache = new DownloadCache({ localRoot: path.join(root, 'private'), sslRoot: path.join(root, 'ssl'), maxBytes: 16 });
+  await driver.downloadCache.init();
   const device = { id: 'device', settings: { urlforfiles: 'local', downloadtime: 60 }, ftpClient: {
     exec: ({ createTransferStream }) => new Promise(resolve => createTransferStream().end(Buffer.from('content'), resolve)),
     refresh: async () => {}
   } };
   const { id, url } = await driver.getFileUrl({ file: { id: '/a.txt', name: 'a.txt' }, device, type: 'download' });
   assert.equal(url, 'http://192.0.2.1:47335/file/' + id);
-  assert.deepEqual(driver.fileDownloads[id].buffer, Buffer.from('content'));
+  const entry = driver.fileDownloads[id];
+  assert.equal(entry.buffer, undefined);
+  assert.equal(path.dirname(entry.directory), driver.downloadCache.localRoot);
+  assert.deepEqual(await fs.promises.readFile(entry.path), Buffer.from('content'));
   t.mock.timers.tick(59 * 1000);
   assert.ok(driver.fileDownloads[id]);
+  const remove = driver.downloadCache.remove.bind(driver.downloadCache);
+  let expiration;
+  driver.downloadCache.remove = expiredEntry => (expiration = remove(expiredEntry));
   t.mock.timers.tick(1000);
-  await new Promise(resolve => setImmediate(resolve));
   assert.equal(driver.fileDownloads[id], undefined);
+  await expiration;
+  assert.equal(driver.downloadCache.usedBytes, 0);
+  await assert.rejects(fs.promises.access(entry.path), { code: 'ENOENT' });
+});
+
+test('temporary downloads share a byte budget and retries replace partial files', async t => {
+  const root = await fs.promises.mkdtemp(path.join(require('node:os').tmpdir(), 'ftpclient-test-'));
+  t.after(() => fs.promises.rm(root, { recursive: true, force: true }));
+  const DownloadCache = require('../lib/download-cache');
+  const cache = new DownloadCache({ localRoot: path.join(root, 'private'), sslRoot: path.join(root, 'ssl'), maxBytes: 9 });
+  await cache.init();
+  const { pipeline } = require('node:stream/promises');
+  const { Readable } = require('node:stream');
+  const send = (stream, bytes) => pipeline(Readable.from([Buffer.from(bytes)]), stream);
+  const entry = await cache.download({ id: 'a'.repeat(48), name: 'file.bin', ssl: false, limitMessage: 'full', transfer: async make => {
+    await send(make(), 'partial');
+    await send(make(), 'okay');
+  } });
+  assert.equal(await fs.promises.readFile(entry.path, 'utf8'), 'okay');
+  await assert.rejects(cache.download({
+    id: 'b'.repeat(48), name: 'ssl.bin', ssl: true, limitMessage: 'full', transfer: make => send(make(), '123456')
+  }), { code: 'FTP_DOWNLOAD_CACHE_FULL', message: 'full' });
+  assert.equal(cache.usedBytes, 4);
+  assert.equal((await fs.promises.readdir(cache.sslRoot)).length, 0);
+  const restarted = new DownloadCache({ localRoot: cache.localRoot, sslRoot: cache.sslRoot });
+  await fs.promises.writeFile(path.join(cache.localRoot, 'unrelated'), '');
+  await restarted.init();
+  assert.deepEqual(await fs.promises.readdir(cache.localRoot), ['unrelated']);
 });
 
 test('closing an FTP client discards the connection so a later command reconnects', () => {
@@ -879,7 +995,7 @@ test('each failed transfer triggers once, leaves the original error intact and l
   driver.error = () => {};
   const failure = Object.assign(new Error('550 Permission denied: /configured/folder/file'), { code: 550 });
   device.ftpClient = { exec: async ({ action }) => { assert.equal(action, 'ensureDir'); throw failure; } };
-  await assert.rejects(driver.saveFile({ device, path: 'exports/example.txt', buffer: Buffer.from('sample') }), error => error === failure);
+  await assert.rejects(driver.saveFile({ device, path: 'exports/example.txt', getStream: () => Readable.from(Buffer.from('sample')) }), error => error === failure);
   await assert.rejects(driver.runTransfer(device, 'download', '/configured/folder/example.txt', async () => { throw failure; }), error => error === failure);
   assert.equal(device.hasTransferError(), true);
   assert.equal(device.isFtpReady(), true);
@@ -936,7 +1052,7 @@ test('an upload retry sends the complete payload again after the first stream is
     }
   });
   const payload = Buffer.from([0, 0x80, 0xff]);
-  await new Driver().uploadBuffer({ ftpClient }, 'file.bin', payload);
+  await new Driver().uploadStream({ ftpClient }, 'file.bin', () => Readable.from(payload));
   assert.deepEqual(received, [payload, payload]);
 });
 
@@ -979,18 +1095,141 @@ test('the file server answers an old file URL before any download and logs a bus
   assert.equal(errors[0][0], 'File server could not use port 47335');
 });
 
-test('an upload session is released after its last part, also when the upload fails', async () => {
+test('the Repair API spools a multi-megabyte file, validates offsets, and releases failed or canceled transfers', async t => {
   const api = loadModule('api.js', { homey: {} });
-  const uploaded = [];
-  const fileUploads = {
-    done: { upload: async ({ directory, files }) => { uploaded.push([directory, files]); return {}; } },
-    failed: { upload: async () => { throw new Error('FTP server unavailable'); } }
+  const UploadSpool = require('../lib/upload-spool');
+  const root = await fs.promises.mkdtemp(path.join(require('node:os').tmpdir(), 'ftpclient-spool-test-'));
+  const uploadSpool = new UploadSpool(root, error => { throw error; });
+  t.after(async () => { await uploadSpool.close(); await fs.promises.rmdir(root); });
+  await uploadSpool.init();
+  const homey = { __: translate, drivers: { getDriver: () => ({ uploadSpool }) } };
+  const post = body => api.uploadFilePartials({ homey, body });
+  const settle = async id => {
+    await uploadSpool.entries.get(id).transfer;
+    return post({ id, status: true });
   };
-  const homey = { drivers: { getDriver: () => ({ fileUploads }) } };
-  const json = JSON.stringify([{ name: 'a.txt', base64: 'YQ==' }]);
-  assert.equal(await api.uploadFilePartials({ homey, body: { directory: 'd', partial: json.slice(0, 5), id: 'done' } }), true);
-  assert.deepEqual(await api.uploadFilePartials({ homey, body: { directory: 'd', partial: json.slice(5), id: 'done', lastPart: true } }), {});
-  assert.deepEqual(uploaded, [['d', [{ name: 'a.txt', base64: 'YQ==' }]]]);
-  await assert.rejects(api.uploadFilePartials({ homey, body: { directory: 'd', partial: json, id: 'failed', lastPart: true } }), /unavailable/);
-  assert.deepEqual(fileUploads, {});
+  const payload = require('node:crypto').randomBytes(3 * 1024 * 1024 + 17);
+  let uploaded = false;
+  const { id, chunkBytes } = await uploadSpool.start({ size: payload.length, async upload(file) {
+    assert.deepEqual(await fs.promises.readFile(file), payload);
+    uploaded = true;
+  } });
+  await assert.rejects(post({ id, offset: 1, base64: 'YQ==' }), /repair.uploadFailed/);
+  for (let offset = 0; offset < payload.length; offset += chunkBytes) {
+    await post({ id, offset, base64: payload.subarray(offset, offset + chunkBytes).toString('base64') });
+  }
+  assert.deepEqual(await settle(id), { pending: false });
+  assert.equal(uploaded, true);
+  const failed = await uploadSpool.start({ size: 1, upload: async () => { throw new Error('FTP server unavailable'); } });
+  assert.deepEqual(await post({ id: failed.id, offset: 0, base64: 'YQ==' }), { pending: true });
+  await assert.rejects(settle(failed.id), /unavailable/);
+  const canceled = await uploadSpool.start({ size: 2, upload: async () => assert.fail('canceled upload') });
+  await post({ id: canceled.id, cancel: true });
+  assert.deepEqual(await fs.promises.readdir(root), []);
+  assert.equal(uploadSpool.used, 0);
+});
+
+test('the save Flow streams a large Base64 token in small buffers without changing the bytes', async () => {
+  const Driver = loadDriver({ BL: { decode: async value => value } });
+  const driver = new Driver();
+  driver.log = driver.error = () => {};
+  const listeners = {};
+  const getCard = id => ({
+    registerRunListener(listener) { listeners[id] = listener; },
+    getArgument: () => ({ registerAutocompleteListener() {} })
+  });
+  driver.homey = { __: translate, app: {}, flow: { getActionCard: getCard, getConditionCard: getCard } };
+  await driver.onInit();
+  const { randomBytes, createHash } = require('node:crypto');
+  const payload = randomBytes(5 * 1024 * 1024 + 2);
+  const encoded = payload.toString('base64url').replace(/.{127}/g, '$&\r\n');
+  const digest = createHash('sha256');
+  const device = { settings: { workdirectory: 'media' }, ftpClient: {
+    async exec({ action, createTransferStream }, _arg, destination) {
+      if (action === 'ensureDir') return;
+      assert.equal(destination, 'media/export.csv');
+      for await (const chunk of createTransferStream()) {
+        assert.ok(chunk.length <= 128 * 1024, `unexpected ${chunk.length}-byte chunk`);
+        digest.update(chunk);
+      }
+    }
+  } };
+  assert.equal(await listeners.action_ftpclient_save_file_base64({ device, path: 'export.csv', file: encoded }), true);
+  assert.equal(digest.digest('hex'), createHash('sha256').update(payload).digest('hex'));
+});
+
+test('the Sys Log export card accepts an optional folder selection and a BLL filename or relative path', async () => {
+  const Driver = loadDriver({
+    BL: { decode: async value => value === '{[name]}' ? 'log.xlsx' : value },
+    openSyslogExport: async () => () => Readable.from(Buffer.from('export'))
+  });
+  const driver = new Driver();
+  driver.log = driver.error = () => {};
+  const cards = {};
+  const getCard = id => cards[id] ||= {
+    registerRunListener(listener) { this.run = listener; },
+    getArgument: () => ({ registerAutocompleteListener(listener) { cards[id].autocomplete = listener; } })
+  };
+  driver.homey = { __: translate, app: {}, flow: { getActionCard: getCard, getConditionCard: getCard } };
+  await driver.onInit();
+
+  const card = cards.action_ftpclient_save_syslog_export;
+  const directory = { id: 'media/archive', isDirectory: true };
+  const destinations = [];
+  const device = { settings: { workdirectory: 'media' }, ftpClient: {
+    async exec({ action }, _, destination) {
+      if (action === 'uploadFrom') destinations.push(destination);
+    }
+  } };
+  driver.getFiles = async args => {
+    assert.deepEqual(args, { file: undefined, query: 'arch', device, type: 'folder' });
+    return [directory];
+  };
+  assert.deepEqual(await card.autocomplete('arch', { device }), [directory]);
+  await card.run({ device, format: 'xlsx', directory, path: '{[name]}' });
+  await card.run({ device, format: 'xlsx', path: 'exports/log.xlsx' });
+  await assert.rejects(card.run({ device, format: 'xlsx', directory, path: '' }), /errors.pathRequired/);
+  assert.deepEqual(destinations, ['media/archive/log.xlsx', 'media/exports/log.xlsx']);
+});
+
+test('Sys Log export waits for the matching ready event, then opens a fresh local stream for each retry', async () => {
+  const { EventEmitter } = require('node:events');
+  const app = new EventEmitter();
+  const token = 'a'.repeat(48);
+  app.getInstalled = async () => true;
+  app.get = async route => {
+    assert.equal(route, '/getlogdownloadurl/xlsx');
+    app.emit('realtime', 'downloadFileFailed', { token: 'unrelated' });
+    app.emit('realtime', 'downloadFileReady', { token });
+    return { token, filename: 'Large log #1.xlsx', localUrl: 'https://other.invalid/' };
+  };
+  const requests = [];
+  const block = Buffer.alloc(64 * 1024, 0x7d);
+  const blocks = 96;
+  const exportSource = loadModule('lib/syslog-export.js', { https: {
+    get(url, callback) {
+      requests.push(url);
+      const request = new EventEmitter();
+      request.setTimeout = () => {};
+      const body = function* () { for (let i = 0; i < blocks; i++) yield block; };
+      queueMicrotask(() => callback(Object.assign(Readable.from(body()), { statusCode: 200 })));
+      return request;
+    }
+  } });
+  const homey = {
+    api: { getApiApp(id) { assert.equal(id, 'nl.nielsdeklerk.log'); return app; } },
+    cloud: { getLocalAddress: async () => '192.0.2.1:443' }
+  };
+  const open = await exportSource(homey, 'xlsx');
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let bytes = 0;
+    for await (const chunk of await open()) {
+      assert.deepEqual(chunk, block);
+      bytes += chunk.length;
+    }
+    assert.equal(bytes, 6 * 1024 * 1024);
+  }
+  const url = `https://192-0-2-1.homey.homeylocal.com/app/net.i-dev.betterlogic/userdata/getfile/${token}/Large%20log%20%231.xlsx`;
+  assert.deepEqual(requests, [url, url]);
+  assert.equal(app.listenerCount('realtime'), 0);
 });

@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Zoek in deze map",
+    "noSearchMatches": "Geen overeenkomende bestanden of mappen.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Annuleren",
@@ -29,6 +31,7 @@
     "move": "Verplaatsen"
   },
   "errors": {
+    "downloadCacheFull": "De tijdelijke downloadopslag is vol. Wacht tot bestaande links verlopen of kies een kleiner bestand.",
     "fileRequired": "Selecteer een bestand.",
     "imageRequired": "Selecteer een afbeelding of voer een pad in.",
     "pathRequired": "Stel een map en/of pad in.",

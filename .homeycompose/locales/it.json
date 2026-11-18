@@ -1,5 +1,7 @@
 {
   "repair": {
+    "searchFolder": "Cerca in questa cartella",
+    "noSearchMatches": "Nessun file o cartella corrispondente.",
     "direction": "ltr",
     "ok": "OK",
     "cancel": "Annulla",
@@ -29,6 +31,7 @@
     "move": "Sposta"
   },
   "errors": {
+    "downloadCacheFull": "Lo spazio temporaneo per i download è pieno. Attendi che i link esistenti scadano o scegli un file più piccolo.",
     "fileRequired": "Seleziona un file.",
     "imageRequired": "Seleziona un’immagine o inserisci un percorso.",
     "pathRequired": "Imposta una cartella e/o un percorso.",

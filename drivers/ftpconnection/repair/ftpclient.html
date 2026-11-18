@@ -21,6 +21,11 @@
 			<button type="button" class="hy-nostyle" ng-class="{'is-active':view.display==='list'}" title="{{__('repair.listView')}}" aria-label="{{__('repair.listView')}}" aria-pressed="{{view.display==='list'}}" ng-click="view.display='list'; $event.stopPropagation();"><span class="fa fa-stream" aria-hidden="true"></span></button>
 			<button type="button" class="hy-nostyle" ng-class="{'is-active':view.display==='th-small'}" title="{{__('repair.gridView')}}" aria-label="{{__('repair.gridView')}}" aria-pressed="{{view.display==='th-small'}}" ng-click="view.display='th-small'; $event.stopPropagation();"><span class="fa fa-th" aria-hidden="true"></span></button>
 		</div>
+		<div class="field ftp-folder-search" ng-if="vars.currentDirectory.loaded">
+			<input type="search" ng-model="vars.searchQuery" ng-change="vars.updateSearch()"
+				ng-model-options="{debounce: 120}" aria-label="{{__('repair.searchFolder')}}"
+				placeholder="{{__('repair.searchFolder')}}" autocomplete="off">
+		</div>
 		<div class="field">
 			<div class="field margin-bottom">
 				<div class="ftp-directory ftp-directory-root {{view.display}}">
@@ -80,6 +85,32 @@
 				//let $;
 				const vars = $scope.vars = { path: '', content: { name: '', path: '', fullPath:'', isDirectory: true, children: [], show: true, root: true }, currentDirectory: null };
 				vars.currentDirectory = vars.content;
+				vars.searchQuery = '';
+				vars.updateSearch = function () {
+					const query = (vars.searchQuery || '').trim().toLowerCase();
+					const directory = vars.currentDirectory;
+					if (!query || !directory.loaded) {
+						vars.searchResults = null;
+						return;
+					}
+					const matches = entry => entry.name.toLowerCase().includes(query);
+					vars.searchResults = {
+						directory,
+						folders: directory.folders.filter(matches),
+						files: directory.files.filter(matches)
+					};
+					if (vars.selected && directory.children.includes(vars.selected) && !matches(vars.selected)) vars.selected = null;
+				};
+				vars.setListing = function (directory, entries) {
+					directory.children = entries;
+					directory.folders = [];
+					directory.files = [];
+					for (const entry of entries) {
+						if (entry.isDirectory) directory.folders.push(entry);
+						if (entry.isFile) directory.files.push(entry);
+					}
+					directory.loaded = true;
+				};
 				vars.displayPath = function (path) {
 					const root = vars.content.id;
 					const relative = root && (path === root || path.startsWith(root + '/')) ? path.slice(root.length) : path;
@@ -110,8 +141,7 @@
 					}).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
-							vars.content.children = result;
-							vars.content.loaded = true;
+							vars.setListing(vars.content, result);
 							//for (const c of result) $scope.vars.parentDirectories[c.path+'/'+c.name] = vars.currentDirectory;
 
 
@@ -190,25 +220,31 @@
 					return Homey.emit('getContent', { path:directory.fullPath }).then((result) => {
 						Homey.hideLoadingOverlay();
 						$scope.$apply(() => {
-							directory.children = result;
-							directory.loaded = true;
 							const previous = new Map((oldChildren || []).map(child => [child.fullPath, child]));
-							for (const child of directory.children) {
+							for (const child of result) {
 								const old = previous.get(child.fullPath);
 								if (old) {
 									child.show = old.show;
 									child.loaded = old.loaded;
 									child.children = old.children;
+									child.folders = old.folders;
+									child.files = old.files;
 								}
 								if($scope.vars.selected && $scope.vars.selected.fullPath===child.fullPath) $scope.vars.selected = child;  //For thumbnails only
 								if($scope.vars.currentDirectory && $scope.vars.currentDirectory.fullPath===child.fullPath) $scope.vars.currentDirectory = child;  //For thumbnails only
 							}
+							$scope.vars.setListing(directory, result);
+							$scope.vars.updateSearch();
 							if(func) func();
 						});
 					}).catch(err => handleError(err));
 				}
 
 				$scope.setCurrentDirectory = function (directory) {
+					if ($scope.vars.currentDirectory.fullPath !== directory.fullPath) {
+						$scope.vars.searchQuery = '';
+						$scope.vars.searchResults = null;
+					}
 					$scope.vars.currentDirectory = directory;
 					$scope.vars.path = directory.fullPath;// getFullPath(directory);
 				}
@@ -446,28 +482,40 @@
 						$scope.attrs = null;
 						$scope.uploadFiles = async function (event) {
 							const files = Array.from(event.target.files);
-							if (!files.length) return;
-							Homey.showLoadingOverlay();
+							if (!files.length || $scope.uploadProgress) return;
+							const endpoint = '../../../../../api/app/nl.qluster-it.FtpClient/uploadFilePartials';
+							let id, completed = 0;
+							const total = files.reduce((bytes, file) => bytes + file.size, 0);
+							const progress = (name, value) => {
+								$scope.uploadProgress = { name, value, total: total || 1 };
+								$scope.$applyAsync();
+							};
+							progress(files[0].name, 0);
 							try {
-								const upload = [];
 								for (const file of files) {
-									const data = await new Promise((resolve, reject) => {
-										const reader = new FileReader();
-										reader.onload = () => resolve(reader.result);
-										reader.onerror = () => reject(reader.error);
-										reader.onabort = () => reject(new Error(Homey.__('repair.uploadFailed')));
-										reader.readAsDataURL(file);
+									progress(file.name, completed);
+									const upload = await Homey.emit('uploadFiles', {
+										directory: { id: $scope.directory.id }, name: file.name, size: file.size
 									});
-									upload.push({ name: file.name, base64: data.slice(data.indexOf(',') + 1) });
-								}
-								const { id } = await Homey.emit('uploadFiles');
-								const json = JSON.stringify(upload);
-								for (let offset = 0; offset < json.length; offset += 1000000) {
-									await $http.post('../../../../../api/app/nl.qluster-it.FtpClient/uploadFilePartials', {
-										directory: { id: $scope.directory.id },
-										partial: json.slice(offset, offset + 1000000), id,
-										lastPart: offset + 1000000 >= json.length
-									});
+									id = upload.id;
+									for (let offset = 0; offset === 0 || offset < file.size; offset += upload.chunkBytes) {
+										const end = Math.min(file.size, offset + upload.chunkBytes);
+										const base64 = end === offset ? '' : await new Promise((resolve, reject) => {
+											const reader = new FileReader();
+											reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
+											reader.onerror = () => reject(reader.error);
+											reader.onabort = () => reject(new Error(Homey.__('repair.uploadFailed')));
+											reader.readAsDataURL(file.slice(offset, end));
+										});
+										let reply = await $http.post(endpoint, { id, offset, base64 });
+										while (reply && reply.data && reply.data.pending) {
+											await new Promise(resolve => setTimeout(resolve, 1000));
+											reply = await $http.post(endpoint, { id, status: true });
+										}
+										progress(file.name, total ? completed + end : 1);
+									}
+									id = undefined;
+									completed += file.size;
 								}
 								$scope.$apply(() => {
 									delete $scope.directory.uploading;
@@ -476,9 +524,13 @@
 									if ($scope.attrs.onOk) $parse($scope.attrs.onOk)($scope.$parent);
 								});
 							} catch (error) {
+								if (id) {
+									try { await $http.post(endpoint, { id, cancel: true }); }
+									catch (cleanupError) { console.warn('FTP upload session will expire', cleanupError.status); }
+								}
 								Homey.alert(error.message || (error.data && error.data.error) || String(error), 'error');
 							} finally {
-								Homey.hideLoadingOverlay();
+								$scope.$applyAsync(() => { delete $scope.uploadProgress; });
 								event.target.value = '';
 							}
 						}
@@ -488,7 +540,7 @@
 						scope.cancel = function ($event) {
 							$event.preventDefault();
 							$event.stopPropagation();
-							$parse(attrs.onCancel)(scope.$parent);
+							if (!scope.uploadProgress) $parse(attrs.onCancel)(scope.$parent);
 
 						}
 					}

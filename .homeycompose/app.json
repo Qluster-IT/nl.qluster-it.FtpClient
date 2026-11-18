@@ -153,7 +153,8 @@
     "url": "https://github.com/Qluster-IT/nl.qluster-it.FtpClient/issues"
   },
   "permissions": [
-    "homey:app:net.i-dev.betterlogic"
+    "homey:app:net.i-dev.betterlogic",
+    "homey:app:nl.nielsdeklerk.log"
   ],
   "images": {
     "small": "/assets/images/small.png",
@@ -188,11 +189,6 @@
     ]
   },
   "api": {
-    "uploadFiles": {
-      "method": "POST",
-      "path": "/uploadFiles",
-      "public": true
-    },
     "uploadFilePartials": {
       "method": "POST",
       "path": "/uploadFilePartials",

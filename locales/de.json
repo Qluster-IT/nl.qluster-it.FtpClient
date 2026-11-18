@@ -26,7 +26,9 @@
     "parentFolder": "Übergeordneter Ordner",
     "bllRequired": "Installiere die App Better Logic Library, um den FTP-Browser zu verwenden.",
     "uploadFailed": "Die Datei konnte nicht zum Hochladen gelesen werden.",
-    "move": "Verschieben"
+    "move": "Verschieben",
+    "searchFolder": "In diesem Ordner suchen",
+    "noSearchMatches": "Keine passenden Dateien oder Ordner."
   },
   "errors": {
     "fileRequired": "Eine Datei muss ausgewählt werden.",
@@ -35,7 +37,8 @@
     "folderRequired": "Ein Ordner muss ausgewählt werden.",
     "urlRequired": "Gib eine URL ein.",
     "outsideRoot": "Der Pfad muss innerhalb des festgelegten Stammverzeichnisses bleiben.",
-    "rootProtected": "Wähle eine Datei oder einen Unterordner innerhalb des festgelegten Stammverzeichnisses."
+    "rootProtected": "Wähle eine Datei oder einen Unterordner innerhalb des festgelegten Stammverzeichnisses.",
+    "downloadCacheFull": "Der temporäre Downloadspeicher ist voll. Warte, bis vorhandene Links ablaufen, oder wähle eine kleinere Datei."
   },
   "pair": {
     "custom": "Benutzerdefinierter FTP Client",
