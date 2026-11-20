@@ -130,6 +130,11 @@ This works perfectly on Sonos speakers or any other device accepting a Url, like
 
 ## Changelog
 
+### 1.6.1
+
+- Reduced app download size.
+- Improved Flow card ordering.
+
 ### 1.6.0
 
 - Save files from HTTP, HTTPS, and FTP URLs, including Simple (Sys) Log export links.

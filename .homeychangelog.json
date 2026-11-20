@@ -172,5 +172,20 @@
     "ru": "Сохранение файлов по HTTP, HTTPS и FTP, включая экспорт Simple (Sys) Log. Улучшены просмотр файлов, работа с корневой папкой и передача больших файлов; добавлены состояние подключения и предупреждения об ошибках передачи. Устранены конфликты при одновременной загрузке файлов и улучшено восстановление после сбоев подключения.",
     "ko": "Simple (Sys) Log 내보내기를 포함한 HTTP, HTTPS, FTP URL에서 파일을 저장합니다. 파일 탐색, 루트 폴더 처리 및 대용량 전송을 개선하고 연결 상태와 전송 알림을 추가했습니다. 동시 다운로드 충돌을 수정하고 연결 오류 후 복구를 개선했습니다.",
     "ar": "حفظ الملفات من عناوين HTTP وHTTPS وFTP، بما في ذلك صادرات Simple (Sys) Log. تحسين تصفّح الملفات والمجلد الجذر وعمليات النقل الكبيرة، وإضافة حالة الاتصال وتنبيهات النقل. إصلاح التعارضات عند تنزيل ملفات في الوقت نفسه وتحسين استعادة الاتصال بعد تعذّره."
+  },
+  "1.6.1": {
+    "en": "Reduced app download size.\nImproved Flow card ordering.",
+    "nl": "De downloadgrootte van de app verkleind.\nDe volgorde van Flow-kaarten verbeterd.",
+    "da": "Reduceret appens downloadstørrelse.\nForbedret rækkefølgen af Flow-kort.",
+    "de": "Downloadgröße der App reduziert.\nReihenfolge der Flow-Karten verbessert.",
+    "es": "Se redujo el tamaño de descarga de la aplicación.\nSe mejoró el orden de las tarjetas Flow.",
+    "fr": "Taille de téléchargement de l’application réduite.\nOrdre des cartes Flow amélioré.",
+    "it": "Ridotta la dimensione del download dell'app.\nMigliorato l'ordine delle schede Flow.",
+    "no": "Redusert appens nedlastingsstørrelse.\nForbedret rekkefølgen på Flow-kortene.",
+    "sv": "Minskad nedladdningsstorlek för appen.\nFörbättrad ordning på Flow-korten.",
+    "pl": "Zmniejszono rozmiar pobieranej aplikacji.\nUlepszono kolejność kart Flow.",
+    "ru": "Уменьшен размер загрузки приложения.\nУлучшен порядок карточек Flow.",
+    "ko": "앱 다운로드 크기를 줄였습니다.\nFlow 카드 순서를 개선했습니다.",
+    "ar": "تقليل حجم تنزيل التطبيق.\nتحسين ترتيب بطاقات Flow."
   }
 }
